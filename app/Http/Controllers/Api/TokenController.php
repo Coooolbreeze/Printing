@@ -34,35 +34,13 @@ class TokenController extends ApiController
 
         // 账号+密码登录
         if ($username && $password) {
-            if (!preg_match('/^\w{6,18}$/', $password)) {
-                throw new RegisterException('密码为6~18位字母、数字或下划线');
-            }
-
-            if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-                // 邮箱登录
-                $token = TokenFactory::email()->get();
-            } elseif (preg_match('/^1[3-9]\d{9}$/', $username)) {
-                // 手机号登录
-                $token = TokenFactory::phone()->get();
-            } elseif (preg_match('/^[a-zA-Z][-_a-zA-Z0-9]{5,19}$/', $username)) {
-                // 账号登录
-                $token = TokenFactory::account()->get();
-            }
+            $token = $this->loginForPassword($username, $password);
         } // 账号+验证码登录
         elseif ($username && $verificationCode) {
-            // TODO 检测验证码正确性
-
-
-            if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-                // 邮箱登录
-                $token = TokenFactory::verificationCode('email')->get();
-            } elseif (preg_match('/^1[3-9]\d{9}$/', $username)) {
-                // 手机号登录
-                $token = TokenFactory::verificationCode('phone')->get();
-            }
+            $token = $this->loginForVerificationCode($username, $verificationCode);
         } // 微信登录
         elseif ($code) {
-            $token = TokenFactory::weChat()->get();
+            $token = $this->loginForWeChat();
         }
 
         if (!isset($token)) {
@@ -70,6 +48,66 @@ class TokenController extends ApiController
         }
 
         return $this->success($token);
+    }
+
+    /**
+     * 密码登录
+     *
+     * @param $username
+     * @param $password
+     * @return array
+     * @throws RegisterException
+     * @throws \App\Exceptions\ServerException
+     */
+    public function loginForPassword($username, $password)
+    {
+        if (!preg_match('/^\w{6,18}$/', $password)) {
+            throw new RegisterException('密码为6~18位字母、数字或下划线');
+        }
+
+        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+            // 邮箱登录
+            return TokenFactory::email()->get();
+        } elseif (preg_match('/^1[3-9]\d{9}$/', $username)) {
+            // 手机号登录
+            return TokenFactory::phone()->get();
+        } elseif (preg_match('/^[a-zA-Z][-_a-zA-Z0-9]{5,19}$/', $username)) {
+            // 账号登录
+            return TokenFactory::account()->get();
+        }
+    }
+
+    /**
+     * 验证码登录
+     *
+     * @param $username
+     * @param $verificationCode
+     * @return array
+     * @throws \App\Exceptions\ServerException
+     */
+    public function loginForVerificationCode($username, $verificationCode)
+    {
+        // TODO 检测验证码正确性
+
+
+        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+            // 邮箱登录
+            return TokenFactory::verificationCode('email')->get();
+        } elseif (preg_match('/^1[3-9]\d{9}$/', $username)) {
+            // 手机号登录
+            return TokenFactory::verificationCode('phone')->get();
+        }
+    }
+
+    /**
+     * 微信登录
+     *
+     * @return array
+     * @throws \App\Exceptions\ServerException
+     */
+    public function loginForWeChat()
+    {
+        return TokenFactory::weChat()->get();
     }
 
     /**
