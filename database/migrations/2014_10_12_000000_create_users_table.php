@@ -26,7 +26,6 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('is_bind_email')->default(0);
             $table->tinyInteger('is_bind_wxopen')->default(0);
             $table->tinyInteger('is_bind_wxmedia')->default(0);
-            $table->string('guard')->default('ordinary');
             $table->timestamps();
             $table->softDeletes();
         });

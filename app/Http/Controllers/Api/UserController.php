@@ -75,8 +75,6 @@ class UserController extends ApiController
      */
     public function self()
     {
-        $uid = TokenFactory::getCurrentUID();
-
-        return $this->show($uid);
+        return $this->success(new UserResource(TokenFactory::getCurrentUser()));
     }
 }

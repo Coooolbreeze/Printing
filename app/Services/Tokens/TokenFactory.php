@@ -267,33 +267,71 @@ class TokenFactory
     }
 
     /**
-     * 获取token中的permissions
+     * 获取当前用户
      *
      * @return mixed
      * @throws TokenException
-     * @throws \Exception
+     */
+    public static function getCurrentUser()
+    {
+        $user = request()->offsetGet('user');
+
+        if (!$user)
+            throw new TokenException();
+
+        return $user;
+    }
+
+    /**
+     * 获取用户拥有的组列表
+     *
+     * @return mixed
+     * @throws TokenException
+     */
+    public static function getCurrentRoles()
+    {
+        return self::getCurrentUser()->getRoleNames()->toArray();
+    }
+
+    /**
+     * 获取用户拥有的权限列表
+     *
+     * @return array
+     * @throws TokenException
      */
     public static function getCurrentPermissions()
     {
-        return self::getCurrentTokenVar('permissions');
+        $permissions = [];
+        foreach (self::getCurrentUser()->getAllPermissions() as $value) {
+            array_push($permissions, $value['name']);
+        }
+        return $permissions;
     }
 
     /**
-     * 获取token中的guard
+     * 检测用户组
      *
-     * @return mixed
+     * @param $role
+     * @return bool
+     * @throws ForbiddenException
      * @throws TokenException
      */
-    public static function getCurrentGuard()
+    public static function needRole($role)
     {
-        return self::getCurrentTokenVar('guard');
+        $currentRoles = self::getCurrentRoles();
+
+        if (!in_array($role, $currentRoles)) {
+            throw new ForbiddenException('无权访问，需要' . $role . '用户组');
+        }
+
+        return true;
     }
 
     /**
-     * 检测权限
+     * 检测用户权限
      *
      * @param $permission
-     * @throws Exception
+     * @return bool
      * @throws ForbiddenException
      * @throws TokenException
      */
@@ -304,25 +342,7 @@ class TokenFactory
         if (!in_array($permission, $currentPermissions)) {
             throw new ForbiddenException('权限不足，需要' . $permission . '权限');
         }
-    }
 
-    /**
-     * 检测守卫
-     *
-     * @param $guard
-     * @throws ForbiddenException
-     * @throws TokenException
-     */
-    public static function needGuard($guard)
-    {
-        $currentGuard = self::getCurrentGuard();
-
-        if(!is_array($guard)){
-            $guard = [$guard];
-        }
-
-        if(!in_array($currentGuard, $guard)){
-            throw new ForbiddenException();
-        }
+        return true;
     }
 }

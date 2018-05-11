@@ -12,7 +12,6 @@ use App\Exceptions\ServerException;
 use App\Models\Token as TokenModel;
 use App\Models\User;
 use App\Models\UserAuth;
-use App\Services\Permission;
 use Cache;
 
 abstract class BaseToken
@@ -58,16 +57,12 @@ abstract class BaseToken
     public function needSaveValues($identity)
     {
         $uid = $identity->user_id;
-        $guard = User::findOrFail($uid)->guard;
-//        $permissions = (new Permission())->getUserPermissions($uid);
 
         $values = [
             'uid' => $uid,
             'platform' => $identity->platform,
             'identity_type' => $identity->identity_type,
-            'identifier' => $identity->identifier,
-            'guard' => $guard,
-//            'permissions' => $permissions
+            'identifier' => $identity->identifier
         ];
 
         return $values;

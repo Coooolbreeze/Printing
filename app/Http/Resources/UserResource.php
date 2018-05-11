@@ -78,14 +78,13 @@ class UserResource extends JsonResource
     {
         try {
             $uid = TokenFactory::getCurrentUID();
-            $guard = TokenFactory::getCurrentGuard();
+            $super = TokenFactory::needRole('super');
         } catch (BaseException $e) {
             return false;
         }
 
-        if ($uid == $this->id || $guard == 'super') {
+        if ($uid == $this->id || $super == true)
             return true;
-        }
 
         return false;
     }
