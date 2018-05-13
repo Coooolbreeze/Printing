@@ -9,6 +9,7 @@
 namespace App\Services\Tokens;
 
 
+use App\Exceptions\AccountErrorException;
 use App\Exceptions\BindingLoginModeException;
 use App\Exceptions\ForbiddenException;
 use App\Exceptions\RePasswordException;
@@ -16,6 +17,8 @@ use App\Exceptions\TokenException;
 use App\Models\Token;
 use App\Models\User;
 use App\Models\UserAuth;
+use App\Services\Account;
+use App\Services\VerificationCode;
 use Cache;
 use Closure;
 use DB;
@@ -27,14 +30,24 @@ class TokenFactory
     /**
      * 微信登录实例
      *
-     * @return WeChatToken
+     * @return WeChatMediaToken|WeChatMiniProgramToken|WeChatOpenToken
      */
     public static function weChat()
     {
         $code = request()->post('code');
-        $identityType = request()->post('type');
+        $type = request()->post('type');
 
-        return new WeChatToken($code, $identityType);
+        if (!$type) {
+            return new WeChatMiniProgramToken($code);
+        }
+
+        if ($type == 'open') {
+            return new WeChatOpenToken($code);
+        }
+
+        if ($type == 'media') {
+            return new WeChatMediaToken($code);
+        }
     }
 
     /**
@@ -53,11 +66,12 @@ class TokenFactory
     /**
      * 手机号+密码登录实例
      *
+     * @param string $phone
      * @return PhoneToken
      */
-    public static function phone()
+    public static function phone($phone = '')
     {
-        $phone = request()->post('username');
+        $phone = $phone ?: request()->post('username');
         $password = request()->post('password');
 
         return new PhoneToken($phone, $password);
@@ -66,11 +80,12 @@ class TokenFactory
     /**
      * 邮箱+密码登录实例
      *
+     * @param string $email
      * @return EmailToken
      */
-    public static function email()
+    public static function email($email = '')
     {
-        $email = request()->post('username');
+        $email = $email ?: request()->post('username');
         $password = request()->post('password');
 
         return new EmailToken($email, $password);
@@ -79,12 +94,14 @@ class TokenFactory
     /**
      * 验证码登录实例
      *
-     * @param $type
      * @return VerificationCodeToken
+     * @throws AccountErrorException
+     * @throws \App\Exceptions\VerificationCodeException
      */
-    public static function verificationCode($type)
+    public static function verificationCode()
     {
-        $identifier = request()->post('username');
+        $identifier = VerificationCode::getContact(request()->post('verification_code'), request()->post('verification_token'));
+        $type = Account::judgeAccountType($identifier);
 
         return new VerificationCodeToken($type, $identifier);
     }

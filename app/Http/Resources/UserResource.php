@@ -28,8 +28,7 @@ class UserResource extends JsonResource
             'is_bind_account' => (bool)$this->is_bind_account,
             'is_bind_phone' => (bool)$this->is_bind_phone,
             'is_bind_email' => (bool)$this->is_bind_email,
-            'is_bind_wxopen' => (bool)$this->is_bind_wxopen,
-            'is_bind_wxmedia' => (bool)$this->is_bind_wxmedia,
+            'is_bind_wx' => (bool)$this->is_bind_wx,
             'created_at' => (string)$this->created_at
         ];
     }

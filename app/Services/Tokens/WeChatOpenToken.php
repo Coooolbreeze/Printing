@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: 392113643
- * Date: 2018/3/29
- * Time: 20:38
+ * Date: 2018/5/12
+ * Time: 19:54
  */
 
 namespace App\Services\Tokens;
@@ -18,7 +18,7 @@ use App\Models\User;
 use Exception;
 use DB;
 
-class WeChatToken extends BaseToken
+class WeChatOpenToken extends BaseToken
 {
     private $code;
     private $appID;
@@ -26,50 +26,33 @@ class WeChatToken extends BaseToken
     private $loginUrl;
     private $userInfoUrl;
 
-    /**
-     * 微信开放平台open OR 微信公众平台media
-     *
-     * @var string
-     */
-    private $identityType;
-
-    public function __construct($code, $identityType = 'open')
+    public function __construct($code)
     {
         $this->code = $code;
-        $this->identityType = $identityType;
 
-        if ($this->identityType == 'open') {
-            $this->appID = config('wxOpen.app_id');
-            $this->appSecret = config('wxOpen.app_secret');
-            $this->userInfoUrl = config('wxOpen.user_info_url');
-            $this->loginUrl = sprintf(config('wxOpen.login_url'), $this->appID, $this->appSecret, $this->code);
-        }
-
-        if ($this->identityType == 'media') {
-            $this->appID = config('wxMedia.app_id');
-            $this->appSecret = config('wxMedia.app_secret');
-            $this->userInfoUrl = config('wxMedia.user_info_url');
-            $this->loginUrl = sprintf(config('wxMedia.login_url'), $this->appID, $this->appSecret, $this->code);
-        }
+        $this->appID = config('wxOpen.app_id');
+        $this->appSecret = config('wxOpen.app_secret');
+        $this->userInfoUrl = config('wxOpen.user_info_url');
+        $this->loginUrl = sprintf(config('wxOpen.login_url'), $this->appID, $this->appSecret, $this->code);
     }
 
     /**
      * 获取用户身份
      *
-     * @return WeChatToken|\Illuminate\Database\Eloquent\Model|mixed
+     * @return WeChatMediaToken|\Illuminate\Database\Eloquent\Model|mixed
      * @throws Exception
      * @throws WeChatException
      */
     public function identity()
     {
         // 获取access_token及openid
-        $wxBaseInfo = $this->getWxResult($this->loginUrl);
+        $wxBaseInfo = self::getWxResult($this->loginUrl);
         $openid = $wxBaseInfo['openid'];
         $accessToken = $wxBaseInfo['access_token'];
 
         // 查找用户身份
         $identity = (new $this->model)->where('platform', 'wx')
-            ->where('identity_type', $this->identityType)
+            ->where('identity_type', 'open')
             ->where('identifier', $openid)
             ->first();
 
@@ -96,7 +79,7 @@ class WeChatToken extends BaseToken
         // 拼接获取用户详细信息的url
         $userInfoUrl = sprintf($this->userInfoUrl, $accessToken, $openid);
         // 获取用户详细信息
-        $wxUserInfo = $this->getWxResult($userInfoUrl);
+        $wxUserInfo = self::getWxResult($userInfoUrl);
 
         DB::beginTransaction();
         try {
@@ -105,7 +88,7 @@ class WeChatToken extends BaseToken
                 'nickname' => $wxUserInfo['nickname'],
                 'avatar' => $wxUserInfo['headimgurl'],
                 'sex' => $wxUserInfo['sex'],
-                'is_bind_wx' . $this->identityType => 1
+                'is_bind_wx' => 1
             ]);
             $uid = $user->id;
 
@@ -113,7 +96,7 @@ class WeChatToken extends BaseToken
             $identity = (new $this->model)->create([
                 'user_id' => $uid,
                 'platform' => 'wx',
-                'identity_type' => $this->identityType,
+                'identity_type' => 'open',
                 'identifier' => $openid,
                 'credential' => $accessToken,
                 'remark' => $wxUserInfo['unionid'],
@@ -143,28 +126,28 @@ class WeChatToken extends BaseToken
 
         // 查看用户是否已绑定微信号
         $user = User::find($uid);
-        if (($this->identityType == 'open' ? $user->is_bind_wxopen : $user->is_bind_wxmedia) == 1) {
+        if ($user->is_bind_wx == 1) {
             throw new BindingLoginModeException('该账号已绑定微信号，无法继续绑定', 0, 409);
         }
 
         // 获取access_token及openid
-        $wxBaseInfo = $this->getWxResult($this->loginUrl);
+        $wxBaseInfo = self::getWxResult($this->loginUrl);
         $openid = $wxBaseInfo['openid'];
         $accessToken = $wxBaseInfo['access_token'];
 
         // 查看该微信号是否已被使用
         $userAuth = (new $this->model)->where('platform', 'wx')
-            ->where('identity_type', $this->identityType)
+            ->where('identity_type', 'open')
             ->where('identifier', $openid)
             ->first();
         if ($userAuth) {
-            throw new AccountIsExistException('该微信号已被使用');
+            throw new AccountIsExistException('该微信号已与其他账号绑定，请先解除绑定');
         }
 
         // 拼接获取用户详细信息的url
         $userInfoUrl = sprintf($this->userInfoUrl, $accessToken, $openid);
         // 获取用户详细信息
-        $wxUserInfo = $this->getWxResult($userInfoUrl);
+        $wxUserInfo = self::getWxResult($userInfoUrl);
 
         DB::beginTransaction();
         try {
@@ -172,7 +155,7 @@ class WeChatToken extends BaseToken
             (new $this->model)->create([
                 'user_id' => $uid,
                 'platform' => 'wx',
-                'identity_type' => $this->identityType,
+                'identity_type' => 'open',
                 'identifier' => $openid,
                 'credential' => $accessToken,
                 'remark' => $wxUserInfo['unionid'],
@@ -180,7 +163,7 @@ class WeChatToken extends BaseToken
             ]);
 
             // 更新用户微信号为已绑定
-            $this->identityType == 'open' ? $user->is_bind_wxopen = 1 : $user->is_bind_wxmedia = 1;
+            $user->is_bind_wx = 1;
             $user->save();
 
             DB::commit();
@@ -198,7 +181,7 @@ class WeChatToken extends BaseToken
      * @throws Exception
      * @throws WeChatException
      */
-    public function getWxResult($url)
+    public static function getWxResult($url)
     {
         $result = curl($url);
 

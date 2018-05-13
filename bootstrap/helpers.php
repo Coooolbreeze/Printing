@@ -53,12 +53,13 @@ function curl($url, $header = '', $method = 'GET', $body = '')
  * 获取指定长度的随机字符串
  *
  * @param $length
+ * @param $num
  * @return null|string
  */
-function getRandChar($length)
+function getRandChar($length, $num = false)
 {
     $str = null;
-    $strPol = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+    $strPol = $num ? '0123456789' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
     $max = strlen($strPol) - 1;
 
     for ($i = 0; $i < $length; $i++) {

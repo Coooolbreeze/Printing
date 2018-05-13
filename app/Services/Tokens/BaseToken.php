@@ -10,7 +10,6 @@ namespace App\Services\Tokens;
 
 use App\Exceptions\ServerException;
 use App\Models\Token as TokenModel;
-use App\Models\User;
 use App\Models\UserAuth;
 use Cache;
 
