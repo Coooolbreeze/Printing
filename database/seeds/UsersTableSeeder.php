@@ -11,7 +11,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::create([
+        $user = \App\Models\User::create([
             'id' => 1,
             'nickname' => '超级管理员',
             'avatar' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg',
@@ -19,5 +19,7 @@ class UsersTableSeeder extends Seeder
             'account' => 'administrator',
             'is_bind_account' => 1
         ]);
+
+        $user->assignRole('super');
     }
 }
