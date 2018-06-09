@@ -17,7 +17,8 @@ class UsersTableSeeder extends Seeder
             'avatar' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg',
             'sex' => 0,
             'account' => 'administrator',
-            'is_bind_account' => 1
+            'is_bind_account' => 1,
+            'is_admin' => 1
         ]);
 
         $user->assignRole('super');

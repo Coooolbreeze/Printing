@@ -62,9 +62,9 @@ class ExceptionReport
      */
     public function shouldReturn()
     {
-        if (!($this->request->wantsJson() || $this->request->ajax())) {
-            return false;
-        }
+//        if (!($this->request->wantsJson() || $this->request->ajax())) {
+//            return false;
+//        }
 
         foreach (array_keys($this->doReport()) as $report) {
             if ($this->exception instanceof $report) {

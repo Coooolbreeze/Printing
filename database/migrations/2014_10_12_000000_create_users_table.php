@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('is_bind_phone')->default(0);
             $table->tinyInteger('is_bind_email')->default(0);
             $table->tinyInteger('is_bind_wx')->default(0);
+            $table->tinyInteger('is_admin')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

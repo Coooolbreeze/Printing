@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserResourceCollection;
 use App\Models\User;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;

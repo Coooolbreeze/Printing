@@ -107,3 +107,19 @@ function getFirstDayOfTheMonth($year = '', $month = '')
     $result = date('t', $timestamp);
     return $result;
 }
+
+/**
+ * 截取HTML
+ *
+ * @param $string
+ * @param int $start
+ * @param int $length
+ * @return string
+ */
+function interceptHTML($string, $start = 0, $length = 50)
+{
+    $str = strip_tags($string);
+    $str = str_replace('&nbsp;', '', $str);
+    $str = mb_substr(trim($str), $start, $length, 'utf-8');
+    return $str . '...';
+}

@@ -15,6 +15,10 @@ class DatabaseSeeder extends Seeder
             PermissionTablesSeeder::class,
             UsersTableSeeder::class,
             UserAuthsTableSeeder::class,
+            CategoriesTableSeeder::class,
+            CommonAttributesTableSeeder::class,
+            CommonValuesTableSeeder::class,
+            ImagesTableSeeder::class,
             CacheFlushSeeder::class,
         ]);
     }

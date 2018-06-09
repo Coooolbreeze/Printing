@@ -14,6 +14,7 @@ use App\Exceptions\PasswordErrorException;
 use App\Exceptions\RegisterException;
 use App\Exceptions\UserNotFoundException;
 use App\Models\User;
+use DB;
 use Exception;
 use Hash;
 
@@ -84,7 +85,7 @@ class AccountToken extends BaseToken
         try {
             // 创建用户信息
             $user = User::create([
-                'nickname' => '小萌新',
+                'nickname' => $this->account,
                 'avatar' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg',
                 'account' => $this->account,
                 'is_bind_account' => 1

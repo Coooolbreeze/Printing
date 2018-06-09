@@ -362,4 +362,13 @@ class TokenFactory
 
         return true;
     }
+
+    public static function isAdmin()
+    {
+        try {
+            return TokenFactory::getCurrentUser()->is_admin;
+        } catch (Exception $exception) {
+            return false;
+        }
+    }
 }

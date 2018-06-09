@@ -116,6 +116,7 @@ class Account
         if (filter_var($username, FILTER_VALIDATE_EMAIL)) return 'email';
         if (preg_match('/^1[3-9]\d{9}$/', $username)) return 'phone';
         if (preg_match('/^[a-zA-Z][-_a-zA-Z0-9]{5,19}$/', $username)) return 'account';
-        throw new AccountErrorException();
+//        throw new AccountErrorException();
+        return 'account';
     }
 }
