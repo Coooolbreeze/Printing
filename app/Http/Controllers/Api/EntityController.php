@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Resources\EntityResource;
 use App\Models\Attribute;
 use App\Models\Combination;
 use App\Models\Entity;
@@ -98,5 +99,10 @@ class EntityController extends ApiController
 
             self::combination($arr, $combination, $value, $num + 1);
         }
+    }
+
+    public function show(Entity $entity)
+    {
+        return $this->success(new EntityResource($entity));
     }
 }

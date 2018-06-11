@@ -25,6 +25,9 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('images', 'ImageController')
         ->only(['store']);
 
+    Route::apiResource('entities', 'EntityController')
+        ->only(['index', 'show']);
+
     Route::apiResource('news', 'NewsController')
         ->only(['index', 'show']);
 
@@ -35,6 +38,9 @@ Route::namespace('Api')->group(function () {
         ->only(['index', 'show']);
 
     Route::apiResource('scenes', 'SceneController')
+        ->only(['index', 'show']);
+
+    Route::apiResource('activities', 'ActivityController')
         ->only(['index', 'show']);
 
     /**
@@ -86,7 +92,8 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:活动管理')->group(function () {
-
+        Route::apiResource('activities', 'ActivityController')
+            ->only(['store', 'update', 'destroy']);
     });
 
     Route::middleware('permission:场景用途管理')->group(function () {
@@ -138,6 +145,8 @@ Route::namespace('Api')->group(function () {
 
 
     Route::get('/test', function () {
+        return \Carbon\Carbon::parse(date('Y-m-d H:i:s', '1537654321'));
+
         return \Spatie\Permission\Models\Role::findOrFail(1)
             ->permissions()->pluck('name');
 

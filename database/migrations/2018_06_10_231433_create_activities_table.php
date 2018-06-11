@@ -18,6 +18,7 @@ class CreateActivitiesTable extends Migration
             $table->integer('image_id');
             $table->string('name');
             $table->text('describe');
+            $table->tinyInteger('status')->default(1);
             $table->timestamp('finished_at');
             $table->timestamps();
         });

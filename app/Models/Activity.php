@@ -28,11 +28,19 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Activity whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Activity whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $status
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Activity whereStatus($value)
+ * @property-read \App\Models\Image $image
  */
 class Activity extends Model
 {
     public function entities()
     {
         return $this->belongsToMany('App\Models\Entity');
+    }
+
+    public function image()
+    {
+        return $this->belongsTo('App\Models\Image');
     }
 }

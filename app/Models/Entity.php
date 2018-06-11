@@ -49,4 +49,9 @@ class Entity extends Model
     {
         return $this->belongsToMany('App\Models\Image');
     }
+
+    public function combinations()
+    {
+        return $this->hasMany('App\Models\Combination');
+    }
 }
