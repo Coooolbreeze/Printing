@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateScenesTable extends Migration
+class CreateActivitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateScenesTable extends Migration
      */
     public function up()
     {
-        Schema::create('scenes', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('image_id');
             $table->string('name');
-            $table->text('describe')->nullable();
+            $table->text('describe');
+            $table->timestamp('finished_at');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateScenesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('scenes');
+        Schema::dropIfExists('activities');
     }
 }

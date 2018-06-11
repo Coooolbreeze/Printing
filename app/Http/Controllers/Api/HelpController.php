@@ -47,19 +47,19 @@ class HelpController extends ApiController
     public function update(Request $request, Help $help)
     {
         $help->update($request->post());
-        return $this->success('更新成功');
+        return $this->message('更新成功');
     }
 
     public function destroy(Help $help)
     {
         $help->delete();
-        return $this->success('删除成功');
+        return $this->message('删除成功');
     }
 
     public function batchDelete(Request $request)
     {
         Help::whereIn('id', $request->ids)
             ->delete();
-        return $this->success('删除成功');
+        return $this->message('删除成功');
     }
 }

@@ -110,7 +110,7 @@ class AdminAccountController extends ApiController
                 User::findOrFail($id)->syncRoles($request->roles);
         });
 
-        return $this->success('修改成功');
+        return $this->message('修改成功');
     }
 
     /**
@@ -130,7 +130,7 @@ class AdminAccountController extends ApiController
                 ->forceDelete();
         });
 
-        return $this->success('删除成功');
+        return $this->message('删除成功');
     }
 
     /**
@@ -149,6 +149,6 @@ class AdminAccountController extends ApiController
                 ->forceDelete();
         });
 
-        return $this->success('删除成功');
+        return $this->message('删除成功');
     }
 }

@@ -34,6 +34,9 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('helps', 'HelpController')
         ->only(['index', 'show']);
 
+    Route::apiResource('scenes', 'SceneController')
+        ->only(['index', 'show']);
+
     /**
      * 需超级管理员权限
      */
@@ -87,7 +90,12 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:场景用途管理')->group(function () {
-
+        Route::apiResource('scenes', 'SceneController')
+            ->only(['store', 'update', 'destroy']);
+        Route::apiResource('scene_categories', 'SceneCategoryController')
+            ->only(['update', 'destroy']);
+        Route::apiResource('scene_goods', 'SceneGoodController')
+            ->only(['update', 'destroy']);
     });
 
     Route::middleware('permission:商品管理')->group(function () {

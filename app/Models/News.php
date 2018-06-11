@@ -29,6 +29,10 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\News whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\News whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\News whereUpdatedAt($value)
+ * @property string $from
+ * @property string $summary
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\News whereFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\News whereSummary($value)
  */
 class News extends Model
 {

@@ -25,6 +25,8 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Combination wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Combination whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property float|null $weight
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Combination whereWeight($value)
  */
 class Combination extends Model
 {

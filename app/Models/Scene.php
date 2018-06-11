@@ -23,8 +23,22 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereUpdatedAt($value)
+ * @property int $image_id
+ * @property string $name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereImageId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereName($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SceneCategory[] $sceneCategories
+ * @property-read \App\Models\Image $image
  */
 class Scene extends Model
 {
+    public function sceneCategories()
+    {
+        return $this->hasMany('App\Models\SceneCategory');
+    }
 
+    public function image()
+    {
+        return $this->belongsTo('App\Models\Image');
+    }
 }

@@ -60,19 +60,19 @@ class NewsController extends ApiController
             'summary' => interceptHTML($request->body),
             'body' => $request->body
         ]);
-        return $this->success('更新成功');
+        return $this->message('更新成功');
     }
 
     public function destroy(News $news)
     {
         $news->delete();
-        return $this->success('删除成功');
+        return $this->message('删除成功');
     }
 
     public function batchDestroy(Request $request)
     {
         News::whereIn('id', $request->ids)
             ->delete();
-        return $this->success('删除成功');
+        return $this->message('删除成功');
     }
 }

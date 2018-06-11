@@ -49,19 +49,19 @@ class HelpCategoryController extends ApiController
         $helpCategory->update([
             'name' => $request->name
         ]);
-        return $this->success('更新成功');
+        return $this->message('更新成功');
     }
 
     public function destroy(HelpCategory $helpCategory)
     {
         $helpCategory->delete();
-        return $this->success('删除成功');
+        return $this->message('删除成功');
     }
 
     public function batchDelete(Request $request)
     {
         HelpCategory::whereIn('id', $request->ids)
             ->delete();
-        return $this->success('删除成功');
+        return $this->message('删除成功');
     }
 }

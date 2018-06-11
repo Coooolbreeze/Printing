@@ -291,12 +291,12 @@ class TokenFactory
      */
     public static function getCurrentUser()
     {
-        $user = request()->offsetGet('user');
+//        $user = request()->offsetGet('user');
+//        if (!$user) throw new TokenException();
+//        return $user;
 
-        if (!$user)
-            throw new TokenException();
+        return User::findOrFail(self::getCurrentUID());
 
-        return $user;
     }
 
     /**
