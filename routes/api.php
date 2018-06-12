@@ -43,6 +43,12 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('activities', 'ActivityController')
         ->only(['index', 'show']);
 
+    Route::apiResource('links', 'LinkController')
+        ->only(['index', 'show']);
+
+    Route::apiResource('partners', 'PartnerController')
+        ->only(['index', 'show']);
+
     /**
      * 需超级管理员权限
      */
@@ -65,7 +71,11 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:首页推荐管理')->group(function () {
+        Route::apiResource('links', 'LinkController')
+            ->only(['store', 'update', 'destroy']);
 
+        Route::apiResource('partners', 'PartnerController')
+            ->only(['store', 'update', 'destroy']);
     });
 
     Route::middleware('permission:新闻管理')->group(function () {
