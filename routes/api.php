@@ -49,6 +49,15 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('partners', 'PartnerController')
         ->only(['index', 'show']);
 
+    Route::apiResource('expresses', 'ExpressController')
+        ->only(['index', 'show']);
+
+    Route::apiResource('free_expresses', 'FreeExpressController')
+        ->only(['show']);
+
+    Route::apiResource('coupons', 'CouponController')
+        ->only(['index', 'show']);
+
     /**
      * 需超级管理员权限
      */
@@ -138,7 +147,8 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:优惠券管理')->group(function () {
-
+        Route::apiResource('coupons', 'CouponController')
+            ->only(['store', 'update', 'destroy']);
     });
 
     Route::middleware('permission:财务管理')->group(function () {
@@ -146,7 +156,11 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:配送管理')->group(function () {
+        Route::apiResource('expresses', 'ExpressController')
+            ->only(['store', 'update', 'destroy']);
 
+        Route::apiResource('free_expresses', 'FreeExpressController')
+            ->only(['update']);
     });
 
     Route::middleware('permission:数据中心')->group(function () {
@@ -155,6 +169,9 @@ Route::namespace('Api')->group(function () {
 
 
     Route::get('/test', function () {
+
+        return isset(request()->is_admin) ? request()->is_admin : 11;
+
         return \Carbon\Carbon::parse(date('Y-m-d H:i:s', '1537654321'));
 
         return \Spatie\Permission\Models\Role::findOrFail(1)

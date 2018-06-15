@@ -32,6 +32,7 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereSummary($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Combination[] $combinations
  */
 class Entity extends Model
 {

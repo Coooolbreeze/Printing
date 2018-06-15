@@ -19,7 +19,7 @@ class PartnerController extends ApiController
 {
     public function index()
     {
-        return $this->success(new PartnerCollection(Partner::paginate(Input::get('limit') ?: 10)));
+        return $this->success(new PartnerCollection(Partner::pagination()));
     }
 
     public function show(Partner $partner)
@@ -38,10 +38,10 @@ class PartnerController extends ApiController
 
     public function update(Request $request, Partner $partner)
     {
-        $partner->update([
-            'image_id' => $request->image_id,
-            'url' => $request->url
-        ]);
+        isset($request->image_id) && $partner->image_id = $request->image_id;
+        isset($request->url) && $partner->url = $request->url;
+        $partner->save();
+
         return $this->message('更新成功');
     }
 

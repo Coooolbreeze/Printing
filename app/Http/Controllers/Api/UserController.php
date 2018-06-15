@@ -20,7 +20,7 @@ class UserController extends ApiController
      */
     public function index()
     {
-        return $this->success(new UserCollection(User::paginate(Input::get('limit') ?: 10)));
+        return $this->success(new UserCollection(User::pagination()));
     }
 
     /**

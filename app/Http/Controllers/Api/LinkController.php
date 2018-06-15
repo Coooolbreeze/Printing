@@ -19,7 +19,7 @@ class LinkController extends ApiController
 {
     public function index()
     {
-        return $this->success(new LinkCollection(Link::paginate(Input::get('limit') ?: 10)));
+        return $this->success(new LinkCollection(Link::pagination()));
     }
 
     public function show(Link $link)
@@ -38,10 +38,10 @@ class LinkController extends ApiController
 
     public function update(Request $request, Link $link)
     {
-        $link->update([
-            'name' => $request->name,
-            'url' => $request->url
-        ]);
+        isset($request->name) && $link->name = $request->name;
+        isset($request->url) && $link->url = $request->url;
+        $link->save();
+
         return $this->message('更新成功');
     }
 

@@ -14,19 +14,15 @@ use App\Http\Resources\HelpCategoryResource;
 use App\Models\HelpCategory;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 
 class HelpCategoryController extends ApiController
 {
     public function index()
     {
-        if (TokenFactory::isAdmin()) {
-            $helps = new HelpCategoryCollection(
-                HelpCategory::paginate(Input::get('limit') ?: 10)
-            );
-        } else {
+        if (TokenFactory::isAdmin())
+            $helps = new HelpCategoryCollection(HelpCategory::pagination());
+        else
             $helps = HelpCategoryResource::collection(HelpCategory::all());
-        }
 
         return $this->success($helps);
     }

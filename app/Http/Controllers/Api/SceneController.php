@@ -21,7 +21,7 @@ class SceneController extends ApiController
 {
     public function index()
     {
-        return $this->success((new SceneCollection(Scene::paginate(Input::get('limit') ?: 10))));
+        return $this->success((new SceneCollection(Scene::pagination())));
     }
 
     public function store(Request $request)
@@ -60,11 +60,11 @@ class SceneController extends ApiController
 
     public function update(Request $request, Scene $scene)
     {
-        $scene->update([
-            'image_id' => $request->image_id,
-            'name' => $request->name,
-            'describe' => $request->describe
-        ]);
+        isset($request->image_id) && $scene->image_id = $request->image_id;
+        isset($request->name) && $scene->name = $request->name;
+        isset($request->describe) && $scene->describe = $request->describe;
+        $scene->save();
+
         return $this->message('更新成功');
     }
 

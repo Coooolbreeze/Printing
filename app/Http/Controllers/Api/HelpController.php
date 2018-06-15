@@ -25,7 +25,7 @@ class HelpController extends ApiController
                 ->when(!TokenFactory::isAdmin(), function ($query) {
                     $query->where('status', '>', 0);
                 })
-                ->paginate(Input::get('limit') ?: 10)
+                ->paginate(Help::getLimit())
         ));
     }
 
@@ -46,7 +46,12 @@ class HelpController extends ApiController
 
     public function update(Request $request, Help $help)
     {
-        $help->update($request->post());
+        isset($request->help_category_id) && $help->help_category_id = $request->help_category_id;
+        isset($request->title) && $help->title = $request->title;
+        isset($request->body) && $help->body = $request->body;
+        isset($request->status) && $help->status = $request->status;
+        $help->save();
+
         return $this->message('更新成功');
     }
 

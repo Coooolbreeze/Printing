@@ -29,7 +29,7 @@ class NewsController extends ApiController
             ->when($request->title, function ($query) use ($request) {
                 $query->where('title', 'like', '%' . $request->title . '%');
             })
-            ->paginate(Input::get('limit' ?: 10));
+            ->paginate(News::getLimit());
 
         return $this->success(new NewsCollection($news));
     }
@@ -53,13 +53,13 @@ class NewsController extends ApiController
 
     public function update(StoreNews $request, News $news)
     {
-        $news->update([
-            'image_id' => $request->image_id,
-            'title' => $request->title,
-            'from' => $request->from,
-            'summary' => interceptHTML($request->body),
-            'body' => $request->body
-        ]);
+        isset($request->image_id) && $news->image_id = $request->image_id;
+        isset($request->title) && $news->title = $request->title;
+        isset($request->from) && $news->from = $request->from;
+        isset($request->summary) && $news->summary = $request->summary;
+        isset($request->body) && $news->body = $request->body;
+        $news->save();
+
         return $this->message('更新成功');
     }
 

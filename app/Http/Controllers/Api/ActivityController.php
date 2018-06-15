@@ -14,13 +14,12 @@ use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 
 class ActivityController extends ApiController
 {
     public function index()
     {
-        return $this->success((new ActivityCollection(Activity::paginate(Input::get('limit') ?: 10))));
+        return $this->success(new ActivityCollection(Activity::pagination()));
     }
 
     public function show(Activity $activity)
@@ -56,13 +55,12 @@ class ActivityController extends ApiController
     public function update(Request $request, Activity $activity)
     {
         \DB::transaction(function () use ($request, $activity) {
-            $activity->update([
-                'image_id' => $request->image_id,
-                'name' => $request->name,
-                'describe' => $request->describe,
-                'finished_at' => Carbon::parse(date('Y-m-d H:i:s', $request->finished_at))
-            ]);
-            $activity->entities()->sync($request->entities);
+            isset($request->image_id) && $activity->image_id = $request->image_id;
+            isset($request->name) && $activity->name = $request->name;
+            isset($request->describe) && $activity->describe = $request->describe;
+            isset($request->finished_at) && $activity->finished_at = Carbon::parse(date('Y-m-d H:i:s', $request->finished_at));
+            isset($request->entities) && $activity->entities()->sync($request->entities);
+            $activity->save();
         });
         return $this->message('更新成功');
     }

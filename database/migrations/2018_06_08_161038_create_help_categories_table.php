@@ -15,7 +15,7 @@ class CreateHelpCategoriesTable extends Migration
     {
         Schema::create('help_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }

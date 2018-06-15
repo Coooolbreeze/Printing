@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             PermissionTablesSeeder::class,
             UsersTableSeeder::class,
             UserAuthsTableSeeder::class,
+            FreeExpressesTableSeeder::class,
             CategoriesTableSeeder::class,
             CommonAttributesTableSeeder::class,
             CommonValuesTableSeeder::class,

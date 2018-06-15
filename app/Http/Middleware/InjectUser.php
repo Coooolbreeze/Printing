@@ -17,8 +17,9 @@ class InjectUser
      */
     public function handle($request, Closure $next)
     {
-        if (request()->header('token') || request()->input('token'))
+        try {
             $request->offsetSet('user', User::findOrFail(TokenFactory::getCurrentUID()));
+        } catch (\Exception $exception) {}
 
         return $next($request);
     }

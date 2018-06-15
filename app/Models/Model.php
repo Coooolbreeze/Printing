@@ -11,6 +11,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -36,5 +37,15 @@ class Model extends EloquentModel
         unset($value);
 
         return $self->insert($data);
+    }
+
+    public static function getLimit($defaultLimit = 15)
+    {
+        return Input::get('limit') ?: $defaultLimit;
+    }
+
+    public static function pagination($defaultLimit = 15)
+    {
+        return (new static())->paginate(self::getLimit($defaultLimit));
     }
 }

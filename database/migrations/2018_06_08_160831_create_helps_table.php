@@ -16,7 +16,7 @@ class CreateHelpsTable extends Migration
         Schema::create('helps', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('help_category_id');
-            $table->string('title');
+            $table->string('title')->unique();
             $table->longText('body');
             $table->tinyInteger('status')->default(0)->comment('0未发布 1已发布');
             $table->timestamps();

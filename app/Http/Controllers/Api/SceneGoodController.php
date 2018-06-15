@@ -16,12 +16,12 @@ class SceneGoodController extends ApiController
 {
     public function update(Request $request, SceneGood $sceneGood)
     {
-        $sceneGood->update([
-            'image_id' => $request->image_id,
-            'name' => $request->name,
-            'describe' => $request->describe,
-            'url' => $request->url
-        ]);
+        isset($request->image_id) && $sceneGood->image_id = $request->image_id;
+        isset($request->name) && $sceneGood->name = $request->name;
+        isset($request->describe) && $sceneGood->describe = $request->describe;
+        isset($request->url) && $sceneGood->url = $request->url;
+        $sceneGood->save();
+
         return $this->message('更新成功');
     }
 

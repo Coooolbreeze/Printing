@@ -30,8 +30,8 @@ class UserResource extends Resource
             'avatar' => $this->avatar,
             'sex' => $this->convertSex($this->sex),
             'account' => $this->account,
-            'phone' => $this->isSelfOrSuper() ? $this->phone : $this->partialHidden($this->phone, 3, 4),
-            'email' => $this->isSelfOrSuper() ? $this->email : $this->partialHidden($this->email, 1, 4),
+            'phone' => $this->isSelfOrAdmin() ? $this->phone : $this->partialHidden($this->phone, 3, 4),
+            'email' => $this->isSelfOrAdmin() ? $this->email : $this->partialHidden($this->email, 1, 4),
             'is_bind_account' => (bool)$this->is_bind_account,
             'is_bind_phone' => (bool)$this->is_bind_phone,
             'is_bind_email' => (bool)$this->is_bind_email,
@@ -80,18 +80,12 @@ class UserResource extends Resource
      * @return bool
      * @throws \Exception
      */
-    public function isSelfOrSuper()
+    public function isSelfOrAdmin()
     {
         try {
-            $uid = TokenFactory::getCurrentUID();
-            $super = TokenFactory::needRole('super');
+            return (TokenFactory::getCurrentUID() == $this->id || TokenFactory::isAdmin());
         } catch (BaseException $e) {
             return false;
         }
-
-        if ($uid == $this->id || $super == true)
-            return true;
-
-        return false;
     }
 }

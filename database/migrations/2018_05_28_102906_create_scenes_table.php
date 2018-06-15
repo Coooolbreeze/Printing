@@ -16,7 +16,7 @@ class CreateScenesTable extends Migration
         Schema::create('scenes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('image_id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->text('describe')->nullable();
             $table->timestamps();
         });
