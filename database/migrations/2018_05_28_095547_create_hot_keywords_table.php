@@ -16,8 +16,8 @@ class CreateHotKeywordsTable extends Migration
         Schema::create('hot_keywords', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
-            $table->string('url');
-            $table->tinyInteger('sort');
+            $table->string('url')->nullable();
+            $table->tinyInteger('sort')->default(0);
             $table->tinyInteger('status')->default(1)->commnet('0未发布 1已发布');
             $table->timestamps();
         });

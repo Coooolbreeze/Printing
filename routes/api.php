@@ -59,8 +59,10 @@ Route::namespace('Api')->group(function () {
 
     Route::apiResource('coupons', 'CouponController')
         ->only(['index', 'show']);
-
     Route::post('/coupons/receive', 'CouponController@receive');
+
+    Route::apiResource('hot_keywords', 'HotKeywordController')
+        ->only(['index']);
 
     /**
      * 需超级管理员权限
@@ -80,7 +82,8 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:搜索管理')->group(function () {
-
+        Route::apiResource('hot_keywords', 'HotKeywordController')
+            ->only(['store', 'update', 'destroy']);
     });
 
     Route::middleware('permission:首页推荐管理')->group(function () {

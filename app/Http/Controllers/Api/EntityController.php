@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Resources\EntityCollection;
 use App\Http\Resources\EntityResource;
 use App\Models\Attribute;
 use App\Models\Combination;
@@ -99,6 +100,17 @@ class EntityController extends ApiController
 
             self::combination($arr, $combination, $value, $num + 1);
         }
+    }
+
+    public function index(Request $request)
+    {
+        return $this->success(new EntityCollection(
+            (new Entity())
+                ->when($request->keyword, function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->keyword . '%');
+                })
+                ->paginate(Entity::getLimit())
+        ));
     }
 
     public function show(Entity $entity)
