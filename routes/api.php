@@ -21,6 +21,8 @@ Route::namespace('Api')->group(function () {
 
     // 获取自己的资料
     Route::get('/users/self', 'UserController@self')->name('users.self');
+    // 获取我的优惠券
+    Route::get('/users/self/coupons', 'UserController@coupons');
 
     Route::apiResource('images', 'ImageController')
         ->only(['store']);
@@ -57,6 +59,8 @@ Route::namespace('Api')->group(function () {
 
     Route::apiResource('coupons', 'CouponController')
         ->only(['index', 'show']);
+
+    Route::post('/coupons/receive', 'CouponController@receive');
 
     /**
      * 需超级管理员权限

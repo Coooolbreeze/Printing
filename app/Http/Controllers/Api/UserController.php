@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Resources\CouponCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserResourceCollection;
+use App\Models\Coupon;
 use App\Models\User;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
@@ -77,5 +79,12 @@ class UserController extends ApiController
     public function self()
     {
         return $this->success(new UserResource(TokenFactory::getCurrentUser()));
+    }
+
+    public function coupons()
+    {
+        return $this->success(
+            new CouponCollection(TokenFactory::getCurrentUser()->coupons()->paginate(Coupon::getLimit()))
+        );
     }
 }

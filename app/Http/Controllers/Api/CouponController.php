@@ -9,10 +9,12 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Exceptions\BaseException;
 use App\Http\Requests\StoreCoupon;
 use App\Http\Resources\CouponCollection;
 use App\Http\Resources\CouponResource;
 use App\Models\Coupon;
+use App\Services\Tokens\TokenFactory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -60,5 +62,20 @@ class CouponController extends ApiController
     {
         $coupon->delete();
         return $this->message('删除成功');
+    }
+
+    public function receive(Request $request)
+    {
+        $id = $request->id;
+        $received = TokenFactory::getCurrentUser()->coupons()->pluck('id')->toArray();
+        $coupon = Coupon::findOrFail($id);
+
+        if (in_array($id, $received)) throw new BaseException('已领取过该优惠券');
+        if ($coupon->received >= $coupon->number) throw new BaseException('该优惠券已被领完');
+
+        TokenFactory::getCurrentUser()->coupons()->attach($id);
+        $coupon->increment('received', 1);
+
+        return $this->message('领取成功');
     }
 }

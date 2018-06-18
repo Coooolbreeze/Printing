@@ -49,10 +49,16 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @property int $is_admin
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereIsAdmin($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Coupon[] $coupons
  */
 class User extends Model
 {
     use HasRoles, SoftDeletes;
 
     protected $dates = ['deleted_at'];
+
+    public function coupons()
+    {
+        return $this->belongsToMany('App\Models\Coupon');
+    }
 }
