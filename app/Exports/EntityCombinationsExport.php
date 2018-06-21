@@ -27,12 +27,16 @@ class EntityCombinationsExport implements FromQuery, WithHeadings, WithMapping
     public function query()
     {
         return Combination::query()->where('entity_id', $this->entityId)
-            ->select('combination');
+            ->select('id', 'combination', 'price', 'weight');
     }
 
     public function map($row): array
     {
-        return explode('|', $row->combination);
+        $arr = explode('|', $row->combination);
+        array_unshift($arr, $row->id);
+        array_push($arr, $row->price);
+        array_push($arr, $row->weight);
+        return $arr;
     }
 
     public function headings(): array
@@ -40,8 +44,9 @@ class EntityCombinationsExport implements FromQuery, WithHeadings, WithMapping
         $attr = Attribute::where('entity_id', $this->entityId)
             ->pluck('name')
             ->toArray();
-        array_push($attr, '价格');
-        array_push($attr, '重量');
+        array_unshift($attr, 'ID');
+        array_push($attr, '价格(元)');
+        array_push($attr, '重量(g)');
         return $attr;
     }
 }

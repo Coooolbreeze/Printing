@@ -14,7 +14,8 @@ class AttributeResource extends Resource
     public function toArray($request)
     {
         return [
-            $this->name => $this->values()->pluck('name')
+            'attribute' => $this->name,
+            'values' => $this->values()->pluck('name')
         ];
     }
 }

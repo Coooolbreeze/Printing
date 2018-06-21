@@ -16,7 +16,7 @@ class EntityCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => EntityResource::collection($this->collection)->hide(['body', 'attributes', 'combinations']),
+            'data' => EntityResource::collection($this->collection)->hide(['body', 'options', 'combinations', 'title', 'describe', 'keywords']),
             'count' => $this->count(),
             'total' => $this->total(),
             'current_page' => $this->currentPage(),

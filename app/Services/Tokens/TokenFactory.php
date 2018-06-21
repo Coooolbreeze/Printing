@@ -362,10 +362,11 @@ class TokenFactory
         return true;
     }
 
-    public static function isAdmin()
+    public static function isAdmin($uid = null)
     {
         try {
-            return TokenFactory::getCurrentUser()->is_admin;
+            if ($uid) return User::find($uid)->is_admin;
+            else return TokenFactory::getCurrentUser()->is_admin;
         } catch (Exception $exception) {
             return false;
         }

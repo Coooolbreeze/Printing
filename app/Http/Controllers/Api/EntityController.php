@@ -41,14 +41,18 @@ class EntityController extends ApiController
      */
     public function store(Request $request)
     {
-        \DB::transaction(function () use ($request) {
+        $entity = null;
+        \DB::transaction(function () use ($request, &$entity) {
             // 创建商品
             $entity = Entity::create([
                 'category_id' => $request->category_id,
                 'name' => $request->name,
                 'summary' => $request->summary,
                 'body' => $request->body,
-                'lead_time' => $request->lead_time
+                'lead_time' => $request->lead_time,
+                'title' => $request->title,
+                'keywords' => $request->keywords,
+                'describe' => $request->describe
             ]);
 
             // 同步商品相册
@@ -85,7 +89,7 @@ class EntityController extends ApiController
             Combination::saveAll($combinations);
         });
 
-        return $this->created();
+        return $this->success(['id' => $entity->id]);
     }
 
     public static function combination($arr, &$combination, $str = '', $num = 0)
@@ -107,7 +111,8 @@ class EntityController extends ApiController
         return $this->success(new EntityCollection(
             (new Entity())
                 ->when($request->keyword, function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->keyword . '%');
+                    $query->where('name', 'like', '%' . $request->keyword . '%')
+                        ->orWhere('keywords', 'like', '%' . $request->keyword . '%');
                 })
                 ->paginate(Entity::getLimit())
         ));
@@ -116,5 +121,21 @@ class EntityController extends ApiController
     public function show(Entity $entity)
     {
         return $this->success(new EntityResource($entity));
+    }
+
+    public function update(Request $request, Entity $entity)
+    {
+        isset($request->category_id) && $entity->category_id = $request->category_id;
+        isset($request->name) && $entity->name = $request->name;
+        isset($request->summary) && $entity->summary = $request->summary;
+        isset($request->body) && $entity->body = $request->body;
+        isset($request->lead_time) && $entity->lead_time = $request->lead_time;
+        isset($request->title) && $entity->title = $request->title;
+        isset($request->keywords) && $entity->keywords = $request->keywords;
+        isset($request->describe) && $entity->describe = $request->describe;
+        isset($request->images) && $entity->images()->sync($request->images);
+        $entity->save();
+
+        return $this->message('更新成功');
     }
 }

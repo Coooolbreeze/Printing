@@ -64,6 +64,9 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('hot_keywords', 'HotKeywordController')
         ->only(['index']);
 
+    Route::apiResource('combinations', 'CombinationController')
+        ->only(['index']);
+
     /**
      * 需超级管理员权限
      */
@@ -134,7 +137,16 @@ Route::namespace('Api')->group(function () {
     Route::middleware('permission:商品管理')->group(function () {
         // 商品
         Route::apiResource('entities', 'EntityController')
-            ->only(['store']);
+            ->only(['store', 'update']);
+
+        // 修改组合价格
+        Route::apiResource('combinations', 'CombinationController')
+            ->only(['update']);
+
+        // 导出组合
+        Route::get('combinations/export', 'CombinationController@export');
+        // 导入组合
+        Route::post('combinations/import', 'CombinationController@import');
     });
 
     Route::middleware('permission:订单管理')->group(function () {

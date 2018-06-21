@@ -9,6 +9,7 @@
 namespace App\Services\Tokens;
 
 use App\Exceptions\ServerException;
+use App\Exceptions\UserNotFoundException;
 use App\Models\Token as TokenModel;
 use App\Models\UserAuth;
 use Cache;
@@ -72,10 +73,14 @@ abstract class BaseToken
      *
      * @return array
      * @throws ServerException
+     * @throws UserNotFoundException
      */
     public function get()
     {
         $identity = $this->identity();
+
+        if (request()->is_admin != TokenFactory::isAdmin($identity->user_id))
+            throw new UserNotFoundException();
 
         $cacheValues = $this->needSaveValues($identity);
 

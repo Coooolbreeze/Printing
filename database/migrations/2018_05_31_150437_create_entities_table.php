@@ -20,6 +20,9 @@ class CreateEntitiesTable extends Migration
             $table->string('summary');
             $table->longText('body');
             $table->tinyInteger('lead_time');
+            $table->string('title');
+            $table->string('keywords');
+            $table->string('describe');
             $table->timestamps();
         });
     }

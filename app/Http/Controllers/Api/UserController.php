@@ -6,19 +6,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\CouponCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
-use App\Http\Resources\UserResourceCollection;
 use App\Models\Coupon;
 use App\Models\User;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 
 class UserController extends ApiController
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @SWG\GET(
+     *     path="/users",
+     *     tags={"users"},
+     *     summary="获取用户列表",
+     *     @SWG\Response(
+     *         response=200,
+     *         description="successful"
+     *     ),
+     * )
      */
     public function index()
     {

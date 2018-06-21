@@ -12,16 +12,16 @@ class ImagesTableSeeder extends Seeder
     public function run()
     {
         \App\Models\Image::saveAll([
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
-            ['src' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
+            ['src' => 'images/7gAHc2nX9sVng6jYCN3rdvqv8xsVmfW3uZVPhVbe.jpeg'],
         ]);
     }
 }

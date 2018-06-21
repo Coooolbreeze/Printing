@@ -1,0 +1,29 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "\u6613\u7279\u5370\u5546\u57ceAPI",
+        "version": "1.0.0"
+    },
+    "host": "http://printing.test",
+    "basePath": "/api",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "paths": {
+        "/users": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "\u83b7\u53d6\u7528\u6237\u5217\u8868",
+                "responses": {
+                    "200": {
+                        "description": "successful"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {}
+}

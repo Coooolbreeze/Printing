@@ -33,6 +33,12 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereSummary($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereUpdatedAt($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Combination[] $combinations
+ * @property string $title
+ * @property string $keywords
+ * @property string $describe
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereDescribe($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereTitle($value)
  */
 class Entity extends Model
 {
