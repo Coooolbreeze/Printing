@@ -64,6 +64,14 @@ class CouponController extends ApiController
         return $this->message('删除成功');
     }
 
+    /**
+     * 领取优惠券
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws BaseException
+     * @throws \App\Exceptions\TokenException
+     */
     public function receive(Request $request)
     {
         $id = $request->id;

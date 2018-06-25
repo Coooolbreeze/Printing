@@ -19,10 +19,8 @@ Route::namespace('Api')->group(function () {
     // 刷新token
     Route::post('/refresh', 'TokenController@refresh')->name('tokens.refresh');
 
-    // 获取自己的资料
-    Route::get('/users/self', 'UserController@self')->name('users.self');
-    // 获取我的优惠券
-    Route::get('/users/self/coupons', 'UserController@coupons');
+    // 发送短信
+    Route::post('/sms', 'SmsController@sendSms')->middleware('throttle:2,1');
 
     Route::apiResource('images', 'ImageController')
         ->only(['store']);
@@ -59,13 +57,24 @@ Route::namespace('Api')->group(function () {
 
     Route::apiResource('coupons', 'CouponController')
         ->only(['index', 'show']);
-    Route::post('/coupons/receive', 'CouponController@receive');
 
     Route::apiResource('hot_keywords', 'HotKeywordController')
         ->only(['index']);
 
     Route::apiResource('combinations', 'CombinationController')
         ->only(['index']);
+
+    /**
+     * 需登录后访问
+     */
+    Route::middleware('token')->group(function () {
+        // 获取自己的资料
+        Route::get('/users/self', 'UserController@self')->name('users.self');
+        // 获取我的优惠券
+        Route::get('/users/self/coupons', 'UserController@coupons');
+        // 领取优惠券
+        Route::post('/coupons/receive', 'CouponController@receive');
+    });
 
     /**
      * 需超级管理员权限
@@ -188,6 +197,16 @@ Route::namespace('Api')->group(function () {
 
 
     Route::get('/test', function () {
+        Cache::forget(Cache::pull('haha'));
+
+//        Cache::add('haha', '123', 10);
+        return Cache::get('haha');
+
+        return 111;
+
+        return [
+            'data' => \App\Services\SMS::sendSms('18656986662', '158960')
+        ];
 
         return isset(request()->is_admin) ? request()->is_admin : 11;
 

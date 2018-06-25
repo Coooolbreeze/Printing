@@ -22,7 +22,7 @@ class VerificationCode
      * @param int $minutes
      * @return array
      */
-    public static function create($contact, $length = 6, $minutes = 10)
+    public static function create($contact, $length = 6, $minutes = 5)
     {
         $code = getRandChar($length, true);
 
@@ -53,6 +53,8 @@ class VerificationCode
 
         if (!$cacheValues) throw new VerificationCodeException('验证码已过期');
         if ($code != $cacheValues['code']) throw new VerificationCodeException();
+
+        Cache::forget($verificationToken);
 
         return $cacheValues['contact'];
     }

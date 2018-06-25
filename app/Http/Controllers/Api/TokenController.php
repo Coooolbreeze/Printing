@@ -50,6 +50,7 @@ class TokenController extends ApiController
      * 刷新token令牌
      *
      * @return mixed
+     * @throws UserNotFoundException
      * @throws \App\Exceptions\ServerException
      */
     public function refresh()

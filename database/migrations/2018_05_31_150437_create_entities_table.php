@@ -23,6 +23,7 @@ class CreateEntitiesTable extends Migration
             $table->string('title');
             $table->string('keywords');
             $table->string('describe');
+            $table->integer('sales')->default(0);
             $table->timestamps();
         });
     }
