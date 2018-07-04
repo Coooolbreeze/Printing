@@ -1,0 +1,97 @@
+<div class="layui-main" style="display:flex;justify-content:flex-end">
+    <div style="display:flex;margin:5px 0 0">
+        <div style="display:flex;margin-right: 10px">
+            <select name="searchType" id="searchType" style="width: 130px;">
+                <option value="序列号">订单编号</option>
+            </select>
+            <input id="searchInput" type="text" class="layui-input">
+            <button id="search" class="layui-btn">搜索</button>
+        </div>
+
+        <select name="status" id="status" style="margin-right: 10px">
+            <option value="">订单状态</option>
+            <option value="1">待发货</option>
+            <option value="2">已发货</option>
+        </select>
+
+        <!-- <select name="type" id="type">
+            <option value="">设备类型</option>
+        </select> -->
+    </div>
+</div>
+<div class="layui-main">
+    <table id="demo" lay-filter="demo"></table>
+</div>
+
+<script>
+    var base = window.base;
+    base.getLocalStorage('token') || (window.location.href = 'login.html');
+
+    layui.use(['table', 'form'], function () {
+        var table = layui.table,
+            form = layui.form;
+
+        var selectValue = {
+            order_no: '',
+            status: '',
+            date: ''
+        };
+
+        var tableIns = table.render({
+            id: 'idTest',
+            elem: '#demo',
+            page: true,
+            limits: [15, 20, 30, 45, 60],
+            limit: 20,
+            url: base.g_restUrl + '/equipment_orders',
+            where: selectValue,
+            headers: { token: base.getLocalStorage('token') },
+            cols: [[
+                { field: 'id', title: 'ID', align: 'center' },
+                { field: 'order_no', title: '订单编号', align: 'center', event: 'detail', templet: '<div><a style="color:#4bb2ff;cursor:pointer">{{d.order_no}}</a></div>' },
+                { field: 'status', title: '订单状态', align: 'center' },
+                { field: 'order_type', title: '订单类型', align: 'center' },
+                { field: 'user', title: '购买用户', align: 'center', templet: '<div>{{d.user.nickname}}</div>' },
+                { field: 'phone', title: '联系电话', align: 'center', templet: '<div>{{d.address.phone}}</div>' },
+                { field: 'price', title: '订单金额', align: 'center' },
+                { field: 'created_at', title: '创建时间', align: 'center' }
+            ]],
+            done: function (res, curr, count) {
+
+            }
+        });
+
+        //监听工具条
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.open({
+                    type: 2,
+                    area: ['70%', '100%'],
+                    fixed: true,
+                    maxmin: true,
+                    content: 'order-edit.html?id=' + data.id
+                });
+            }
+        });
+
+        $('#type').on('change', function () {
+            selectValue.category_id = $(this).val()
+            tableIns.reload({ page: { curr: 1 } })
+        })
+
+        $('#status').on('change', function () {
+            selectValue.status = $(this).val()
+            tableIns.reload({ page: { curr: 1 } })
+        })
+
+        $('#search').on('click', function () {
+            selectValue.order_no = $('#searchInput').val()
+            tableIns.reload({ page: { curr: 1 } })
+        })
+
+        $('#export').on('click', function () {
+            window.location.href = base.g_restUrl + '/equipment/export?token=' + base.getLocalStorage('token')
+        })
+    });
+</script>

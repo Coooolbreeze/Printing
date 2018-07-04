@@ -39,6 +39,10 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereDescribe($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereKeywords($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereTitle($value)
+ * @property int $custom_number 0不允许自定义 1单人数量 2多人数量
+ * @property int $sales
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereCustomNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereSales($value)
  */
 class Entity extends Model
 {
@@ -50,6 +54,11 @@ class Entity extends Model
     public function attributes()
     {
         return $this->hasMany('App\Models\Attribute');
+    }
+
+    public function customAttributes()
+    {
+        return $this->hasMany('App\Models\CustomAttribute');
     }
 
     public function images()

@@ -1,0 +1,86 @@
+<div class="layui-main" style="display:flex;justify-content:flex-end">
+    <div style="display:flex;margin:5px 0 0">
+        <select name="searchType" id="searchType" style="width: 130px;">
+            <option value="昵称">昵称</option>
+            <option value="姓名">姓名</option>
+            <option value="手机号">手机号</option>
+        </select>
+        <input id="searchInput" type="text" class="layui-input">
+        <button id="search" class="layui-btn">搜索</button>
+    </div>
+</div>
+<div class="layui-main">
+    <table id="demo" lay-filter="demo"></table>
+</div>
+
+<script>
+    var base = window.base;
+    base.getLocalStorage('token') || (window.location.href = 'login.html');
+
+    layui.use(['table', 'form'], function () {
+        var table = layui.table,
+            form = layui.form;
+
+        var selectValue = {
+            nickname: '',
+            name: '',
+            phone: ''
+        }
+
+        var tableIns = table.render({
+            id: 'idTest',
+            elem: '#demo',
+            page: true,
+            limits: [15, 20, 30, 45, 60],
+            limit: 20,
+            url: base.g_restUrl + '/users',
+            headers: { token: base.getLocalStorage('token') },
+            where: selectValue,
+            cols: [[
+                { field: 'id', title: 'ID', align: 'center' },
+                { field: 'nickname', title: '昵称', align: 'center', event: 'detail', templet: '<div><a style="color:#4bb2ff;cursor:pointer">{{d.nickname}}</a></div>' },
+                { field: 'name', title: '姓名', align: 'center' },
+                { field: 'phone', title: '手机', align: 'center' },
+                { field: 'order_count', title: '订单累计', align: 'center' },
+                { field: 'asset', title: '可用社工券', align: 'center' },
+                { field: 'disabled', title: '冻结社工券', align: 'center' }
+            ]],
+            done: function (res, curr, count) {
+                console.log(res)
+            }
+        });
+
+        $('#search').on('click', function () {
+            var searchType = $('#searchType').val()
+            var searchValue = $('#searchInput').val()
+            if (searchType === '昵称') {
+                selectValue.nickname = searchValue
+                selectValue.name = ''
+                selectValue.phone = ''
+            } else if (searchType === '姓名') {
+                selectValue.nickname = ''
+                selectValue.name = searchValue
+                selectValue.phone = ''
+            } else if (searchType === '手机号') {
+                selectValue.nickname = ''
+                selectValue.name = ''
+                selectValue.phone = searchValue
+            }
+            tableIns.reload({ page: { curr: 1 } })
+        })
+
+        //监听工具条
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.open({
+                    type: 2,
+                    area: ['70%', '100%'],
+                    fixed: true,
+                    maxmin: true,
+                    content: 'member-edit.html?id=' + data.id
+                });
+            }
+        });
+    });
+</script>

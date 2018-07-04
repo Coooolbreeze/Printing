@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>会员详情</title>
+    <link rel="stylesheet" href="./lib/layui-v2.3.0/css/layui.css">
+</head>
+
+<body style="padding:10px 50px">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>会员详情</legend>
+    </fieldset>
+
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">基础信息</li>
+            <li>积分信息</li>
+            <li>设备信息</li>
+            <li>检测信息</li>
+            <li>服务信息</li>
+            <li>好友信息</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form layui-form-pane" action="javascript:;">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">微信昵称</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="nickname" class="layui-input" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="name" class="layui-input" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">性别</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="sex" class="layui-input" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">绑定手机</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="phone" class="layui-input" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">订单累计</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="orderCount" class="layui-input" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">可用社工券</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="asset" class="layui-input" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">冻结社工券</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="disabled" class="layui-input" disabled>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="layui-tab-item">
+                积分信息
+            </div>
+            <div class="layui-tab-item">
+                <table class="layui-table">
+                    <thead>
+                        <tr>
+                            <th>设备名称</th>
+                            <th>设备序列号</th>
+                            <th>绑定用户</th>
+                            <th>绑定时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipment">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-tab-item">
+                <table class="layui-table">
+                    <thead>
+                        <tr>
+                            <th>服务名称</th>
+                            <th>金额</th>
+                            <th>检测人</th>
+                            <th>被检测人</th>
+                            <th>检测结果</th>
+                            <th>检测时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="checks">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-tab-item">
+                <table class="layui-table">
+                    <thead>
+                        <tr>
+                            <th>服务名称</th>
+                            <th>金额</th>
+                            <th>检测人</th>
+                            <th>被检测人</th>
+                            <th>检测结果</th>
+                            <th>检测时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="services">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-tab-item">
+                <table class="layui-table">
+                    <thead>
+                        <tr>
+                            <th>好友信息</th>
+                            <th>手机号码</th>
+                            <th>好友等级</th>
+                            <th>注册时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="friends">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="./js/jquery-3.3.1.min.js"></script>
+<script src="./lib/layui-v2.3.0/layui.js"></script>
+<script src="./js/common.js"></script>
+<script src="./lib/regexp/regexp.js"></script>
+<script>
+    var base = window.base;
+    base.getLocalStorage('token') || (window.location.href = 'login.html');
+
+    layui.use(['element', 'layer', 'form', 'layedit', 'laydate', 'upload'], function () {
+        var element = layui.element,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            form = layui.form;
+
+        var id = base.getQueryString('id');
+
+        paddingData();
+
+        function paddingData(callback) {
+            getByID(function (res) {
+                $('#nickname').val(res.nickname);
+                $('#name').val(res.name);
+                $('#sex').val(res.sex);
+                $('#phone').val(res.phone);
+                $('#orderCount').val(res.order_count);
+                $('#asset').val(res.asset);
+                $('#disabled').val(res.disabled);
+
+                var checks = '';
+                for (var i in res.checks) {
+                    checks += `
+                        <tr>
+                            <td>${res.checks[i].service.name}</td>
+                            <td>${res.checks[i].price}</td>
+                            <td>${res.checks[i].inspector.nickname}</td>
+                            <td>${res.checks[i].user.nickname}</td>
+                            <td>${res.checks[i].detection_result}</td>
+                            <td>${res.checks[i].created_at}</td>
+                        </tr>
+                    `;
+                }
+                $('#checks').html(checks);
+
+                var services = '';
+                for (var i in res.services) {
+                    services += `
+                        <tr>
+                            <td>${res.services[i].service.name}</td>
+                            <td>${res.services[i].price}</td>
+                            <td>${res.services[i].inspector.nickname}</td>
+                            <td>${res.services[i].user.nickname}</td>
+                            <td>${res.services[i].detection_result}</td>
+                            <td>${res.services[i].created_at}</td>
+                        </tr>
+                    `;
+                }
+                $('#services').html(services);
+
+                var equipment = '';
+                for (var i in res.equipment) {
+                    equipment += `
+                        <tr>
+                            <td>${res.equipment[i].category}</td>
+                            <td>${res.equipment[i].serial_no}</td>
+                            <td>${res.equipment[i].user.nickname}</td>
+                            <td>${res.equipment[i].updated_at}</td>
+                        </tr>
+                    `;
+                }
+                $('#equipment').html(equipment);
+
+                var friends = '';
+                for (var i in res.friends) {
+                    friends += `
+                        <tr>
+                            <td>${res.friends[i].nickname}</td>
+                            <td>${res.friends[i].phone}</td>
+                            <td>${res.friends[i].level}级</td>
+                            <td>${res.friends[i].created_at}</td>
+                        </tr>
+                    `;
+                }
+                $('#friends').html(friends);
+            });
+        }
+
+        function getByID(callback) {
+            var params = {
+                url: '/users/' + id,
+                tokenFlag: true,
+                success: function (res) {
+                    callback && callback(res.data);
+                }
+            }
+            base.getData(params);
+        }
+    });
+</script>
+
+</html>

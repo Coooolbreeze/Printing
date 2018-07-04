@@ -27,10 +27,12 @@ class EntityResource extends Resource
             'summary' => $this->summary,
             'body' => $this->body,
             'lead_time' => $this->lead_time,
+            'custom_number' => $this->custom_number,
             'title' => $this->title,
             'keywords' => $this->keywords,
             'describe' => $this->describe,
-            'options' => AttributeResource::collection($this->attributes),
+            'specs' => AttributeResource::collection($this->attributes),
+            'custom_specs' => CustomAttributeResource::collection($this->customAttributes),
             'combinations' => CombinationResource::collection($this->combinations),
             'created_at' => (string)$this->created_at
         ]);

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>订单详情</title>
+    <link rel="stylesheet" href="./lib/layui-v2.3.0/css/layui.css">
+</head>
+
+<body style="padding:10px 50px">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>基本信息</legend>
+    </fieldset>
+    <form class="layui-form layui-form-pane" action="javascript:;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单编号</label>
+            <div class="layui-input-block">
+                <input type="text" id="orderNo" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">下单时间</label>
+            <div class="layui-input-block">
+                <input type="text" id="createdAt" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">购买用户</label>
+            <div class="layui-input-block">
+                <input type="text" id="buyUser" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付方式</label>
+            <div class="layui-input-block">
+                <input type="text" id="payType" class="layui-input" disabled>
+            </div>
+        </div>
+    </form>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>收货信息</legend>
+    </fieldset>
+    <form class="layui-form layui-form-pane" action="javascript:;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">收货人</label>
+            <div class="layui-input-block">
+                <input type="text" id="name" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">联系电话</label>
+            <div class="layui-input-block">
+                <input type="text" id="phone" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">收货地址</label>
+            <div class="layui-input-block">
+                <input type="text" id="address" class="layui-input" disabled>
+            </div>
+        </div>
+    </form>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>商品信息</legend>
+    </fieldset>
+    <form class="layui-form layui-form-pane" action="javascript:;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">应付金额</label>
+            <div class="layui-input-block">
+                <input type="text" id="need" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">实付金额</label>
+            <div class="layui-input-block">
+                <input type="text" id="actual" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">众筹金额</label>
+            <div class="layui-input-block">
+                <input type="text" id="public" class="layui-input" disabled>
+            </div>
+        </div>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>商品名称</th>
+                    <th>商品价格</th>
+                </tr>
+            </thead>
+            <tbody id="products">
+
+            </tbody>
+        </table>
+        <div class="layui-form-item" id="sendSerialNo">
+            <label class="layui-form-label">发货序列号</label>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">发货单号</label>
+            <div class="layui-input-block">
+                <input type="text" id="sendCourierNo" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn" lay-submit="" lay-filter="sure" id="sure">发货</button>
+        </div>
+    </form>
+</body>
+
+<script src="./js/jquery-3.3.1.min.js"></script>
+<script src="./lib/layui-v2.3.0/layui.js"></script>
+<script src="./js/common.js"></script>
+<script src="./lib/regexp/regexp.js"></script>
+<script>
+    var base = window.base;
+    base.getLocalStorage('token') || (window.location.href = 'login.html');
+
+    layui.use(['element', 'layer', 'form', 'layedit', 'laydate', 'upload'], function () {
+        var element = layui.element,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            form = layui.form;
+
+        var id = base.getQueryString('id');
+
+        var data = {
+            serial_no: [],
+            courier_no: ''
+        }
+
+        paddingData();
+
+        function paddingData(callback) {
+            getByID(function (res) {
+                $('#orderNo').val(res.order_no);
+                $('#createdAt').val(res.created_at);
+                $('#buyUser').val(res.user.nickname);
+                $('#payType').val(res.type);
+                $('#name').val(res.address.name);
+                $('#phone').val(res.address.phone);
+                $('#address').val(`${res.address.province},${res.address.city},${res.address.area},${res.address.detail}`);
+                $('#need').val(res.price);
+                $('#actual').val(res.type == '众筹' ? res.price - res.raise : res.price);
+                $('#public').val(res.raise);
+
+                var products = res.products;
+                var serialNo = JSON.parse(res.serial_no);
+
+                var html = '';
+                var input = '';
+                for (var i in products) {
+                    html += `
+                        <tr>
+                            <td>${products[i].name}</td>
+                            <td>${products[i].price}</td>
+                        </tr>
+                    `;
+
+                    if (res.status == '已发货') {
+                        input += `
+                            <div class="layui-input-block">
+                                <input type="text" value="${serialNo[i]}" class="layui-input sendSerialNo" disabled>
+                            </div>
+                        `;
+                    } else {
+                        input += `
+                            <div class="layui-input-block">
+                                <input type="text" class="layui-input sendSerialNo">
+                            </div>
+                        `;
+                    }
+                }
+                $('#products').html(html)
+                $('#sendSerialNo').append(input)
+
+                if (res.status == '已发货') {
+                    $('#sendCourierNo').val(res.courier_no)
+                    $('#sendCourierNo').attr('disabled', true)
+
+                    $('#sure').hide()
+                }
+            });
+        }
+
+        form.on('submit(sure)', function () {
+            getFormData();
+
+            update(function (res) {
+                parent.window.base.loadLocalHtml('order.html', '.layui-body');
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+            })
+        });
+
+        function getFormData() {
+            $('.sendSerialNo').each(function (index, element) {
+                if (!element.value)
+                    error('请输入序列号')
+                data.serial_no.push(element.value)
+            })
+
+            data.courier_no = $('#sendCourierNo').val();
+            if (!data.courier_no)
+                error('请输入发货单号')
+        }
+
+        function error(text, element) {
+            if (element) {
+                $(element).focus();
+                $(element).addClass('layui-form-danger');
+                $(element).on('input', function () {
+                    $(element).removeClass('layui-form-danger');
+                });
+            }
+            layer.msg(text, { icon: 5, anim: 6 });
+            throw (text);
+        }
+
+        function getByID(callback) {
+            var params = {
+                url: '/equipment_orders/' + id,
+                tokenFlag: true,
+                success: function (res) {
+                    callback && callback(res.data);
+                }
+            }
+            base.getData(params);
+        }
+
+        function update(callback) {
+            var params = {
+                url: '/equipment_orders/' + id,
+                type: 'PUT',
+                data: data,
+                tokenFlag: true,
+                success: function (res) {
+                    callback && callback(res)
+                }
+            }
+            base.getData(params)
+        }
+    });
+</script>
+
+</html>

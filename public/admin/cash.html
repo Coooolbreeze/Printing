@@ -1,0 +1,133 @@
+<div class="layui-main" style="display:flex;justify-content:space-between">
+  <div style="display: flex;margin: 5px 0 0">
+    <button id="export" class="layui-btn">导出</button>
+  </div>
+
+  <div style="display:flex;margin:5px 0 0">
+    <div style="display: flex; margin-right: 10px">
+      <select name="searchType" id="searchType" style="width: 130px">
+        <option value="昵称">昵称</option>
+      </select>
+      <input id="searchInput" type="text" class="layui-input">
+      <button id="search" class="layui-btn">搜索</button>
+    </div>
+
+    <select name="status" id="status">
+      <option value="">操作状态</option>
+      <option value="1">处理中</option>
+      <option value="2">已通过</option>
+      <option value="3">已拒绝</option>
+    </select>
+  </div>
+</div>
+<div class="layui-main">
+  <table id="demo" lay-filter="demo"></table>
+</div>
+
+<script type="text/html" id="barDemo">
+  {{#  if(d.status == "处理中"){ }}
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="adopt">通过</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="refuse">拒绝</a>
+  {{#  } else { }}
+    {{d.status}}
+  {{#  } }}
+</script>
+
+<script>
+  var base = window.base;
+  base.getLocalStorage('token') || (window.location.href = 'login.html');
+
+  layui.use(['table', 'form', 'upload'], function () {
+    var table = layui.table,
+      form = layui.form,
+      upload = layui.upload;
+
+    var selectValue = {
+      status: '',
+      nickname: ''
+    }
+
+    var tableIns = table.render({
+      id: 'idTest',
+      elem: '#demo',
+      page: true,
+      limits: [15, 20, 30, 45, 60],
+      limit: 20,
+      url: base.g_restUrl + '/cashes',
+      headers: { token: base.getLocalStorage('token') },
+      where: selectValue,
+      cols: [[
+        { field: 'id', title: 'ID', align: 'center' },
+        { field: 'name', title: '姓名', align: 'center', event: 'detail', templet: '<div><a  style="color:#4bb2ff;cursor:pointer">{{d.user.nickname}}</a></div>' },
+        { field: 'phone', title: '手机', align: 'center', templet: '<div>{{d.user.phone}}<div>' },
+        { field: 'number', title: '申请金额', align: 'center' },
+        { field: 'tax', title: '代缴个税', align: 'center' },
+        { field: 'actual', title: '实到金额', align: 'center' },
+        { field: 'created_at', title: '创建时间', align: 'center' },
+        { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'right' }
+      ]],
+      done: function (res, curr, count) {
+
+      }
+    });
+
+    //监听工具条
+    table.on('tool(demo)', function (obj) {
+      var data = obj.data;
+      if (obj.event === 'detail') {
+        layer.open({
+          type: 2,
+          area: ['70%', '100%'],
+          fixed: true,
+          maxmin: true,
+          content: 'member-edit.html?id=' + data.user.id
+        });
+      } else if (obj.event === 'adopt') {
+        layer.confirm('确定通过吗？', function (index) {
+          update(data.id, 2, function (res) {
+            tableIns.reload();
+          });
+          layer.close(index);
+        });
+      } else if (obj.event === 'refuse') {
+        layer.confirm('确定拒绝吗？', function (index) {
+          update(data.id, 3, function (res) {
+            tableIns.reload();
+          });
+          layer.close(index);
+        });
+      }
+    });
+
+    $('#status').on('change', function () {
+      selectValue.status = $(this).val()
+      tableIns.reload({ page: { curr: 1 } })
+    })
+
+    $('#search').on('click', function () {
+      var searchType = $('#searchType').val()
+      var searchValue = $('#searchInput').val()
+      if (searchType === '昵称') {
+        selectValue.nickname = searchValue
+      }
+      tableIns.reload({ page: { curr: 1 } })
+    })
+
+    $('#export').on('click', function () {
+      window.location.href = base.g_restUrl + '/cashes/export?token=' + base.getLocalStorage('token')
+    })
+
+    function update(id, status, callback) {
+      var params = {
+        url: '/cashes/' + id,
+        type: 'PUT',
+        tokenFlag: true,
+        data: { status: status },
+        success: function (res) {
+          callback && callback(res.message);
+        }
+      }
+      base.getData(params);
+    }
+  });
+</script>

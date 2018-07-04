@@ -1,0 +1,178 @@
+<div class="layui-main" style="display:flex;justify-content:space-between">
+  <div style="display:flex;margin:5px 0 0">
+    <button id="add" class="layui-btn">创建设备</button>
+    <!-- <button id="export" class="layui-btn">导出</button> -->
+  </div>
+  <div style="display:flex;margin:5px 0 0">
+    <div style="display:flex;margin-right: 10px">
+      <select name="searchType" id="searchType" style="width: 130px;">
+        <option value="序列号">序列号</option>
+        <option value="绑定手机">绑定手机</option>
+      </select>
+      <input id="searchInput" type="text" class="layui-input">
+      <button id="search" class="layui-btn">搜索</button>
+    </div>
+
+    <select name="status" id="status" style="margin-right: 10px">
+      <option value="">绑定状态</option>
+      <option value="0">未绑定</option>
+      <option value="1">已绑定</option>
+    </select>
+
+    <select name="type" id="type">
+      <option value="">设备类型</option>
+    </select>
+  </div>
+</div>
+<div class="layui-main">
+  <table id="demo" lay-filter="demo"></table>
+</div>
+
+<script type="text/html" id="barDemo">
+        <a class="layui-btn {{d.status == '未绑定' ? 'layui-btn-disabled' : 'layui-btn-warm'}} layui-btn-xs" lay-event="unbind">解绑</a>
+        <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a> -->
+    </script>
+
+<script>
+  var base = window.base;
+  base.getLocalStorage('token') || (window.location.href = 'login.html');
+
+  layui.use(['table', 'form'], function () {
+    var table = layui.table,
+      form = layui.form;
+
+    var selectValue = {
+      serial_no: '',
+      phone: '',
+      status: '',
+      category: ''
+    };
+
+    var tableIns = table.render({
+      id: 'idTest',
+      elem: '#demo',
+      page: true,
+      limits: [15, 20, 30, 45, 60],
+      limit: 20,
+      url: base.g_restUrl + '/equipment',
+      where: selectValue,
+      headers: { token: base.getLocalStorage('token') },
+      cols: [[
+        { field: 'id', title: 'ID', align: 'center' },
+        { field: 'serial_no', title: '序列号', align: 'center' },
+        { field: 'category', title: '类型', align: 'center' },
+        { field: 'user', title: '绑定会员', align: 'center', templet: '<div>{{d.user.nickname ? d.user.nickname : d.user}}</div>' },
+        { field: 'status', title: '状态', align: 'center' },
+        { field: 'price', title: '价格', align: 'center' },
+        { field: 'updated_at', title: '绑定时间', align: 'center' },
+        { field: 'created_at', title: '创建时间', align: 'center' },
+        { title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'right' }
+      ]],
+      done: function (res, curr, count) {
+
+      }
+    });
+
+    //监听工具条
+    table.on('tool(demo)', function (obj) {
+      var data = obj.data;
+      if (data.status === '未绑定') return
+      if (obj.event === 'unbind') {
+        layer.confirm('确定解绑?', function (index) {
+          unbind(data.serial_no, function (res) {
+            layer.msg('解绑成功')
+            layer.close(index)
+            tableIns.reload()
+          })
+        });
+      } else if (obj.event === 'del') {
+        layer.confirm('确定删除该课程？', function (index) {
+          del(data.id, function (res) {
+            obj.del();
+            layer.msg('删除成功');
+          });
+          layer.close(index);
+        });
+      }
+    });
+
+    getCategories(function (res) {
+      var html = '';
+      for (var i in res) {
+        html += `<option value="${res[i].id}">${res[i].name}</option>`
+      }
+      $('#type').append(html)
+    });
+
+    $('#add').on('click', function () {
+      layer.open({
+        type: 2,
+        area: ['40%', '50%'],
+        fixed: true,
+        maxmin: true,
+        content: 'equipment-edit.html'
+      });
+    });
+
+    $('#type').on('change', function () {
+      selectValue.category_id = $(this).val()
+      tableIns.reload({ page: { curr: 1 } })
+    })
+
+    $('#status').on('change', function () {
+      selectValue.status = $(this).val()
+      tableIns.reload({ page: { curr: 1 } })
+    })
+
+    $('#search').on('click', function () {
+      if ($('#searchType').val() == '序列号') {
+        selectValue.serial_no = $('#searchInput').val()
+        selectValue.phone = ''
+      } else {
+        selectValue.phone = $('#searchInput').val()
+        selectValue.serial_no = ''
+      }
+      tableIns.reload({ page: { curr: 1 } })
+    })
+
+    $('#export').on('click', function () {
+      window.location.href = base.g_restUrl + '/equipment/export?token=' + base.getLocalStorage('token')
+    })
+
+    function unbind(serial_no, callback) {
+      var params = {
+        url: '/equipment/unbind',
+        type: 'PUT',
+        tokenFlag: true,
+        data: { serial_no: serial_no },
+        success: function (res) {
+          callback && callback(res)
+        }
+      }
+      base.getData(params)
+    }
+
+    function del(id, callback) {
+      var params = {
+        url: '/courses/' + id,
+        type: 'DELETE',
+        tokenFlag: true,
+        success: function (res) {
+          callback && callback(res.message);
+        }
+      }
+      base.getData(params);
+    }
+
+    function getCategories(callack) {
+      var params = {
+        url: '/equipment_categories',
+        tokenFlag: true,
+        success: function (res) {
+          callack && callack(res.data)
+        }
+      }
+      base.getData(params)
+    }
+  });
+</script>
