@@ -24,19 +24,6 @@ class EntityController extends ApiController
     /**
      * 添加商品
      *
-     *{
-     *  category_id: 1,
-     *  name: '名称',
-     *  summary: '描述',
-     *  body: '详情',
-     *  lead_time: '出货周期',
-     *  images: [id1,id2],
-     *  specs: {
-     *    'attr1': [value1, value2],
-     *    'attr2': [value3, value4]
-     *  }
-     *}
-     *
      * @param Request $request
      * @return mixed
      * @throws \Throwable
@@ -127,7 +114,7 @@ class EntityController extends ApiController
             $value = $str . $value;
 
             if ($num == count($arr) - 1) array_push($combination, $value);
-            else $value .= '|';
+            else $value .= config('setting.sku_separator');
 
             self::combination($arr, $combination, $value, $num + 1);
         }

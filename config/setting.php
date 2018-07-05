@@ -16,4 +16,9 @@ return [
      * 刷新令牌过期时间
      */
     'refresh_token_expire_in' => env('REFRESH_TOKEN_EXPIRE_IN'),
+
+    /**
+     * sku组合分隔符
+     */
+    'sku_separator' => '|',
 ];

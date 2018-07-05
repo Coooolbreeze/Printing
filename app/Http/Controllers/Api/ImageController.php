@@ -17,10 +17,19 @@ class ImageController extends ApiController
 {
     public function store(Request $request)
     {
-        $path = $request->file('file')->store('images', 'public');
+        $images = [];
+        $paths = [];
+        foreach ($request->file() as $file) {
+            $src = $file->store('images', 'public');
+            array_push($images, ['src' => $src]);
+            array_push($paths, $src);
+        }
+        Image::saveAll($images);
 
-        $res = Image::create(['src' => $path]);
-
-        return $this->success(new ImageResource($res));
+        return $this->success(
+            ImageResource::collection(
+                Image::whereIn('src', $paths)->get()
+            )
+        );
     }
 }

@@ -32,8 +32,8 @@ class EntityCombinationsExport implements FromQuery, WithHeadings, WithMapping
 
     public function map($row): array
     {
-        $arr = explode('|', $row->combination);
-        array_unshift($arr, $row->id);
+        $arr = explode(config('setting.sku_separator'), $row->combination);
+        array_unshift($arr, $row->id . "\t");
         array_push($arr, $row->price);
         array_push($arr, $row->weight);
         return $arr;
