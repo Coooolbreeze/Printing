@@ -8,6 +8,8 @@
 
 namespace App\Models;
 
+use App\Exceptions\BaseException;
+
 
 /**
  * App\Models\Combination
@@ -30,5 +32,26 @@ namespace App\Models;
  */
 class Combination extends Model
 {
+    public static function isSpecMatch($combinationId, $spec)
+    {
+        $combination = '';
+        foreach ($spec as $value) {
+            if ($combination === '') $combination .= $value;
+            else $combination .= config('setting.sku_separator') . $value;
+        }
 
+        return self::findOrFail($combinationId)->combination === $combination;
+    }
+
+    public static function isPriceMatch($combinationId, $price, $customSpecs = [], $count = 0)
+    {
+        $specPrice = self::findOrFail($combinationId)->price;
+        foreach ($customSpecs as $customSpec)
+            foreach ($customSpec as $value)
+                $specPrice *= $value;
+
+        if ($count != 0) $specPrice *= $count;
+
+        return $specPrice == $price;
+    }
 }

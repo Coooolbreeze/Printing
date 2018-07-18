@@ -22,7 +22,11 @@ Route::namespace('Api')->group(function () {
     // 发送短信
     Route::post('/sms', 'SmsController@sendSms')->middleware('throttle:2,1');
 
+    // 图片上传
     Route::apiResource('images', 'ImageController')
+        ->only(['store']);
+    // 文件上传
+    Route::apiResource('files', 'FileController')
         ->only(['store']);
 
     Route::apiResource('entities', 'EntityController')
@@ -74,6 +78,9 @@ Route::namespace('Api')->group(function () {
         Route::get('/users/self/coupons', 'UserController@coupons');
         // 领取优惠券
         Route::post('/coupons/receive', 'CouponController@receive');
+
+        Route::apiResource('carts', 'CartController')
+            ->only(['index', 'store', 'delete']);
     });
 
     /**

@@ -43,6 +43,7 @@ namespace App\Models;
  * @property int $sales
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereCustomNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereSales($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomAttribute[] $customAttributes
  */
 class Entity extends Model
 {
