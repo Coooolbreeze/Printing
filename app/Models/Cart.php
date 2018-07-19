@@ -33,8 +33,13 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cart whereCombinationId($value)
  * @property string $custom_specs
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cart whereCustomSpecs($value)
+ * @property string $specs
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cart whereSpecs($value)
  */
 class Cart extends Model
 {
-
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }

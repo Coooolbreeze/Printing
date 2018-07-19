@@ -81,6 +81,8 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('carts', 'CartController')
             ->only(['index', 'store', 'delete']);
+        Route::post('/batch/carts', 'CartController@batchStore');
+        Route::delete('/batch/carts', 'CartController@batchDestroy');
     });
 
     /**

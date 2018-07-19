@@ -61,4 +61,9 @@ class User extends Model
     {
         return $this->belongsToMany('App\Models\Coupon');
     }
+
+    public function carts()
+    {
+        return $this->hasMany('App\Models\Cart');
+    }
 }

@@ -26,7 +26,7 @@ class StoreCart extends Request
                 Rule::in(File::pluck('id')->toArray())
             ],
             'price' => 'required',
-            'count' => 'required',
+            'count' => 'nullable',
             'combination_id' => [
                 'required',
                 Rule::in(Combination::pluck('id')->toArray())

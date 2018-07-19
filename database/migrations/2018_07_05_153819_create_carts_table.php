@@ -18,6 +18,7 @@ class CreateCartsTable extends Migration
             $table->integer('user_id');
             $table->integer('entity_id');
             $table->integer('combination_id');
+            $table->longText('specs');
             $table->longText('custom_specs');
             $table->integer('file_id')->nullable();
             $table->decimal('price');

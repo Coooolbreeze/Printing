@@ -32,6 +32,11 @@ use App\Exceptions\BaseException;
  */
 class Combination extends Model
 {
+    public static function isEntityMatch($combinationId, $entityId)
+    {
+        return self::findOrFail($combinationId)->entity_id == $entityId;
+    }
+
     public static function isSpecMatch($combinationId, $spec)
     {
         $combination = '';
