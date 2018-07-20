@@ -50,6 +50,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int $is_admin
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereIsAdmin($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Coupon[] $coupons
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cart[] $carts
  */
 class User extends Model
 {

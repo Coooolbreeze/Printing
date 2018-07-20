@@ -23,6 +23,7 @@ class CreateCartsTable extends Migration
             $table->integer('file_id')->nullable();
             $table->decimal('price');
             $table->integer('count')->default(0);
+            $table->text('remark')->nullable();
             $table->timestamps();
         });
     }

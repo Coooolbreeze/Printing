@@ -35,6 +35,9 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cart whereCustomSpecs($value)
  * @property string $specs
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cart whereSpecs($value)
+ * @property-read \App\Models\User $user
+ * @property string|null $remark
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cart whereRemark($value)
  */
 class Cart extends Model
 {

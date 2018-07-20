@@ -25,7 +25,8 @@ class CartResource extends Resource
             'specs' => $this->count ? json_decode($this->specs, true) : array_slice(json_decode($this->specs, true), 0, -1),
             'custom_specs' => json_decode($this->custom_specs, true),
             'count' => $this->count ?: json_decode($this->specs, true)['数量'],
-            'price' => $this->price
+            'price' => $this->price,
+            'remark' => $this->remark
         ];
     }
 }

@@ -96,8 +96,10 @@ class CartController extends ApiController
     {
         if (!Combination::isEntityMatch($carts['combination_id'], $carts['entity_id']))
             throw new BaseException('商品组合不匹配');
+
         if (!Combination::isSpecMatch($carts['combination_id'], $carts['specs']))
             throw new BaseException('商品规格不匹配');
+
         if (!Combination::isPriceMatch(
             $carts['combination_id'],
             $carts['price'],
@@ -121,7 +123,8 @@ class CartController extends ApiController
             'custom_specs' => json_encode(array_key_exists('custom_specs', $carts) ? $carts['custom_specs'] : []),
             'file_id' => array_key_exists('file_id', $carts) ? $carts['file_id'] : 0,
             'price' => $carts['price'],
-            'count' => array_key_exists('count', $carts) ? $carts['count'] : 0
+            'count' => array_key_exists('count', $carts) ? $carts['count'] : 0,
+            'remark' => array_key_exists('remark', $carts) ? $carts['remark'] : null
         ];
     }
 }
