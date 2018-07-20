@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Exceptions\BaseException;
+use App\Models\MemberLevel;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -32,6 +33,9 @@ class UserResource extends Resource
             'account' => $this->account,
             'phone' => $this->isSelfOrAdmin() ? $this->phone : $this->partialHidden($this->phone, 3, 4),
             'email' => $this->isSelfOrAdmin() ? $this->email : $this->partialHidden($this->email, 1, 4),
+            'member_level' => new MemberLevelResource($this->memberLevel),
+            'accumulate_points' => $this->accumulate_points,
+            'history_accumulate_points' => $this->history_accumulate_points,
             'is_bind_account' => (bool)$this->is_bind_account,
             'is_bind_phone' => (bool)$this->is_bind_phone,
             'is_bind_email' => (bool)$this->is_bind_email,

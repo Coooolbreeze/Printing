@@ -21,4 +21,9 @@ return [
      * sku组合分隔符
      */
     'sku_separator' => '|',
+
+    /**
+     * 每积分需消费金额
+     */
+    'accumulate_points_money' => env('ACCUMULATE_POINTS_MONEY'),
 ];

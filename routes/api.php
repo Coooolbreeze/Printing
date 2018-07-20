@@ -206,6 +206,7 @@ Route::namespace('Api')->group(function () {
 
 
     Route::get('/test', function () {
+        return config('setting.accumulate_points_money');
         Cache::forget(Cache::pull('haha'));
 
 //        Cache::add('haha', '123', 10);

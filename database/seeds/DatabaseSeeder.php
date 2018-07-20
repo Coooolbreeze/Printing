@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             CommonAttributesTableSeeder::class,
             CommonValuesTableSeeder::class,
             ImagesTableSeeder::class,
+            FilesTableSeeder::class,
+            MemberLevelsTableSeeder::class,
             CacheFlushSeeder::class,
         ]);
     }

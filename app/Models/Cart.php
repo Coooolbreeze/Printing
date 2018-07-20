@@ -38,11 +38,23 @@ namespace App\Models;
  * @property-read \App\Models\User $user
  * @property string|null $remark
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cart whereRemark($value)
+ * @property-read \App\Models\Entity $entity
+ * @property-read \App\Models\File $file
  */
 class Cart extends Model
 {
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function entity()
+    {
+        return $this->belongsTo('App\Models\Entity');
+    }
+
+    public function file()
+    {
+        return $this->belongsTo('App\Models\File')->withDefault();
     }
 }

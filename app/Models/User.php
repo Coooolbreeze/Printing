@@ -51,6 +51,13 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereIsAdmin($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Coupon[] $coupons
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cart[] $carts
+ * @property int $accumulate_points
+ * @property int $history_accumulate_points
+ * @property int $member_level_id
+ * @property-read \App\Models\MemberLevel $memberLevel
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereAccumulatePoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereHistoryAccumulatePoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereMemberLevelId($value)
  */
 class User extends Model
 {
@@ -66,5 +73,10 @@ class User extends Model
     public function carts()
     {
         return $this->hasMany('App\Models\Cart');
+    }
+
+    public function memberLevel()
+    {
+        return $this->belongsTo('App\Models\MemberLevel');
     }
 }

@@ -18,9 +18,9 @@ class CartResource extends Resource
     {
         return [
             'id' => $this->id,
-            'entity' => (new EntityResource(Entity::findOrFail($this->entity_id)))->show(['id', 'image', 'name']),
+            'entity' => (new EntityResource($this->entity))->show(['id', 'image', 'name']),
             'file' => $this->when($this->file_id, function () {
-                return new FileResource(File::findOrFail($this->file_id));
+                return new FileResource($this->file);
             }),
             'specs' => $this->count ? json_decode($this->specs, true) : array_slice(json_decode($this->specs, true), 0, -1),
             'custom_specs' => json_decode($this->custom_specs, true),
