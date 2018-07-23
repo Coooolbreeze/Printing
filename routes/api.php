@@ -68,6 +68,15 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('combinations', 'CombinationController')
         ->only(['index']);
 
+    Route::apiResource('member_levels', 'MemberLevelController')
+        ->only(['index']);
+
+    Route::apiResource('accumulate_points_money', 'AccumulatePointsMoneyController')
+        ->only(['index']);
+
+    Route::apiResource('gifts', 'GiftController')
+        ->only(['index', 'show']);
+
     /**
      * 需登录后访问
      */
@@ -172,7 +181,13 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:积分管理')->group(function () {
+        Route::apiResource('member_levels', 'MemberLevelController')
+            ->only(['store', 'update']);
 
+        Route::put('/accumulate_points_money', 'AccumulatePointsMoneyController@update');
+
+        Route::apiResource('gifts', 'GiftController')
+            ->only(['store', 'update', 'destroy']);
     });
 
     Route::middleware('permission:用户管理')->group(function () {
