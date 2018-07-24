@@ -250,11 +250,10 @@ class TokenFactory
     }
 
     /**
-     * 检测操作的UID是否与当前用户匹配
-     *
      * @param $checkedUID
      * @return bool
-     * @throws \Exception
+     * @throws TokenException
+     * @throws Exception
      */
     public static function isValidOperate($checkedUID)
     {

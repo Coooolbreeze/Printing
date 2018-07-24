@@ -32,18 +32,33 @@ class GiftController extends ApiController
             'name' => $request->name,
             'image_id' => $request->image_id,
             'accumulate_points' => $request->accumulate_points,
-            'detail' => $request->accumulate_points,
+            'detail' => $request->detail,
             'stock' => $request->stock
         ]);
+
+        return $this->created();
     }
 
-    public function update()
+    public function update(Request $request, Gift $gift)
     {
+        isset($request->name) && $gift->name = $request->name;
+        isset($request->image_id) && $gift->image_id = $request->image_id;
+        isset($request->accumulate_points) && $gift->accumulate_points = $request->accumulate_points;
+        isset($request->detail) && $gift->detail = $request->detail;
+        isset($request->stock) && $gift->stock = $request->stock;
+        $gift->save();
 
+        return $this->message('更新成功');
     }
 
-    public function destroy()
+    /**
+     * @param Gift $gift
+     * @return mixed
+     * @throws \Exception
+     */
+    public function destroy(Gift $gift)
     {
-
+        $gift->delete();
+        return $this->message('删除成功');
     }
 }

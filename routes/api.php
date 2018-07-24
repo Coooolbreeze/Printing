@@ -83,6 +83,10 @@ Route::namespace('Api')->group(function () {
     Route::middleware('token')->group(function () {
         // 获取自己的资料
         Route::get('/users/self', 'UserController@self')->name('users.self');
+        // 收货地址
+        Route::get('/users/self/addresses', 'UserController@addresses');
+        // 积分记录
+        Route::get('/users/self/accumulate_points_records', 'UserController@accumulatePointsRecords');
         // 获取我的优惠券
         Route::get('/users/self/coupons', 'UserController@coupons');
         // 领取优惠券
@@ -92,6 +96,9 @@ Route::namespace('Api')->group(function () {
             ->only(['index', 'store', 'delete']);
         Route::post('/batch/carts', 'CartController@batchStore');
         Route::delete('/batch/carts', 'CartController@batchDestroy');
+
+        Route::apiResource('addresses', 'AddressController')
+            ->only(['index', 'show', 'store', 'update', 'delete']);
     });
 
     /**
@@ -221,6 +228,9 @@ Route::namespace('Api')->group(function () {
 
 
     Route::get('/test', function () {
+        \App\Models\AccumulatePointsRecord::income(1000, '收入');
+        return \App\Services\Tokens\TokenFactory::getCurrentUser()->accumulate_points;
+
         return config('setting.accumulate_points_money');
         Cache::forget(Cache::pull('haha'));
 

@@ -58,6 +58,9 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereAccumulatePoints($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereHistoryAccumulatePoints($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereMemberLevelId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AccumulatePointsRecord[] $accumulatePointsRecords
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Address[] $addresses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GiftOrder[] $giftOrders
  */
 class User extends Model
 {
@@ -78,5 +81,20 @@ class User extends Model
     public function memberLevel()
     {
         return $this->belongsTo('App\Models\MemberLevel');
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany('App\Models\Address');
+    }
+
+    public function giftOrders()
+    {
+        return $this->hasMany('App\Models\GiftOrder');
+    }
+
+    public function accumulatePointsRecords()
+    {
+        return $this->hasMany('App\Models\AccumulatePointsRecord');
     }
 }

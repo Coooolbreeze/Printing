@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Resources\AccumulatePointsRecordCollection;
+use App\Http\Resources\AddressResource;
 use App\Http\Resources\CouponCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
+use App\Models\AccumulatePointsRecord;
+use App\Models\Address;
 use App\Models\Coupon;
 use App\Models\User;
 use App\Services\Tokens\TokenFactory;
@@ -90,5 +94,31 @@ class UserController extends ApiController
         return $this->success(
             new CouponCollection(TokenFactory::getCurrentUser()->coupons()->paginate(Coupon::getLimit()))
         );
+    }
+
+    public function accumulatePointsRecords(Request $request)
+    {
+        return $this->success(
+            new AccumulatePointsRecordCollection(TokenFactory::getCurrentUser()
+                ->accumulatePointsRecords()
+                ->when($request->type, function ($query) use ($request) {
+                    $query->where('type', $request->type);
+                })
+                ->latest()
+                ->paginate(AccumulatePointsRecord::getLimit())
+            )
+        );
+    }
+
+    public function addresses(Request $request)
+    {
+        return $this->success(AddressResource::collection(TokenFactory::getCurrentUser()
+            ->addresses()
+            ->when($request->is_default, function ($query) {
+                $query->where('is_default', 1);
+            })
+            ->orderBy('is_default', 'desc')
+            ->get()
+        ));
     }
 }

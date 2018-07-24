@@ -24,6 +24,12 @@ class Model extends EloquentModel
 {
     protected $guarded = [];
 
+    public static function updateField($request, $eloquent, array $fields)
+    {
+        foreach ($fields as $field) isset($request->$field) && $eloquent->$field = $request->$field;
+        $eloquent->save();
+    }
+
     public static function saveAll(array $data)
     {
         $self = new static();

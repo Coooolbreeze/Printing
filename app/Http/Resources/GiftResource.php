@@ -25,7 +25,7 @@ class GiftResource extends Resource
             'name' => $this->name,
             'image' => new ImageResource($this->image),
             'accumulate_points' => $this->accumulate_points,
-            'detail' => $this->accumulate_points,
+            'detail' => $this->detail,
             'stock' => $this->stock
         ]);
     }

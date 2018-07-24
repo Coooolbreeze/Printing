@@ -11,7 +11,7 @@ namespace App\Http\Requests;
 
 class StoreMemberLevel extends Request
 {
-    public function rule()
+    public function rules()
     {
         // TODO 验证
         return [

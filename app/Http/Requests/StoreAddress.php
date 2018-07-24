@@ -2,14 +2,14 @@
 /**
  * Created by PhpStorm.
  * User: 392113643
- * Date: 2018/7/23
- * Time: 15:20
+ * Date: 2018/7/24
+ * Time: 16:05
  */
 
 namespace App\Http\Requests;
 
 
-class UpdateMemberLevel extends Request
+class StoreAddress extends Request
 {
     public function rules()
     {
