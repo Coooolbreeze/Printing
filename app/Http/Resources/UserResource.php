@@ -36,6 +36,7 @@ class UserResource extends Resource
             'member_level' => new MemberLevelResource($this->memberLevel),
             'accumulate_points' => $this->accumulate_points,
             'history_accumulate_points' => $this->history_accumulate_points,
+            'balance' => $this->when($this->isSelfOrAdmin(), $this->balance),
             'is_bind_account' => (bool)$this->is_bind_account,
             'is_bind_phone' => (bool)$this->is_bind_phone,
             'is_bind_email' => (bool)$this->is_bind_email,
@@ -87,8 +88,8 @@ class UserResource extends Resource
     public function isSelfOrAdmin()
     {
         try {
-            return (TokenFactory::getCurrentUID() == $this->id || TokenFactory::isAdmin());
-        } catch (BaseException $e) {
+            return (TokenFactory::isValidOperate($this->id) || TokenFactory::isAdmin());
+        } catch (\Exception $exception) {
             return false;
         }
     }

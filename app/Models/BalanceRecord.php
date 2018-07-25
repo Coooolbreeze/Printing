@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: 392113643
- * Date: 2018/7/24
- * Time: 12:21
+ * Date: 2018/7/25
+ * Time: 17:28
  */
 
 namespace App\Models;
@@ -13,28 +13,28 @@ use App\Exceptions\BaseException;
 use App\Services\Tokens\TokenFactory;
 
 /**
- * App\Models\AccumulatePointsRecord
+ * App\Models\BalanceRecord
  *
+ * @property \Carbon\Carbon|null $created_at
+ * @property string $describe
  * @property int $id
- * @property int $user_id
  * @property int $number
  * @property int $surplus
- * @property string $describe
  * @property int $type 1收入 2支出
- * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property int $user_id
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AccumulatePointsRecord whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AccumulatePointsRecord whereDescribe($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AccumulatePointsRecord whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AccumulatePointsRecord whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AccumulatePointsRecord whereSurplus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AccumulatePointsRecord whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AccumulatePointsRecord whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AccumulatePointsRecord whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BalanceRecord whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BalanceRecord whereDescribe($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BalanceRecord whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BalanceRecord whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BalanceRecord whereSurplus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BalanceRecord whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BalanceRecord whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BalanceRecord whereUserId($value)
  * @mixin \Eloquent
  */
-class AccumulatePointsRecord extends Model
+class BalanceRecord extends Model
 {
     public function user()
     {
@@ -52,13 +52,12 @@ class AccumulatePointsRecord extends Model
         (!$user) && $user = TokenFactory::getCurrentUser();
 
         \DB::transaction(function () use ($number, $describe, $user) {
-            $user->increment('accumulate_points', $number);
-            $user->increment('history_accumulate_points', $number);
+            $user->increment('balance', $number);
 
             self::create([
                 'user_id' => $user->id,
                 'number' => $number,
-                'surplus' => $user->accumulate_points,
+                'surplus' => $user->balance,
                 'describe' => $describe,
                 'type' => 1
             ]);
@@ -77,16 +76,16 @@ class AccumulatePointsRecord extends Model
     {
         (!$user) && $user = TokenFactory::getCurrentUser();
 
-        if ($user->accumulate_points < $number)
-            throw new BaseException('可用积分不足');
+        if ($user->balance < $number)
+            throw new BaseException('可用余额不足');
 
         \DB::transaction(function () use ($number, $describe, $user) {
-            $user->decrement('accumulate_points', $number);
+            $user->decrement('balance', $number);
 
             self::create([
                 'user_id' => $user->id,
                 'number' => $number,
-                'surplus' => $user->accumulate_points,
+                'surplus' => $user->balance,
                 'describe' => $describe,
                 'type' => 2
             ]);

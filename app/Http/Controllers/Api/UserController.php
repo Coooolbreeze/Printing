@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Exceptions\BaseException;
+use App\Http\Requests\UpdateUser;
 use App\Http\Resources\AccumulatePointsRecordCollection;
 use App\Http\Resources\AddressResource;
 use App\Http\Resources\CouponCollection;
@@ -10,7 +12,7 @@ use App\Http\Resources\GiftOrderCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\AccumulatePointsRecord;
-use App\Models\Address;
+use App\Models\BalanceRecord;
 use App\Models\Coupon;
 use App\Models\GiftOrder;
 use App\Models\User;
@@ -30,54 +32,87 @@ class UserController extends ApiController
      *     ),
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->success(new UserCollection(User::pagination()));
+        $user = (new User())
+            ->where('is_admin', 0)
+            ->when($request->member_level_id, function ($query) use ($request) {
+                $query->where('member_level_id', $request->member_level_id);
+            })
+            ->when($request->nickname, function ($query) use ($request) {
+                $query->where('nickname', $request->nickname);
+            })
+            ->when($request->phone, function ($query) use ($request) {
+                $query->where('phone', $request->phone);
+            })
+            ->paginate(User::getLimit());
+
+        return $this->success(new UserCollection($user));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        return $this->success(new UserResource(User::findOrFail($id)));
+        return $this->success(new UserResource(
+            User::where('is_admin', 0)
+                ->where('id', $id)
+                ->firstOrFail()
+        ));
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateUser $request
+     * @param User $user
+     * @return mixed
+     * @throws \App\Exceptions\BaseException
+     * @throws \App\Exceptions\TokenException
+     * @throws \Throwable
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUser $request, User $user)
     {
-        //
+        if (TokenFactory::isAdmin()) {
+            if ($request->accumulate_points && $request->accumulate_points > $user->accumulate_points) {
+                AccumulatePointsRecord::income(
+                    $request->accumulate_points - $user->accumulate_points,
+                    '管理员' . TokenFactory::getCurrentUser()->nickname . '添加',
+                    $user
+                );
+            } elseif ($request->accumulate_points && $request->accumulate_points < $user->accumulate_points) {
+                AccumulatePointsRecord::expend(
+                    $user->accumulate_points - $request->accumulate_points,
+                    '管理员' . TokenFactory::getCurrentUser()->nickname . '扣除',
+                    $user
+                );
+            }
+            if ($request->balance && $request->balance > $user->balance) {
+                BalanceRecord::income(
+                    $request->balance - $user->balance,
+                    '管理员' . TokenFactory::getCurrentUser()->nickname . '添加',
+                    $user
+                );
+            } elseif ($request->balance && $request->balance < $user->balance) {
+                BalanceRecord::expend(
+                    $user->balance - $request->balance,
+                    '管理员' . TokenFactory::getCurrentUser()->nickname . '扣除',
+                    $user
+                );
+            }
+        } else {
+            User::updateField($request, $user, ['nickname', 'sex', 'avatar']);
+        }
+
+        return $this->message('更新成功');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return mixed
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        if ($user->id == 1) throw new BaseException('不能删除超级管理员账号');
+        $user->delete();
+        return $this->message('删除成功');
     }
 
     /**

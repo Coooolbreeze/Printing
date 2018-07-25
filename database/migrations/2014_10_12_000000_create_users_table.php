@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->integer('member_level_id')->default(1);
             $table->integer('accumulate_points')->default(0);
             $table->integer('history_accumulate_points')->default(0);
+            $table->decimal('balance')->default(0);
             $table->tinyInteger('is_bind_account')->default(0);
             $table->tinyInteger('is_bind_phone')->default(0);
             $table->tinyInteger('is_bind_email')->default(0);

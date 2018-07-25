@@ -29,6 +29,9 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('files', 'FileController')
         ->only(['store']);
 
+    Route::apiResource('users', 'UserController')
+        ->only(['show']);
+
     Route::apiResource('entities', 'EntityController')
         ->only(['index', 'show']);
 
@@ -104,6 +107,9 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('gift_orders', 'GiftOrderController')
             ->only(['show', 'store']);
+
+        Route::apiResource('users', 'UserController')
+            ->only(['update']);
     });
 
     /**
@@ -204,7 +210,8 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:用户管理')->group(function () {
-
+        Route::apiResource('users', 'UserController')
+            ->only(['index', 'destroy']);
     });
 
     Route::middleware('permission:客服工具管理')->group(function () {

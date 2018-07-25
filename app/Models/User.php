@@ -61,6 +61,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AccumulatePointsRecord[] $accumulatePointsRecords
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Address[] $addresses
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GiftOrder[] $giftOrders
+ * @property float $balance
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereBalance($value)
  */
 class User extends Model
 {
