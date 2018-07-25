@@ -19,6 +19,8 @@ class CreateGiftOrdersTable extends Migration
             $table->integer('gift_id');
             $table->text('snap_content');
             $table->text('snap_address');
+            $table->string('tracking_no')->nullable();
+            $table->tinyInteger('status')->default(1)->comment('1未发货 2已发货');
             $table->timestamps();
         });
     }

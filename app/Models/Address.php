@@ -59,4 +59,24 @@ class Address extends Model
         });
         self::updateBatch($addresses->toArray());
     }
+
+    public static function addressSnap($id = null)
+    {
+        if (!$id) {
+            $address = TokenFactory::getCurrentUser()
+                ->addresses()
+                ->where('is_default', 1)
+                ->firstOrFail();
+        } else {
+            $address = self::findOrFail($id);
+        }
+        return json_encode([
+            'name' => $address->name,
+            'phone' => $address->phone,
+            'province' => $address->province,
+            'city' => $address->city,
+            'county' => $address->county,
+            'detail' => $address->detail
+        ]);
+    }
 }

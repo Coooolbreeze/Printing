@@ -29,6 +29,10 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftOrder whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftOrder whereUserId($value)
  * @mixin \Eloquent
+ * @property int $status 1未发货 2已发货
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftOrder whereStatus($value)
+ * @property string|null $tracking_no
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftOrder whereTrackingNo($value)
  */
 class GiftOrder extends Model
 {

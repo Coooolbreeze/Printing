@@ -87,6 +87,8 @@ Route::namespace('Api')->group(function () {
         Route::get('/users/self/addresses', 'UserController@addresses');
         // 积分记录
         Route::get('/users/self/accumulate_points_records', 'UserController@accumulatePointsRecords');
+        // 礼品订单
+        Route::get('/users/self/gift_orders', 'UserController@giftOrders');
         // 获取我的优惠券
         Route::get('/users/self/coupons', 'UserController@coupons');
         // 领取优惠券
@@ -99,6 +101,9 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('addresses', 'AddressController')
             ->only(['index', 'show', 'store', 'update', 'delete']);
+
+        Route::apiResource('gift_orders', 'GiftOrderController')
+            ->only(['show', 'store']);
     });
 
     /**
@@ -184,7 +189,8 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:订单管理')->group(function () {
-
+        Route::apiResource('gift_orders', 'GiftOrderController')
+            ->only(['index', 'update']);
     });
 
     Route::middleware('permission:积分管理')->group(function () {

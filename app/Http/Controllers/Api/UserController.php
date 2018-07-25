@@ -6,11 +6,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\AccumulatePointsRecordCollection;
 use App\Http\Resources\AddressResource;
 use App\Http\Resources\CouponCollection;
+use App\Http\Resources\GiftOrderCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\AccumulatePointsRecord;
 use App\Models\Address;
 use App\Models\Coupon;
+use App\Models\GiftOrder;
 use App\Models\User;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
@@ -119,6 +121,18 @@ class UserController extends ApiController
             })
             ->orderBy('is_default', 'desc')
             ->get()
+        ));
+    }
+
+    public function giftOrders(Request $request)
+    {
+        return $this->success(new GiftOrderCollection(TokenFactory::getCurrentUser()
+            ->giftOrders()
+            ->when($request->status, function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(GiftOrder::getLimit())
         ));
     }
 }
