@@ -95,7 +95,8 @@ Route::namespace('Api')->group(function () {
         // 获取我的优惠券
         Route::get('/users/self/coupons', 'UserController@coupons');
         // 领取优惠券
-        Route::post('/coupons/receive', 'CouponController@receive');
+        Route::apiResource('user_coupons', 'UserCouponController')
+            ->only(['store']);
 
         Route::apiResource('carts', 'CartController')
             ->only(['index', 'store', 'delete']);
@@ -240,7 +241,9 @@ Route::namespace('Api')->group(function () {
     });
 
 
-    Route::get('/test', function () {
+    Route::post('/test', function () {
+        return \App\Http\Controllers\Api\OrderController::cartOrder(request()->ids);
+        return uuid();
         \App\Models\AccumulatePointsRecord::income(1000, '收入');
         return \App\Services\Tokens\TokenFactory::getCurrentUser()->accumulate_points;
 

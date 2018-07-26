@@ -89,7 +89,7 @@ class UserResource extends Resource
     {
         try {
             return (TokenFactory::isValidOperate($this->id) || TokenFactory::isAdmin());
-        } catch (\Exception $exception) {
+        } catch (BaseException $exception) {
             return false;
         }
     }

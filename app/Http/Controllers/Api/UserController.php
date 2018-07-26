@@ -10,6 +10,7 @@ use App\Http\Resources\AddressResource;
 use App\Http\Resources\CouponCollection;
 use App\Http\Resources\GiftOrderCollection;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserCouponCollection;
 use App\Http\Resources\UserResource;
 use App\Models\AccumulatePointsRecord;
 use App\Models\BalanceRecord;
@@ -17,6 +18,7 @@ use App\Models\Coupon;
 use App\Models\GiftOrder;
 use App\Models\User;
 use App\Services\Tokens\TokenFactory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class UserController extends ApiController
@@ -126,11 +128,26 @@ class UserController extends ApiController
         return $this->success(new UserResource(TokenFactory::getCurrentUser()));
     }
 
-    public function coupons()
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
+    public function coupons(Request $request)
     {
-        return $this->success(
-            new CouponCollection(TokenFactory::getCurrentUser()->coupons()->paginate(Coupon::getLimit()))
-        );
+        $coupons = TokenFactory::getCurrentUser()->coupons()
+            ->when($request->type == 1, function ($query) use ($request) {
+                $query->where('is_used', 0)->whereDate('finished_at', '>', Carbon::now());
+            })
+            ->when($request->type == 2, function ($query) {
+                $query->where('is_used', 1);
+            })
+            ->when($request->type == 3, function ($query) {
+                $query->whereDate('finished_at', '<', Carbon::now());
+            })
+            ->paginate(Coupon::getLimit());
+
+        return $this->success(new UserCouponCollection($coupons));
     }
 
     public function accumulatePointsRecords(Request $request)

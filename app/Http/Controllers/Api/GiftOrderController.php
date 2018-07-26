@@ -64,8 +64,8 @@ class GiftOrderController extends ApiController
             AccumulatePointsRecord::expend($gift->accumulate_points, '兑换礼品');
 
             GiftOrder::create([
+                'order_no' => 'G-' . makeOrderNo(),
                 'user_id' => TokenFactory::getCurrentUID(),
-                'gift_id' => $gift->id,
                 'snap_content' => self::giftSnap($gift),
                 'snap_address' => Address::addressSnap($request->address_id)
             ]);
@@ -78,16 +78,17 @@ class GiftOrderController extends ApiController
 
     public function update(UpdateGiftOrder $request, GiftOrder $giftOrder)
     {
-        GiftOrder::updateField($request, $giftOrder, ['status', 'tracking_no']);
+        GiftOrder::updateField($request, $giftOrder, ['status', 'express_company', 'tracking_no']);
         return $this->message('更新成功');
     }
 
     private static function giftSnap($gift)
     {
         return json_encode([
+            'id' => $gift->id,
+            'name' => $gift->name,
             'image' => $gift->image->src,
-            'accumulate_points' => $gift->accumulate_points,
-            'name' => $gift->name
+            'accumulate_points' => $gift->accumulate_points
         ]);
     }
 }

@@ -250,6 +250,8 @@ class TokenFactory
     }
 
     /**
+     * 检测操作的UID是否与当前用户匹配
+     *
      * @param $checkedUID
      * @return bool
      * @throws TokenException
@@ -259,9 +261,7 @@ class TokenFactory
     {
         if (!$checkedUID) throw new Exception('检查UID时必须传入被检查的UID');
 
-        if ($checkedUID == self::getCurrentUID()) return true;
-
-        return false;
+        return $checkedUID == self::getCurrentUID();
     }
 
     /**

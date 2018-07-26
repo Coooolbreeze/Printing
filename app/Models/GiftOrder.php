@@ -33,6 +33,10 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftOrder whereStatus($value)
  * @property string|null $tracking_no
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftOrder whereTrackingNo($value)
+ * @property string|null $express_company
+ * @property string $order_no
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftOrder whereExpressCompany($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftOrder whereOrderNo($value)
  */
 class GiftOrder extends Model
 {

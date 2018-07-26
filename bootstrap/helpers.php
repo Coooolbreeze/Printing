@@ -60,9 +60,9 @@ function setEnv(array $data)
 
     $contentArray = collect(file($envPath, FILE_IGNORE_NEW_LINES));
 
-    $contentArray->transform(function ($item) use ($data){
-        foreach ($data as $key => $value){
-            if(str_contains($item, $key)){
+    $contentArray->transform(function ($item) use ($data) {
+        foreach ($data as $key => $value) {
+            if (str_contains($item, $key)) {
                 return $key . '=' . $value;
             }
         }
@@ -105,11 +105,29 @@ function makeOrderNo()
     $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T');
     $orderSn = $yCode[intval(date('Y')) - 2018]
         . strtoupper(dechex(date('m')))
-        . date('d') . substr(time(), -5)
+        . date('d')
+        . substr(time(), -5)
         . substr(microtime(), 2, 5)
         . sprintf('%02d', rand(0, 99));
 
     return $orderSn;
+}
+
+/**
+ * 生成UUID
+ *
+ * @param string $prefix
+ * @return string
+ */
+function uuid($prefix = '')
+{
+    $chars = md5(uniqid(mt_rand(), true));
+    $uuid = substr($chars, 0, 8) . '-';
+    $uuid .= substr($chars, 8, 4) . '-';
+    $uuid .= substr($chars, 12, 4) . '-';
+    $uuid .= substr($chars, 16, 4) . '-';
+    $uuid .= substr($chars, 20, 12);
+    return $prefix . $uuid;
 }
 
 /**

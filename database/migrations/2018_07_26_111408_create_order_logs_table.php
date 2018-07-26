@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCouponUserTable extends Migration
+class CreateOrderLogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class CreateCouponUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('coupon_user', function (Blueprint $table) {
-            $table->integer('coupon_id');
-            $table->integer('user_id');
+        Schema::create('order_logs', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('order_id');
+            $table->string('administrator');
+            $table->string('action');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +29,6 @@ class CreateCouponUserTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('coupon_user');
+        Schema::dropIfExists('order_logs');
     }
 }

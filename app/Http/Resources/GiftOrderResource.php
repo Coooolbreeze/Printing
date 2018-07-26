@@ -22,10 +22,11 @@ class GiftOrderResource extends Resource
     {
         return $this->filterFields([
             'id' => $this->id,
+            'order_no' => $this->order_no,
             'user' => (new UserResource($this->user))->show(['id', 'nickname']),
-            'gift_id' => $this->gift_id,
             'address' => json_decode($this->snap_address, true),
             'content' => $this->convertContent($this->snap_content),
+            'express_company' => $this->when($this->status == 2, $this->express_company),
             'tracking_no' => $this->when($this->status == 2, $this->tracking_no),
             'status' => $this->convertStatus($this->status),
             'created_at' => (string)$this->created_at

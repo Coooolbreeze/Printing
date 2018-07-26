@@ -35,6 +35,8 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Coupon whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Coupon whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $coupon_no
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Coupon whereCouponNo($value)
  */
 class Coupon extends Model
 {

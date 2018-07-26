@@ -63,6 +63,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GiftOrder[] $giftOrders
  * @property float $balance
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereBalance($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Coupon[] $receivedCoupons
  */
 class User extends Model
 {
@@ -70,9 +71,14 @@ class User extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function coupons()
+    public function receivedCoupons()
     {
         return $this->belongsToMany('App\Models\Coupon');
+    }
+
+    public function coupons()
+    {
+        return $this->hasMany('App\Models\UserCoupon');
     }
 
     public function carts()

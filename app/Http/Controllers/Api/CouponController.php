@@ -33,6 +33,7 @@ class CouponController extends ApiController
     public function store(StoreCoupon $request)
     {
         Coupon::create([
+            'coupon_no' => uuid(),
             'name' => $request->name,
             'type' => $request->type,
             'quota' => $request->quota,
@@ -46,12 +47,7 @@ class CouponController extends ApiController
 
     public function update(Request $request, Coupon $coupon)
     {
-        isset($request->name) && $coupon->name = $request->name;
-        isset($request->type) && $coupon->type = $request->type;
-        isset($request->quota) && $coupon->quota = $request->quota;
-        isset($request->satisfy) && $coupon->satisfy = $request->satisfy;
-        isset($request->number) && $coupon->number = $request->number;
-        isset($request->is_meanwhile) && $coupon->is_meanwhile = $request->is_meanwhile;
+        Coupon::updateField($request, $coupon, ['name', 'type', 'quota', 'satisfy', 'number', 'is_meanwhile']);
         isset($request->finished_at) && $coupon->finished_at = Carbon::parse(date('Y-m-d H:i:s', $request->finished_at));
         $coupon->save();
 
@@ -62,28 +58,5 @@ class CouponController extends ApiController
     {
         $coupon->delete();
         return $this->message('删除成功');
-    }
-
-    /**
-     * 领取优惠券
-     *
-     * @param Request $request
-     * @return mixed
-     * @throws BaseException
-     * @throws \App\Exceptions\TokenException
-     */
-    public function receive(Request $request)
-    {
-        $id = $request->id;
-        $received = TokenFactory::getCurrentUser()->coupons()->pluck('id')->toArray();
-        $coupon = Coupon::findOrFail($id);
-
-        if (in_array($id, $received)) throw new BaseException('已领取过该优惠券');
-        if ($coupon->received >= $coupon->number) throw new BaseException('该优惠券已被领完');
-
-        TokenFactory::getCurrentUser()->coupons()->attach($id);
-        $coupon->increment('received', 1);
-
-        return $this->message('领取成功');
     }
 }
