@@ -2,18 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: 392113643
- * Date: 2018/7/25
- * Time: 11:23
+ * Date: 2018/7/27
+ * Time: 17:33
  */
 
 namespace App\Http\Resources;
 
 
-class GiftOrderResource extends Resource
+class OrderResource extends Resource
 {
     public static function collection($resource)
     {
-        return tap(new GiftOrderResourceCollection($resource), function ($collection) {
+        return tap(new OrderResourceCollection($resource), function ($collection) {
             $collection->collects = __CLASS__;
         });
     }
@@ -26,8 +26,6 @@ class GiftOrderResource extends Resource
             'user' => (new UserResource($this->user))->show(['id', 'nickname']),
             'address' => json_decode($this->snap_address, true),
             'content' => json_decode($this->snap_content, true),
-            'express_company' => $this->when($this->status == 2, $this->express_company),
-            'tracking_no' => $this->when($this->status == 2, $this->tracking_no),
             'status' => $this->convertStatus($this->status),
             'created_at' => (string)$this->created_at
         ]);
@@ -35,7 +33,14 @@ class GiftOrderResource extends Resource
 
     public function convertStatus($value)
     {
-        $status = [1 => '未发货', 2 => '已发货'];
+        $status = [
+            0 => '已失效',
+            1 => '待支付',
+            2 => '待审核',
+            3 => '待发货',
+            4 => '已发货',
+            5 => '已收货'
+        ];
         return $status[$value];
     }
 }

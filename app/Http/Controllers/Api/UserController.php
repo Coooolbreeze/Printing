@@ -9,6 +9,7 @@ use App\Http\Resources\AccumulatePointsRecordCollection;
 use App\Http\Resources\AddressResource;
 use App\Http\Resources\CouponCollection;
 use App\Http\Resources\GiftOrderCollection;
+use App\Http\Resources\OrderCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserCouponCollection;
 use App\Http\Resources\UserResource;
@@ -16,6 +17,7 @@ use App\Models\AccumulatePointsRecord;
 use App\Models\BalanceRecord;
 use App\Models\Coupon;
 use App\Models\GiftOrder;
+use App\Models\Order;
 use App\Models\User;
 use App\Services\Tokens\TokenFactory;
 use Carbon\Carbon;
@@ -185,6 +187,18 @@ class UserController extends ApiController
             })
             ->orderBy('created_at', 'desc')
             ->paginate(GiftOrder::getLimit())
+        ));
+    }
+
+    public function orders(Request $request)
+    {
+        return $this->success(new OrderCollection(TokenFactory::getCurrentUser()
+            ->orders()
+            ->when($request->status, function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(Order::getLimit())
         ));
     }
 }

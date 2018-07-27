@@ -14,16 +14,19 @@ use Illuminate\Http\Request;
 
 class FreeExpressController extends ApiController
 {
-    public function show(FreeExpress $freeExpress)
+    public function index()
     {
-        return $this->success(['price' => $freeExpress->price]);
+        return $this->success([
+            'money' => config('setting.free_express')
+        ]);
     }
 
-    public function update(Request $request, FreeExpress $freeExpress)
+    public function update(Request $request)
     {
-        $freeExpress->update([
-            'price' => $request->price
+        setEnv([
+            'FREE_EXPRESS' => $request->money
         ]);
+
         return $this->message('更新成功');
     }
 }

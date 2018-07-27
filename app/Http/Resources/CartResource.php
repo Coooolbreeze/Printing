@@ -18,7 +18,7 @@ class CartResource extends Resource
     {
         return [
             'id' => $this->id,
-            'entity' => (new EntityResource($this->entity))->show(['id', 'image', 'name']),
+            'entity' => (new EntityResource($this->entity))->show(['id', 'image', 'name', 'lead_time']),
             'file' => $this->when($this->file_id, function () {
                 return new FileResource($this->file);
             }),
@@ -26,6 +26,7 @@ class CartResource extends Resource
             'custom_specs' => json_decode($this->custom_specs, true),
             'count' => $this->count ?: json_decode($this->specs, true)['数量'],
             'price' => $this->price,
+            'weight' => $this->weight,
             'remark' => $this->remark
         ];
     }

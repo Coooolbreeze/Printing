@@ -14,6 +14,7 @@ use App\Http\Requests\StoreGiftOrder;
 use App\Http\Requests\UpdateGiftOrder;
 use App\Http\Resources\GiftOrderCollection;
 use App\Http\Resources\GiftOrderResource;
+use App\Http\Resources\ImageResource;
 use App\Models\AccumulatePointsRecord;
 use App\Models\Address;
 use App\Models\Gift;
@@ -87,7 +88,7 @@ class GiftOrderController extends ApiController
         return json_encode([
             'id' => $gift->id,
             'name' => $gift->name,
-            'image' => $gift->image->src,
+            'image' => new ImageResource($gift->image),
             'accumulate_points' => $gift->accumulate_points
         ]);
     }

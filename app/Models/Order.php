@@ -11,6 +11,11 @@ namespace App\Models;
 
 class Order extends Model
 {
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
+
     public function logs()
     {
         return $this->hasMany('App\Models\OrderLog');

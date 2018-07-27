@@ -26,4 +26,19 @@ return [
      * 每积分需消费金额
      */
     'accumulate_points_money' => env('ACCUMULATE_POINTS_MONEY'),
+
+    /**
+     * 包邮起步价
+     */
+    'free_express' => env('FREE_EXPRESS'),
+
+    /**
+     * 首重重量
+     */
+    'first_weight' => env('FIRST_WEIGHT'),
+
+    /**
+     * 续重重量
+     */
+    'additional_weight' => env('ADDITIONAL_WEIGHT'),
 ];

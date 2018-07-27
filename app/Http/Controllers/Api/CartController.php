@@ -92,7 +92,7 @@ class CartController extends ApiController
      * @param $carts
      * @throws BaseException
      */
-    public static function checkCartsInfo($carts)
+    private static function checkCartsInfo($carts)
     {
         if (!Combination::isEntityMatch($carts['combination_id'], $carts['entity_id']))
             throw new BaseException('商品组合不匹配');
@@ -109,22 +109,39 @@ class CartController extends ApiController
     }
 
     /**
-     * @param $carts
+     * @param $cart
      * @return array
      * @throws \App\Exceptions\TokenException
      */
-    public function getSaveInfo($carts)
+    private static function getSaveInfo($cart)
     {
+        $customSpecs = array_key_exists('custom_specs', $cart) ? $cart['custom_specs'] : [];
+        $count = array_key_exists('count', $cart) ? $cart['count'] : 0;
+
         return [
             'user_id' => TokenFactory::getCurrentUID(),
-            'entity_id' => $carts['entity_id'],
-            'combination_id' => $carts['combination_id'],
-            'specs' => json_encode($carts['specs']),
-            'custom_specs' => json_encode(array_key_exists('custom_specs', $carts) ? $carts['custom_specs'] : []),
-            'file_id' => array_key_exists('file_id', $carts) ? $carts['file_id'] : 0,
-            'price' => $carts['price'],
-            'count' => array_key_exists('count', $carts) ? $carts['count'] : 0,
-            'remark' => array_key_exists('remark', $carts) ? $carts['remark'] : null
+            'entity_id' => $cart['entity_id'],
+            'combination_id' => $cart['combination_id'],
+            'specs' => json_encode($cart['specs']),
+            'custom_specs' => json_encode($customSpecs),
+            'file_id' => array_key_exists('file_id', $cart) ? $cart['file_id'] : 0,
+            'price' => $cart['price'],
+            'weight' => self::getWeight($cart['combination_id'], $customSpecs, $count),
+            'count' => $count,
+            'remark' => array_key_exists('remark', $cart) ? $cart['remark'] : null
         ];
+    }
+
+    private static function getWeight($combinationId, $customSpecs, $count = 0)
+    {
+        $specWeight = Combination::find($combinationId)->weight;
+
+        foreach ($customSpecs as $customSpec)
+            foreach ($customSpec as $value)
+                $specWeight *= $value;
+
+        if ($count != 0) $specWeight *= $count;
+
+        return $specWeight;
     }
 }

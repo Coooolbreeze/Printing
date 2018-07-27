@@ -101,6 +101,11 @@ class User extends Model
         return $this->hasMany('App\Models\GiftOrder');
     }
 
+    public function orders()
+    {
+        return $this->hasMany('\App\Models\Order');
+    }
+
     public function accumulatePointsRecords()
     {
         return $this->hasMany('App\Models\AccumulatePointsRecord');

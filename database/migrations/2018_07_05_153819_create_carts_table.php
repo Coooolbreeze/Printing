@@ -22,6 +22,7 @@ class CreateCartsTable extends Migration
             $table->longText('custom_specs');
             $table->integer('file_id')->nullable();
             $table->decimal('price');
+            $table->decimal('weight');
             $table->integer('count')->default(0);
             $table->text('remark')->nullable();
             $table->timestamps();

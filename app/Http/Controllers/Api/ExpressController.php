@@ -56,16 +56,12 @@ class ExpressController extends ApiController
     public function update(Request $request, Express $express)
     {
         \DB::transaction(function () use ($request, $express) {
-            isset($request->name) && $express->name = $request->name;
-            isset($request->first_weight) && $express->first_weight = $request->first_weight;
-            isset($request->additional_weight) && $express->additional_weight = $request->additional_weight;
-            isset($request->capped) && $express->capped = $request->capped;
+            Express::updateField($request, $express, ['name', 'first_weight', 'additional_weight', 'capped']);
             if (isset($request->regions)) {
                 $express->regions()->delete();
                 $regions = $this->mergeRegions($request->regions, $express->id);
                 ExpressRegion::saveAll($regions);
             }
-            $express->save();
         });
         return $this->message('更新成功');
     }

@@ -8,6 +8,9 @@
 
 namespace App\Models;
 
+use App\Exceptions\BaseException;
+use Carbon\Carbon;
+
 
 /**
  * App\Models\UserCoupon
@@ -44,5 +47,24 @@ class UserCoupon extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    /**
+     * @param $couponNo
+     * @param $price
+     * @return mixed
+     * @throws BaseException
+     */
+    public static function use($couponNo, $price)
+    {
+        $coupon = self::where('coupon_no', $couponNo)->lockForUpdate()->firstOrFail();
+
+        if ($coupon->is_used == 1) throw new BaseException('该优惠券已被使用');
+        if ($coupon->finished_at < Carbon::now()) throw new BaseException('该优惠券已过期');
+        if ($coupon->type == 1 && $coupon->satisfy > $price) throw new BaseException('不满足该优惠券使用条件');
+
+        $coupon->update(['is_used' => 1]);
+
+        return $coupon->quota;
     }
 }

@@ -47,9 +47,8 @@ class CouponController extends ApiController
 
     public function update(Request $request, Coupon $coupon)
     {
-        Coupon::updateField($request, $coupon, ['name', 'type', 'quota', 'satisfy', 'number', 'is_meanwhile']);
         isset($request->finished_at) && $coupon->finished_at = Carbon::parse(date('Y-m-d H:i:s', $request->finished_at));
-        $coupon->save();
+        Coupon::updateField($request, $coupon, ['name', 'type', 'quota', 'satisfy', 'number', 'is_meanwhile']);
 
         return $this->message('更新成功');
     }

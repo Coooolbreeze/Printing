@@ -60,7 +60,7 @@ Route::namespace('Api')->group(function () {
         ->only(['index', 'show']);
 
     Route::apiResource('free_expresses', 'FreeExpressController')
-        ->only(['show']);
+        ->only(['index']);
 
     Route::apiResource('coupons', 'CouponController')
         ->only(['index', 'show']);
@@ -92,6 +92,8 @@ Route::namespace('Api')->group(function () {
         Route::get('/users/self/accumulate_points_records', 'UserController@accumulatePointsRecords');
         // 礼品订单
         Route::get('/users/self/gift_orders', 'UserController@giftOrders');
+        // 商品订单
+        Route::get('/users/self/orders', 'UserController@orders');
         // 获取我的优惠券
         Route::get('/users/self/coupons', 'UserController@coupons');
         // 领取优惠券
@@ -107,6 +109,9 @@ Route::namespace('Api')->group(function () {
             ->only(['index', 'show', 'store', 'update', 'delete']);
 
         Route::apiResource('gift_orders', 'GiftOrderController')
+            ->only(['show', 'store']);
+
+        Route::apiResource('orders', 'OrderController')
             ->only(['show', 'store']);
 
         Route::apiResource('users', 'UserController')
@@ -232,8 +237,7 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('expresses', 'ExpressController')
             ->only(['store', 'update', 'destroy']);
 
-        Route::apiResource('free_expresses', 'FreeExpressController')
-            ->only(['update']);
+        Route::put('/free_expresses', 'FreeExpressController@update');
     });
 
     Route::middleware('permission:数据中心')->group(function () {
@@ -241,8 +245,9 @@ Route::namespace('Api')->group(function () {
     });
 
 
-    Route::post('/test', function () {
-        return \App\Http\Controllers\Api\OrderController::cartOrder(request()->ids);
+    Route::get('/test', function () {
+        preg_match_all('/\d+/', '10盒', $arr);
+        return $arr[0][0];
         return uuid();
         \App\Models\AccumulatePointsRecord::income(1000, '收入');
         return \App\Services\Tokens\TokenFactory::getCurrentUser()->accumulate_points;

@@ -51,7 +51,7 @@ class ExceptionReport
     {
         return [
             AuthenticationException::class => ['未授权', 401],
-            ModelNotFoundException::class => ['该模型未找到', 404],
+            ModelNotFoundException::class => ['资源未找到', 404],
             ValidationException::class => [],
             BaseException::class => [],
         ];
