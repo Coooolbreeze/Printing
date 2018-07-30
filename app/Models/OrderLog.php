@@ -9,6 +9,24 @@
 namespace App\Models;
 
 
+/**
+ * App\Models\OrderLog
+ *
+ * @property string $action
+ * @property string $administrator
+ * @property \Carbon\Carbon|null $created_at
+ * @property int $id
+ * @property int $order_id
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\Models\Order $order
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OrderLog whereAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OrderLog whereAdministrator($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OrderLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OrderLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OrderLog whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OrderLog whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class OrderLog extends Model
 {
     public function order()

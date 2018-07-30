@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->string('order_no');
             $table->integer('user_id');
+            $table->string('receipt_id')->nullable();
             $table->text('snap_content');
             $table->text('snap_address');
             $table->decimal('goods_price');

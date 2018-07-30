@@ -40,6 +40,8 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cart whereRemark($value)
  * @property-read \App\Models\Entity $entity
  * @property-read \App\Models\File $file
+ * @property float $weight
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cart whereWeight($value)
  */
 class Cart extends Model
 {

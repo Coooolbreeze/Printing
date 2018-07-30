@@ -26,6 +26,7 @@ class OrderResource extends Resource
             'user' => (new UserResource($this->user))->show(['id', 'nickname']),
             'address' => json_decode($this->snap_address, true),
             'content' => json_decode($this->snap_content, true),
+            'receipt' => $this->receipt ?: new ReceiptResource($this->receipt),
             'status' => $this->convertStatus($this->status),
             'created_at' => (string)$this->created_at
         ]);

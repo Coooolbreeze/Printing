@@ -97,11 +97,11 @@ class OrderController extends ApiController
             $entity = [
                 'id' => $value->entity_id,
                 'image' => new ImageResource(Entity::find($value->entity_id)->images()->first()),
-                'combination' => $value->count ? $combination->combination : substr($combination->combination, 0, strpos($combination->combination, '|')),
+                'combination' => $value->count ? $combination->combination : substr($combination->combination, 0, strripos($combination->combination, '|')),
                 'specs' => $value->count ? json_decode($value->specs, true) : array_slice(json_decode($value->specs, true), 0, -1),
                 'custom_specs' => json_decode($value->custom_specs, true),
                 'weight' => $value->weight,
-                'count' => $value->count ?: substr($combination->combination, strpos($combination->combination, '|') + 1),
+                'count' => $value->count ?: substr($combination->combination, strripos($combination->combination, '|') + 1),
                 'price' => $value->price,
                 'remark' => self::joinSpecs(json_decode($value->custom_specs, true)) . $value->remark
             ];

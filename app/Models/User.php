@@ -64,6 +64,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property float $balance
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereBalance($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Coupon[] $receivedCoupons
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Receipt[] $receipts
  */
 class User extends Model
 {
@@ -104,6 +106,11 @@ class User extends Model
     public function orders()
     {
         return $this->hasMany('\App\Models\Order');
+    }
+
+    public function receipts()
+    {
+        return $this->hasMany('\App\Models\Receipt');
     }
 
     public function accumulatePointsRecords()

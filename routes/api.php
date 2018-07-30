@@ -246,6 +246,14 @@ Route::namespace('Api')->group(function () {
 
 
     Route::get('/test', function () {
+        $order = [
+            'out_trade_no' => time(),
+            'body' => 'subject-测试',
+            'total_fee'      => '1',
+            'openid' => 'onkVf1FjWS5SBIixxxxxxxxx',
+        ];
+        $result = \Yansongda\LaravelPay\Facades\Pay::wechat()->scan($order);
+        return $order;
         preg_match_all('/\d+/', '10盒', $arr);
         return $arr[0][0];
         return uuid();
