@@ -14,24 +14,12 @@ use App\Http\Requests\StoreCart;
 use App\Http\Resources\CartCollection;
 use App\Models\Cart;
 use App\Models\Combination;
+use App\Models\Entity;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 
 class CartController extends ApiController
 {
-    /**
-     * @return mixed
-     * @throws \App\Exceptions\TokenException
-     */
-    public function index()
-    {
-        return $this->success(
-            new CartCollection(
-                TokenFactory::getCurrentUser()->carts()->paginate(Cart::getLimit())
-            )
-        );
-    }
-
     /**
      * @param StoreCart $request
      * @return mixed

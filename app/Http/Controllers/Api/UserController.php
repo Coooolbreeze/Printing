@@ -7,17 +7,21 @@ use App\Exceptions\BaseException;
 use App\Http\Requests\UpdateUser;
 use App\Http\Resources\AccumulatePointsRecordCollection;
 use App\Http\Resources\AddressResource;
+use App\Http\Resources\CartCollection;
 use App\Http\Resources\CouponCollection;
 use App\Http\Resources\GiftOrderCollection;
 use App\Http\Resources\OrderCollection;
+use App\Http\Resources\ReceiptCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserCouponCollection;
 use App\Http\Resources\UserResource;
 use App\Models\AccumulatePointsRecord;
 use App\Models\BalanceRecord;
+use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\GiftOrder;
 use App\Models\Order;
+use App\Models\Receipt;
 use App\Models\User;
 use App\Services\Tokens\TokenFactory;
 use Carbon\Carbon;
@@ -185,8 +189,16 @@ class UserController extends ApiController
             ->when($request->status, function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->paginate(GiftOrder::getLimit())
+        ));
+    }
+
+    public function carts()
+    {
+        return $this->success(new CartCollection(TokenFactory::getCurrentUser()
+            ->carts()
+            ->paginate(Cart::getLimit())
         ));
     }
 
@@ -197,8 +209,17 @@ class UserController extends ApiController
             ->when($request->status, function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->paginate(Order::getLimit())
+        ));
+    }
+
+    public function receipts()
+    {
+        return $this->success(new ReceiptCollection(TokenFactory::getCurrentUser()
+            ->receipts()
+            ->latest()
+            ->paginate(Receipt::getLimit())
         ));
     }
 }

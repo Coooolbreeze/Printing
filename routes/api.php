@@ -92,8 +92,12 @@ Route::namespace('Api')->group(function () {
         Route::get('/users/self/accumulate_points_records', 'UserController@accumulatePointsRecords');
         // 礼品订单
         Route::get('/users/self/gift_orders', 'UserController@giftOrders');
+        // 我的购物车
+        Route::get('/users/self/carts', 'UserController@carts');
         // 商品订单
         Route::get('/users/self/orders', 'UserController@orders');
+        // 我的发票
+        Route::get('/users/self/receipts', 'UserController@receipts');
         // 获取我的优惠券
         Route::get('/users/self/coupons', 'UserController@coupons');
         // 领取优惠券
@@ -101,7 +105,7 @@ Route::namespace('Api')->group(function () {
             ->only(['store']);
 
         Route::apiResource('carts', 'CartController')
-            ->only(['index', 'store', 'delete']);
+            ->only(['store', 'delete']);
         Route::post('/batch/carts', 'CartController@batchStore');
         Route::delete('/batch/carts', 'CartController@batchDestroy');
 
@@ -112,6 +116,9 @@ Route::namespace('Api')->group(function () {
             ->only(['show', 'store']);
 
         Route::apiResource('orders', 'OrderController')
+            ->only(['show', 'store']);
+
+        Route::apiResource('receipts', 'ReceiptController')
             ->only(['show', 'store']);
 
         Route::apiResource('users', 'UserController')
@@ -202,6 +209,14 @@ Route::namespace('Api')->group(function () {
 
     Route::middleware('permission:订单管理')->group(function () {
         Route::apiResource('gift_orders', 'GiftOrderController')
+            ->only(['index', 'update']);
+
+        Route::put('/orders/back_pay', 'OrderController@backPay');
+
+        Route::apiResource('orders', 'OrderController')
+            ->only(['index', 'update']);
+
+        Route::apiResource('receipts', 'ReceiptController')
             ->only(['index', 'update']);
     });
 

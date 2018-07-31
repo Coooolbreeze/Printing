@@ -23,12 +23,16 @@ class ReceiptResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'user' => (new UserResource($this->user))->show(['id', 'nickname']),
-            'order' => OrderResource::collection($this->orders)->show(['id']),
+            'order' => OrderResource::collection($this->orders)->show(['id', 'title']),
             'company' => $this->company,
             'tax_no' => $this->tax_no,
             'contact' => $this->contact,
             'contact_way' => $this->contact_way,
-            'address' => $this->address
+            'address' => $this->address,
+            'money' => $this->money,
+            'is_receipted' => (bool)$this->is_receipted,
+            'created_at' => (string)$this->created_at,
+            'updated_at' => (string)$this->updated_at
         ]);
     }
 }

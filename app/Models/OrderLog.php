@@ -9,6 +9,8 @@
 namespace App\Models;
 
 
+use App\Services\Tokens\TokenFactory;
+
 /**
  * App\Models\OrderLog
  *
@@ -32,5 +34,14 @@ class OrderLog extends Model
     public function order()
     {
         return $this->belongsTo('App\Models\Order');
+    }
+
+    public static function write($orderId, $action)
+    {
+        return self::create([
+            'order_id' => $orderId,
+            'administrator' => TokenFactory::getCurrentUser()->nickname,
+            'action' => $action
+        ]);
     }
 }

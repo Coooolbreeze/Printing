@@ -21,6 +21,8 @@ class CreateReceiptsTable extends Migration
             $table->string('contact');
             $table->string('contact_way');
             $table->string('address');
+            $table->decimal('money');
+            $table->tinyInteger('is_receipted')->default(0);
             $table->timestamps();
         });
     }

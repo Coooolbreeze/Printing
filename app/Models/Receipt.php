@@ -9,6 +9,9 @@
 namespace App\Models;
 
 
+use App\Exceptions\BaseException;
+use App\Services\Tokens\TokenFactory;
+
 /**
  * App\Models\Receipt
  *
@@ -44,5 +47,27 @@ class Receipt extends Model
     public function orders()
     {
         return $this->hasMany('App\Models\Order');
+    }
+
+    /**
+     * @param $receipt
+     * @param $money
+     * @return Receipt|\Illuminate\Database\Eloquent\Model
+     * @throws BaseException
+     * @throws \App\Exceptions\TokenException
+     */
+    public static function receipted($receipt, $money)
+    {
+        if ($money < 200) throw new BaseException('发票金额不能小于200元');
+
+        return self::create([
+            'user_id' => TokenFactory::getCurrentUID(),
+            'company' => $receipt['company'],
+            'tax_no' => $receipt['tax_no'],
+            'contact' => $receipt['contact'],
+            'contact_way' => $receipt['contact_way'],
+            'address' => $receipt['address'],
+            'money' => $money
+        ]);
     }
 }

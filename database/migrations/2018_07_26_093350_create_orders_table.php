@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->string('order_no');
             $table->integer('user_id');
             $table->string('receipt_id')->nullable();
+            $table->string('title');
             $table->text('snap_content');
             $table->text('snap_address');
             $table->decimal('goods_price');
@@ -28,9 +29,10 @@ class CreateOrdersTable extends Migration
             $table->decimal('discount_amount')->default(0);
             $table->decimal('balance_deducted')->default(0);
             $table->string('remark');
-            $table->tinyInteger('status')->default(1)->comment('0已失效 1未支付 2待审核 3待发货 4已发货 5已收货');
-            $table->tinyInteger('pay_type')->comment('1支付宝 2微信 3余额');
+            $table->tinyInteger('status')->default(1)->comment('0已失效 1未支付 2已支付 3待发货 4已发货 5已收货 6已评论');
+            $table->tinyInteger('pay_type')->nullable()->comment('1支付宝 2微信 3余额 4后台代付');
             $table->timestamp('paid_at')->nullable();
+            $table->timestamp('audited_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
             $table->timestamp('received_at')->nullable();
             $table->timestamps();

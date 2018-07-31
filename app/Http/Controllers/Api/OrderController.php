@@ -9,10 +9,14 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Enum\OrderPayTypeEnum;
+use App\Enum\OrderStatusEnum;
 use App\Exceptions\BaseException;
 use App\Http\Requests\StoreOrder;
+use App\Http\Requests\UpdateOrder;
 use App\Http\Resources\FileResource;
 use App\Http\Resources\ImageResource;
+use App\Http\Resources\OrderCollection;
 use App\Models\Address;
 use App\Models\Cart;
 use App\Models\Combination;
@@ -20,11 +24,32 @@ use App\Models\Entity;
 use App\Models\Express;
 use App\Models\File;
 use App\Models\Order;
+use App\Models\Receipt;
 use App\Models\UserCoupon;
 use App\Services\Tokens\TokenFactory;
+use Illuminate\Http\Request;
 
 class OrderController extends ApiController
 {
+    /**
+     * 订单标题长度
+     *
+     * @var int
+     */
+    private static $orderTitleLength = 15;
+
+    public function index(Request $request)
+    {
+        $orders = (new Order())
+            ->when($request->status, function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->latest()
+            ->paginate(Order::getLimit());
+
+        return $this->success(new OrderCollection($orders));
+    }
+
     /**
      * @param StoreOrder $request
      * @return mixed
@@ -49,6 +74,7 @@ class OrderController extends ApiController
             $order = [
                 'order_no' => 'E-' . makeOrderNo(),
                 'user_id' => TokenFactory::getCurrentUID(),
+                'title' => $goodsInfo['title'],
                 'goods_count' => $goodsInfo['total_count'],
                 'goods_price' => $goodsInfo['total_price'],
                 'total_weight' => $goodsInfo['total_weight'],
@@ -57,16 +83,42 @@ class OrderController extends ApiController
                 'snap_content' => json_encode($goodsInfo['goods'])
             ];
 
+            $money = $order['goods_price'] + $order['freight'];
+
             if ($request->coupon_no) {
                 $quota = UserCoupon::use($request->coupon_no, $goodsInfo['total_price']);
                 $order['discount_amount'] = $quota;
                 $order['coupon_no'] = $request->coupon_no;
+                $money -= $quota;
             }
 
-            Order::create($order);
+            if ($request->receipt_info) {
+                $receipt = Receipt::receipted($request->receipt_info, $money);
+                $order['receipt_id'] = $receipt->id;
+            }
+
+            $order = Order::create($order);
         });
 
         return $this->created();
+    }
+
+    public function update(UpdateOrder $request, Order $order)
+    {
+        Order::updateField($request, $order, ['status']);
+
+        return $this->message('更新成功');
+    }
+
+    public function backPay(Request $request)
+    {
+        Order::findOrFail($request->id)
+            ->update([
+                'status' => OrderStatusEnum::PAID,
+                'pay_type' => OrderPayTypeEnum::BACK_PAY
+            ]);
+
+        return $this->message(['支付状态更新成功']);
     }
 
     private static function entityOrder($entity)
@@ -91,12 +143,15 @@ class OrderController extends ApiController
         $totalWeight = 0;
         $totalPrice = 0;
         $totalCount = 0;
-        $carts->each(function ($value) use (&$goods, &$totalWeight, &$totalPrice, &$totalCount) {
+        $title = '';
+        $carts->each(function ($value) use (&$goods, &$totalWeight, &$totalPrice, &$totalCount, &$title) {
             $combination = Combination::findOrFail($value->combination_id);
+            $entityModel = Entity::findOrFail($value->entity_id);
 
             $entity = [
-                'id' => $value->entity_id,
-                'image' => new ImageResource(Entity::find($value->entity_id)->images()->first()),
+                'id' => $entityModel->id,
+                'name' => $entityModel->name,
+                'image' => new ImageResource($entityModel->images()->first()),
                 'combination' => $value->count ? $combination->combination : substr($combination->combination, 0, strripos($combination->combination, '|')),
                 'specs' => $value->count ? json_decode($value->specs, true) : array_slice(json_decode($value->specs, true), 0, -1),
                 'custom_specs' => json_decode($value->custom_specs, true),
@@ -113,9 +168,17 @@ class OrderController extends ApiController
             $totalWeight += $entity['weight'];
             $totalPrice += $entity['price'];
             $totalCount += self::getCount($entity['count']);
+            $title .= $entity['name'] . ',';
         });
 
+        $title = rtrim($title, ',');
+        if (mb_strlen($title) <= self::$orderTitleLength)
+            $title .= '共' . $totalCount . '件';
+        else
+            $title = mb_substr($title, 0, 14) . '...共' . $totalCount . '件';
+
         return [
+            'title' => $title,
             'goods' => $goods,
             'total_weight' => $totalWeight,
             'total_price' => $totalPrice,

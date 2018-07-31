@@ -9,6 +9,8 @@
 namespace App\Models;
 
 
+use App\Events\OrderUpdated;
+
 /**
  * App\Models\Order
  *
@@ -62,6 +64,10 @@ namespace App\Models;
  */
 class Order extends Model
 {
+    protected $dispatchesEvents = [
+        'updated' => OrderUpdated::class
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');
