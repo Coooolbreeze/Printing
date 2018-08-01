@@ -11,6 +11,7 @@ namespace App\Http\Resources;
 
 use App\Enum\OrderPayTypeEnum;
 use App\Enum\OrderStatusEnum;
+use App\Services\Tokens\TokenFactory;
 
 class OrderResource extends Resource
 {
@@ -31,9 +32,50 @@ class OrderResource extends Resource
             'title' => $this->title,
             'address' => json_decode($this->snap_address, true),
             'content' => json_decode($this->snap_content, true),
+            'goods_price' => $this->goods_price,
+            'goods_count' => $this->goods_count,
+            'total_weight' => $this->total_weight,
+            'freight' => $this->freight,
+            'discount_amount' => $this->when(
+                $this->status >= OrderStatusEnum::PAID,
+                $this->discount_amount
+            ),
+            'balance_deducted' => $this->when(
+                $this->status >= OrderStatusEnum::PAID,
+                $this->balance_deducted
+            ),
+            'total_price' => $this->total_price,
             'status' => $this->convertStatus($this->status),
-            'pay_type' => $this->when($this->status > 1, $this->convertPayType($this->pay_type)),
-            'created_at' => (string)$this->created_at
+            'pay_type' => $this->when(
+                $this->status >= OrderStatusEnum::PAID,
+                $this->convertPayType($this->pay_type)
+            ),
+            'expresses' => $this->when(
+                $this->status == OrderStatusEnum::DELIVERED,
+                OrderExpressResource::collection($this->expresses)
+            ),
+            'logs' => $this->when(
+                $this->status >= OrderStatusEnum::PAID && TokenFactory::isAdmin(),
+                OrderLogResource::collection($this->logs)
+            ),
+            'remark' => $this->remark,
+            'created_at' => (string)$this->created_at,
+            'paid_at' => $this->when(
+                $this->status >= OrderStatusEnum::PAID,
+                (string)$this->paid_at
+            ),
+            'audited_at' => $this->when(
+                $this->status >= OrderStatusEnum::UNDELIVERED,
+                $this->audited_at
+            ),
+            'delivered_at' => $this->when(
+                $this->status >= OrderStatusEnum::DELIVERED,
+                $this->delivered_at
+            ),
+            'received_at' => $this->when(
+                $this->status >= OrderStatusEnum::RECEIVED,
+                $this->received_at
+            ),
         ]);
     }
 
@@ -59,6 +101,6 @@ class OrderResource extends Resource
             OrderPayTypeEnum::BALANCE => '余额支付',
             OrderPayTypeEnum::BACK_PAY => '后台支付'
         ];
-        return $payType[$value];
+        return $value ? $payType[$value] : null;
     }
 }

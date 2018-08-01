@@ -61,6 +61,12 @@ use App\Events\OrderUpdated;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereUserId($value)
  * @mixin \Eloquent
+ * @property string|null $audited_at
+ * @property string $title
+ * @property float $total_price
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereAuditedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereTotalPrice($value)
  */
 class Order extends Model
 {

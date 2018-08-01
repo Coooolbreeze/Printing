@@ -9,6 +9,8 @@
 namespace App\Http\Resources;
 
 
+use App\Models\Comment;
+
 class EntityResource extends Resource
 {
     public static function collection($resource)
@@ -34,6 +36,7 @@ class EntityResource extends Resource
             'specs' => AttributeResource::collection($this->attributes),
             'custom_specs' => CustomAttributeResource::collection($this->customAttributes),
             'combinations' => CombinationResource::collection($this->combinations),
+            'comments' => new CommentCollection($this->comments()->paginate(Comment::getLimit())),
             'created_at' => (string)$this->created_at
         ]);
     }

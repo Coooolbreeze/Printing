@@ -31,8 +31,8 @@ class SmsController extends ApiController
         $phone = $request->phone;
         $auth = UserAuth::where('identifier', $phone)->first();
 
-        if ($request->is_login && !$auth) throw new UserNotFoundException();
-        elseif (!$request->is_login && $auth) throw new AccountIsExistException();
+        if ($request->is_register && $auth) throw new AccountIsExistException();
+        elseif (!$request->is_register && !$auth) throw new UserNotFoundException();
 
         $verification = VerificationCode::create($phone);
 

@@ -9,12 +9,12 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Requests\StoreOrderExpress;
 use App\Models\OrderExpress;
-use Illuminate\Http\Request;
 
 class OrderExpressController extends ApiController
 {
-    public function store(Request $request)
+    public function store(StoreOrderExpress $request)
     {
         OrderExpress::create([
             'order_id' => $request->order_id,

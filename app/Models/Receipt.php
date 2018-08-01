@@ -36,6 +36,10 @@ use App\Services\Tokens\TokenFactory;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Receipt whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Receipt whereUserId($value)
  * @mixin \Eloquent
+ * @property int $is_receipted
+ * @property float $money
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Receipt whereIsReceipted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Receipt whereMoney($value)
  */
 class Receipt extends Model
 {
@@ -58,7 +62,10 @@ class Receipt extends Model
      */
     public static function receipted($receipt, $money)
     {
-        if ($money < 200) throw new BaseException('发票金额不能小于200元');
+        $receiptedMoney = config('setting.receipted_money');
+
+        if ($money < $receiptedMoney)
+            throw new BaseException('发票金额不能小于' . $receiptedMoney . '元');
 
         return self::create([
             'user_id' => TokenFactory::getCurrentUID(),

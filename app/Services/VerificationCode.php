@@ -40,6 +40,24 @@ class VerificationCode
     }
 
     /**
+     * 验证code
+     *
+     * @param $code
+     * @param $verificationToken
+     * @return mixed
+     * @throws VerificationCodeException
+     */
+    public static function validate($code, $verificationToken)
+    {
+        $cacheValues = json_decode(Cache::get($verificationToken), true);
+
+        if (!$cacheValues) throw new VerificationCodeException('验证码已过期');
+        if ($code != $cacheValues['code']) throw new VerificationCodeException();
+
+        return $cacheValues;
+    }
+
+    /**
      * 验证并返回联系方式
      *
      * @param $code
@@ -49,10 +67,7 @@ class VerificationCode
      */
     public static function getContact($code, $verificationToken)
     {
-        $cacheValues = json_decode(Cache::get($verificationToken), true);
-
-        if (!$cacheValues) throw new VerificationCodeException('验证码已过期');
-        if ($code != $cacheValues['code']) throw new VerificationCodeException();
+        $cacheValues = self::validate($code, $verificationToken);
 
         Cache::forget($verificationToken);
 

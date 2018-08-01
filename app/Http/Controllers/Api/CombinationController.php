@@ -28,9 +28,7 @@ class CombinationController extends ApiController
 
     public function update(Request $request, Combination $combination)
     {
-        isset($request->price) && $combination->price = $request->price;
-        isset($request->weight) && $combination->weight = $request->weight;
-        $combination->save();
+        Combination::updateField($request, $combination, ['price', 'weight']);
 
         return $this->message('更新成功');
     }
@@ -40,6 +38,13 @@ class CombinationController extends ApiController
         return Excel::download(new EntityCombinationsExport($request->entity_id), Entity::find($request->entity_id)->name . '.xlsx');
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\BaseException
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
     public function import(Request $request)
     {
         $spreadsheet = (new Xlsx())->load($request->file('file'))->getActiveSheet();

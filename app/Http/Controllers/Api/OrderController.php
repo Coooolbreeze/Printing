@@ -92,6 +92,8 @@ class OrderController extends ApiController
                 $money -= $quota;
             }
 
+            $order['total_price'] = $money;
+
             if ($request->receipt_info) {
                 $receipt = Receipt::receipted($request->receipt_info, $money);
                 $order['receipt_id'] = $receipt->id;
@@ -118,7 +120,7 @@ class OrderController extends ApiController
                 'pay_type' => OrderPayTypeEnum::BACK_PAY
             ]);
 
-        return $this->message(['支付状态更新成功']);
+        return $this->message('支付状态更新成功');
     }
 
     private static function entityOrder($entity)
@@ -176,6 +178,8 @@ class OrderController extends ApiController
             $title .= '共' . $totalCount . '件';
         else
             $title = mb_substr($title, 0, 14) . '...共' . $totalCount . '件';
+
+        Cart::whereIn('id', $ids)->delete();
 
         return [
             'title' => $title,

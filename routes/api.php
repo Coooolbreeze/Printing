@@ -16,8 +16,6 @@ Route::namespace('Api')->group(function () {
     Route::post('/register', 'TokenController@register')->name('tokens.register');
     // 用户登录
     Route::post('/login', 'TokenController@login')->name('tokens.login');
-    // 刷新token
-    Route::post('/refresh', 'TokenController@refresh')->name('tokens.refresh');
 
     // 发送短信
     Route::post('/sms', 'SmsController@sendSms')->middleware('throttle:2,1');
@@ -84,6 +82,10 @@ Route::namespace('Api')->group(function () {
      * 需登录后访问
      */
     Route::middleware('token')->group(function () {
+        // 刷新token
+        Route::post('/refresh', 'TokenController@refresh')->name('tokens.refresh');
+        // 修改密码
+        Route::put('/repassword', 'TokenController@rePassword')->name('token.rePassword');
         // 获取自己的资料
         Route::get('/users/self', 'UserController@self')->name('users.self');
         // 收货地址
@@ -123,6 +125,9 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('users', 'UserController')
             ->only(['update']);
+
+        Route::apiResource('comments', 'CommentController')
+            ->only(['store']);
     });
 
     /**
@@ -215,6 +220,9 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('orders', 'OrderController')
             ->only(['index', 'update']);
+
+        Route::apiResource('order_expresses', 'OrderExpressController')
+            ->only(['store']);
 
         Route::apiResource('receipts', 'ReceiptController')
             ->only(['index', 'update']);

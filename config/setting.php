@@ -41,4 +41,9 @@ return [
      * 续重重量
      */
     'additional_weight' => env('ADDITIONAL_WEIGHT'),
+
+    /**
+     * 开票最小金额
+     */
+    'receipted_money' => env('RECEIPTED_MONEY'),
 ];

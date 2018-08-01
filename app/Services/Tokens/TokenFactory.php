@@ -114,7 +114,7 @@ class TokenFactory
      */
     public static function refresh($refreshToken = null)
     {
-        $refreshToken = $refreshToken ?: request()->header('token') ?: request()->input('token');
+        $refreshToken = $refreshToken ?: self::getToken();
         return new RefreshToken($refreshToken);
     }
 
@@ -184,6 +184,11 @@ class TokenFactory
         }
     }
 
+    public static function getToken()
+    {
+        return request()->input('token') ?: request()->header('token');
+    }
+
     /**
      * 从缓存中移除token
      *
@@ -231,7 +236,7 @@ class TokenFactory
      */
     public static function getCurrentTokenVar($key)
     {
-        $token = request()->header('token') ?: request()->input('token');
+        $token = self::getToken();
 
         $vars = Cache::get($token);
         if (!$vars) {

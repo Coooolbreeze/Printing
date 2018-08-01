@@ -28,6 +28,7 @@ class CreateOrdersTable extends Migration
             $table->string('coupon_no')->nullable();
             $table->decimal('discount_amount')->default(0);
             $table->decimal('balance_deducted')->default(0);
+            $table->decimal('total_price');
             $table->string('remark');
             $table->tinyInteger('status')->default(1)->comment('0已失效 1未支付 2已支付 3待发货 4已发货 5已收货 6已评论');
             $table->tinyInteger('pay_type')->nullable()->comment('1支付宝 2微信 3余额 4后台代付');

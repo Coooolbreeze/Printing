@@ -44,6 +44,7 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereCustomNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereSales($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomAttribute[] $customAttributes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
  */
 class Entity extends Model
 {
@@ -70,5 +71,10 @@ class Entity extends Model
     public function combinations()
     {
         return $this->hasMany('App\Models\Combination');
+    }
+
+    public function comments()
+    {
+        return $this->morphMany('App\Models\Comment', 'commentable');
     }
 }

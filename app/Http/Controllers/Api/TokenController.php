@@ -47,6 +47,27 @@ class TokenController extends ApiController
     }
 
     /**
+     * 修改密码
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws RegisterException
+     * @throws \App\Exceptions\RePasswordException
+     * @throws \App\Exceptions\TokenException
+     */
+    public function rePassword(Request $request)
+    {
+        $password = $request->password;
+
+        if (!preg_match('/^\w{6,18}$/', $password))
+            throw new RegisterException('密码为6~18位字母、数字或下划线');
+
+        TokenFactory::rePassword(TokenFactory::getCurrentUID(), $password);
+
+        return $this->message('修改密码成功');
+    }
+
+    /**
      * 刷新token令牌
      *
      * @return mixed
