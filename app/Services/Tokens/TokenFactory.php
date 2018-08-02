@@ -369,4 +369,17 @@ class TokenFactory
             return false;
         }
     }
+
+    /**
+     * 是否是自己或者管理员
+     *
+     * @param $checkUID
+     * @param null $uid
+     * @return bool
+     * @throws TokenException
+     */
+    public static function isSelfOrAdmin($checkUID, $uid = null)
+    {
+        return self::isValidOperate($checkUID) || self::isAdmin($uid);
+    }
 }

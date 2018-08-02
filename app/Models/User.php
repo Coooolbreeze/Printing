@@ -3,6 +3,7 @@
 namespace App\Models;
 
 
+use App\Events\UserCreated;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -66,12 +67,17 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Coupon[] $receivedCoupons
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Receipt[] $receipts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Message[] $messages
  */
 class User extends Model
 {
     use HasRoles, SoftDeletes;
 
     protected $dates = ['deleted_at'];
+
+    protected $dispatchesEvents = [
+        'created' => UserCreated::class
+    ];
 
     public function receivedCoupons()
     {
@@ -116,5 +122,10 @@ class User extends Model
     public function accumulatePointsRecords()
     {
         return $this->hasMany('App\Models\AccumulatePointsRecord');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany('App\Models\Message');
     }
 }

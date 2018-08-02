@@ -11,6 +11,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Enum\OrderPayTypeEnum;
 use App\Enum\OrderStatusEnum;
+use App\Events\OrderAudited;
+use App\Events\OrderDelivered;
+use App\Events\OrderPaid;
+use App\Events\OrderReceived;
 use App\Exceptions\BaseException;
 use App\Http\Requests\StoreOrder;
 use App\Http\Requests\UpdateOrder;
@@ -109,16 +113,35 @@ class OrderController extends ApiController
     {
         Order::updateField($request, $order, ['status']);
 
+        $status = $request->status;
+
+        // 分发事件
+        if ($status == OrderStatusEnum::PAID) {
+            event(new OrderPaid($order));
+        }
+        elseif ($status == OrderStatusEnum::UNDELIVERED) {
+            event(new OrderAudited($order));
+        }
+        elseif ($status == OrderStatusEnum::DELIVERED) {
+            event(new OrderDelivered($order));
+        }
+        elseif ($status == OrderStatusEnum::RECEIVED) {
+            event(new OrderReceived($order));
+        }
+
         return $this->message('更新成功');
     }
 
     public function backPay(Request $request)
     {
-        Order::findOrFail($request->id)
-            ->update([
-                'status' => OrderStatusEnum::PAID,
-                'pay_type' => OrderPayTypeEnum::BACK_PAY
-            ]);
+        $order = Order::findOrFail($request->id);
+
+        $order->update([
+            'status' => OrderStatusEnum::PAID,
+            'pay_type' => OrderPayTypeEnum::BACK_PAY
+        ]);
+
+        event(new OrderPaid($order));
 
         return $this->message('支付状态更新成功');
     }

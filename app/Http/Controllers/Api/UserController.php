@@ -10,6 +10,7 @@ use App\Http\Resources\AddressResource;
 use App\Http\Resources\CartCollection;
 use App\Http\Resources\CouponCollection;
 use App\Http\Resources\GiftOrderCollection;
+use App\Http\Resources\MessageCollection;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\ReceiptCollection;
 use App\Http\Resources\UserCollection;
@@ -20,6 +21,7 @@ use App\Models\BalanceRecord;
 use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\GiftOrder;
+use App\Models\Message;
 use App\Models\Order;
 use App\Models\Receipt;
 use App\Models\User;
@@ -135,6 +137,8 @@ class UserController extends ApiController
     }
 
     /**
+     * 我的优惠券
+     *
      * @param Request $request
      * @return mixed
      * @throws \App\Exceptions\TokenException
@@ -156,6 +160,13 @@ class UserController extends ApiController
         return $this->success(new UserCouponCollection($coupons));
     }
 
+    /**
+     * 我的积分记录
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
     public function accumulatePointsRecords(Request $request)
     {
         return $this->success(
@@ -170,6 +181,13 @@ class UserController extends ApiController
         );
     }
 
+    /**
+     * 我的收货地址
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
     public function addresses(Request $request)
     {
         return $this->success(AddressResource::collection(TokenFactory::getCurrentUser()
@@ -182,6 +200,13 @@ class UserController extends ApiController
         ));
     }
 
+    /**
+     * 我的礼品订单
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
     public function giftOrders(Request $request)
     {
         return $this->success(new GiftOrderCollection(TokenFactory::getCurrentUser()
@@ -194,6 +219,12 @@ class UserController extends ApiController
         ));
     }
 
+    /**
+     * 我的购物车
+     *
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
     public function carts()
     {
         return $this->success(new CartCollection(TokenFactory::getCurrentUser()
@@ -202,6 +233,13 @@ class UserController extends ApiController
         ));
     }
 
+    /**
+     * 我的订单
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
     public function orders(Request $request)
     {
         return $this->success(new OrderCollection(TokenFactory::getCurrentUser()
@@ -214,6 +252,12 @@ class UserController extends ApiController
         ));
     }
 
+    /**
+     * 我的发票
+     *
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
     public function receipts()
     {
         return $this->success(new ReceiptCollection(TokenFactory::getCurrentUser()
@@ -221,5 +265,41 @@ class UserController extends ApiController
             ->latest()
             ->paginate(Receipt::getLimit())
         ));
+    }
+
+    /**
+     * 我的消息
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
+    public function messages(Request $request)
+    {
+        return $this->success(new MessageCollection(TokenFactory::getCurrentUser()
+            ->messages()
+            ->when($request->is_read, function ($query) use ($request) {
+                $query->where('is_read', $request->is_read);
+            })
+            ->orderBy('is_read', 'asc')
+            ->latest()
+            ->paginate(Message::getLimit())
+        ));
+    }
+
+    /**
+     * 我的未读消息数
+     *
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
+    public function unreadMessageCount()
+    {
+        return $this->success([
+            'count' => TokenFactory::getCurrentUser()
+                ->messages()
+                ->where('is_read', 0)
+                ->count()
+        ]);
     }
 }

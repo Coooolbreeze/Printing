@@ -9,6 +9,7 @@
 namespace App\Models;
 
 
+use App\Events\UserAccumulatePointsIncome;
 use App\Exceptions\BaseException;
 use App\Services\Tokens\TokenFactory;
 
@@ -44,10 +45,11 @@ class AccumulatePointsRecord extends Model
     /**
      * @param $number
      * @param $describe
-     * @param null $user
+     * @param User|null $user
+     * @throws \App\Exceptions\TokenException
      * @throws \Throwable
      */
-    public static function income($number, $describe, $user = null)
+    public static function income($number, $describe, User $user = null)
     {
         (!$user) && $user = TokenFactory::getCurrentUser();
 
@@ -62,18 +64,20 @@ class AccumulatePointsRecord extends Model
                 'describe' => $describe,
                 'type' => 1
             ]);
+
+            event(new UserAccumulatePointsIncome($user));
         });
     }
 
     /**
      * @param $number
      * @param $describe
-     * @param null $user
+     * @param User|null $user
      * @throws BaseException
      * @throws \App\Exceptions\TokenException
      * @throws \Throwable
      */
-    public static function expend($number, $describe, $user = null)
+    public static function expend($number, $describe, User $user = null)
     {
         (!$user) && $user = TokenFactory::getCurrentUser();
 

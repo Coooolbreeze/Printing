@@ -88,6 +88,10 @@ Route::namespace('Api')->group(function () {
         Route::put('/repassword', 'TokenController@rePassword')->name('token.rePassword');
         // 获取自己的资料
         Route::get('/users/self', 'UserController@self')->name('users.self');
+        // 我的消息
+        Route::get('/users/self/messages', 'UserController@messages');
+        // 未读消息条数
+        Route::get('/users/self/messages/unread_count', 'UserController@unreadMessageCount');
         // 收货地址
         Route::get('/users/self/addresses', 'UserController@addresses');
         // 积分记录
@@ -128,6 +132,14 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('comments', 'CommentController')
             ->only(['store']);
+
+        Route::apiResource('messages', 'MessageController')
+            ->only(['show', 'update', 'destroy']);
+
+        Route::prefix('batch')->group(function () {
+            Route::delete('/messages', 'MessageController@batchDestroy');
+            Route::put('/messages', 'MessageController@batchUpdate');
+        });
     });
 
     /**
@@ -241,6 +253,9 @@ Route::namespace('Api')->group(function () {
     Route::middleware('permission:用户管理')->group(function () {
         Route::apiResource('users', 'UserController')
             ->only(['index', 'destroy']);
+
+        Route::apiResource('messages', 'MessageController')
+            ->only(['index', 'store']);
     });
 
     Route::middleware('permission:客服工具管理')->group(function () {
@@ -269,6 +284,11 @@ Route::namespace('Api')->group(function () {
 
 
     Route::get('/test', function () {
+        return \App\Models\MemberLevel::find(5)->users()->pluck('id');
+
+        $array = array_merge_recursive([1, 2, 3], [5, 1, 4]);
+        return array_flip($array);
+
         $order = [
             'out_trade_no' => time(),
             'body' => 'subject-测试',

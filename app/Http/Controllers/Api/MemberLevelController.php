@@ -34,10 +34,7 @@ class MemberLevelController extends ApiController
 
     public function update(UpdateMemberLevel $request, MemberLevel $memberLevel)
     {
-        isset($request->name) && $memberLevel->name = $request->name;
-        isset($request->accumulate_points) && $memberLevel->accumulate_points = $request->accumulate_points;
-        isset($request->discount) && $memberLevel->discount = $request->discount;
-        $memberLevel->save();
+        MemberLevel::updateField($request, $memberLevel, ['name', 'accumulate_points', 'discount']);
 
         return $this->message('更新成功');
     }

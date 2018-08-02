@@ -16,9 +16,28 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\Event' => [
             'App\Listeners\EventListener',
         ],
-        'App\Events\OrderUpdated' => [
-            'App\Listeners\OrderUpdatedListener'
+        'App\Events\UserCreated' => [
+            'App\Listeners\UserCreatedListener'
         ],
+        'App\Events\UserAccumulatePointsIncome' => [
+            'App\Listeners\UserAccumulatePointsIncomeListener'
+        ],
+        'App\Events\OrderPaid' => [
+//            'App\Listeners\OrderEventSubscriber@onOrderPaid'
+        ],
+        'App\Events\OrderAudited' => [
+//            'App\Listeners\OrderEventSubscriber@onOrderAudited'
+        ],
+        'App\Events\OrderDelivered' => [
+//            'App\Listeners\OrderEventSubscriber@onOrderDelivered'
+        ],
+        'App\Events\OrderReceived' => [
+//            'App\Listeners\OrderEventSubscriber@onOrderReceived'
+        ],
+    ];
+
+    protected $subscribe = [
+        'App\Listeners\OrderEventSubscriber',
     ];
 
     /**
