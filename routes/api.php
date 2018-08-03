@@ -30,6 +30,15 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('users', 'UserController')
         ->only(['show']);
 
+    Route::apiResource('large_categories', 'LargeCategoryController')
+        ->only(['index', 'show']);
+
+    Route::apiResource('categories', 'CategoryController')
+        ->only(['show']);
+
+    Route::apiResource('types', 'TypeController')
+        ->only(['index', 'show']);
+
     Route::apiResource('entities', 'EntityController')
         ->only(['index', 'show']);
 
@@ -210,6 +219,12 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:商品管理')->group(function () {
+        Route::apiResource('large_categories', 'LargeCategoryController')
+            ->only(['update']);
+
+        Route::apiResource('categories', 'CategoryController')
+            ->only(['store', 'update', 'destroy']);
+
         // 商品
         Route::apiResource('entities', 'EntityController')
             ->only(['store', 'update']);

@@ -24,6 +24,8 @@ class EntityResource extends Resource
     {
         return $this->filterFields([
             'id' => $this->id,
+            'type' => (new TypeResource($this->type))->hide(['entities', 'secondary_types']),
+            'image' => new ImageResource($this->images()->first()),
             'images' => ImageResource::collection($this->images),
             'name' => $this->name,
             'summary' => $this->summary,

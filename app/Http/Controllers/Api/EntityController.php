@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\EntityCollection;
 use App\Http\Resources\EntityResource;
 use App\Models\Attribute;
+use App\Models\CategoryItem;
 use App\Models\Combination;
 use App\Models\CustomAttribute;
 use App\Models\CustomValue;
@@ -23,27 +24,41 @@ class EntityController extends ApiController
 {
     public function index(Request $request)
     {
-        return $this->success(new EntityCollection(
-            (new Entity())
-                ->when($request->keyword, function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->keyword . '%')
-                        ->orWhere('keywords', 'like', '%' . $request->keyword . '%');
-                })
-                ->paginate(Entity::getLimit())
-        ));
+        $entities = (new Entity())
+            ->when($request->keyword, function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->keyword . '%')
+                    ->orWhere('keywords', 'like', '%' . $request->keyword . '%');
+            })
+            ->paginate(Entity::getLimit());
+
+        return $this->success(new EntityCollection($entities));
     }
 
     public function show(Entity $entity)
     {
-        return $this->success(new EntityResource($entity));
+        return $this->success((new EntityResource($entity))->hide(['image']));
     }
 
+    /**
+     * @param Request $request
+     * @param Entity $entity
+     * @return mixed
+     * @throws \Throwable
+     */
     public function update(Request $request, Entity $entity)
     {
-        Entity::updateField($request, $entity, [
-            'category_id', 'name', 'summary', 'body', 'lead_time', 'title', 'keywords', 'describe'
-        ]);
-        isset($request->images) && $entity->images()->sync($request->images);
+        \DB::transaction(function () use ($request, $entity) {
+            Entity::updateField($request, $entity, [
+                'type_id', 'secondary_type_id', 'name', 'summary', 'body', 'lead_time', 'title', 'keywords', 'describe'
+            ]);
+            isset($request->images) && $entity->images()->sync($request->images);
+
+            if (isset($request->category_id)) {
+                CategoryItem::where('item_id', $entity->id)
+                    ->where('type', 2)
+                    ->update(['category_id' => $request->category_id]);
+            }
+        });
 
         return $this->message('更新成功');
     }
@@ -61,7 +76,8 @@ class EntityController extends ApiController
         \DB::transaction(function () use ($request, &$entity) {
             // 创建商品
             $entity = Entity::create([
-                'category_id' => $request->category_id,
+                'type_id' => $request->category_id,
+                'secondary_type_id' => $request->secondary_type_id,
                 'name' => $request->name,
                 'summary' => $request->summary,
                 'body' => $request->body,
@@ -71,6 +87,14 @@ class EntityController extends ApiController
                 'keywords' => $request->keywords,
                 'describe' => $request->describe
             ]);
+
+            if (isset($request->category_id)) {
+                CategoryItem::create([
+                    'category_id' => $request->category_id,
+                    'item_id' => $entity->id,
+                    'item_type' => 2
+                ]);
+            }
 
             // 同步商品相册
             $entity->images()->sync($request->images);

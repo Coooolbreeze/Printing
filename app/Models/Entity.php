@@ -45,12 +45,23 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereSales($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomAttribute[] $customAttributes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
+ * @property int|null $type_id
+ * @property int|null $secondary_type_id
+ * @property-read \App\Models\SecondaryType|null $secondaryType
+ * @property-read \App\Models\Type|null $type
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereSecondaryTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereTypeId($value)
  */
 class Entity extends Model
 {
-    public function category()
+    public function type()
     {
-        return $this->belongsTo('App\Models\Category');
+        return $this->belongsTo('App\Models\Type');
+    }
+
+    public function secondaryType()
+    {
+        return $this->belongsTo('App\Models\SecondaryType');
     }
 
     public function attributes()

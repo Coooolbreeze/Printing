@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: 392113643
- * Date: 2018/6/11
- * Time: 14:21
+ * Date: 2018/8/3
+ * Time: 15:53
  */
 
 namespace App\Http\Resources;
@@ -11,12 +11,12 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class EntityCollection extends ResourceCollection
+class TypeCollection extends ResourceCollection
 {
     public function toArray($request)
     {
         return [
-            'data' => EntityResource::collection($this->collection)->show(['id', 'image', 'name', 'summary']),
+            'data' => TypeResource::collection($this->collection)->hide(['entities', 'secondary_types']),
             'count' => $this->count(),
             'total' => $this->total(),
             'current_page' => $this->currentPage(),

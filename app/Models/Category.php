@@ -25,6 +25,9 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Category whereLargeCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Category whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Category whereUpdatedAt($value)
+ * @property string|null $url
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CategoryItem[] $categoryItems
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Category whereUrl($value)
  */
 class Category extends Model
 {
@@ -33,8 +36,8 @@ class Category extends Model
         return $this->belongsTo('App\Models\LargeCategory');
     }
 
-    public function entities()
+    public function items()
     {
-        return $this->hasMany('App\Models\Entity');
+        return $this->hasMany('App\Models\CategoryItem');
     }
 }
