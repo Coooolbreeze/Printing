@@ -9,6 +9,9 @@
 namespace App\Models;
 
 
+use App\Services\Tokens\TokenFactory;
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * App\Models\Entity
  *
@@ -51,9 +54,22 @@ namespace App\Models;
  * @property-read \App\Models\Type|null $type
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereSecondaryTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereTypeId($value)
+ * @property int $status 1销售中 2已下架
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Entity whereStatus($value)
  */
 class Entity extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+
+        if (!TokenFactory::isAdmin()) {
+            static::addGlobalScope('status', function (Builder $builder) {
+                $builder->where('status', 1);
+            });
+        }
+    }
+
     public function type()
     {
         return $this->belongsTo('App\Models\Type');

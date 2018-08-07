@@ -15,8 +15,10 @@ class LargeCategoryResource extends Resource
     {
         return $this->filterFields([
             'id' => $this->id,
+            'icon' => new ImageResource($this->image),
             'name' => $this->name,
             'url' => $this->when($this->url, $this->url),
+            'items' => LargeCategoryItemResource::collection($this->items),
             'categories' => CategoryResource::collection($this->categories)
         ]);
     }

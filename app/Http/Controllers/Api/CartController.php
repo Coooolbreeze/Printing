@@ -80,7 +80,7 @@ class CartController extends ApiController
      * @param $carts
      * @throws BaseException
      */
-    private static function checkCartsInfo($carts)
+    public static function checkCartsInfo($carts)
     {
         if (!Combination::isEntityMatch($carts['combination_id'], $carts['entity_id']))
             throw new BaseException('商品组合不匹配');
@@ -98,16 +98,17 @@ class CartController extends ApiController
 
     /**
      * @param $cart
+     * @param null $userId
      * @return array
      * @throws \App\Exceptions\TokenException
      */
-    private static function getSaveInfo($cart)
+    public static function getSaveInfo($cart, $userId = null)
     {
         $customSpecs = array_key_exists('custom_specs', $cart) ? $cart['custom_specs'] : [];
         $count = array_key_exists('count', $cart) ? $cart['count'] : 0;
 
         return [
-            'user_id' => TokenFactory::getCurrentUID(),
+            'user_id' => $userId ?: TokenFactory::getCurrentUID(),
             'entity_id' => $cart['entity_id'],
             'combination_id' => $cart['combination_id'],
             'specs' => json_encode($cart['specs']),
@@ -120,7 +121,7 @@ class CartController extends ApiController
         ];
     }
 
-    private static function getWeight($combinationId, $customSpecs, $count = 0)
+    public static function getWeight($combinationId, $customSpecs, $count = 0)
     {
         $specWeight = Combination::find($combinationId)->weight;
 

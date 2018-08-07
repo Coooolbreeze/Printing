@@ -28,6 +28,6 @@ class LargeCategoryController extends ApiController
 
     public function update(Request $request, LargeCategory $largeCategory)
     {
-        LargeCategory::updateField($request, $largeCategory, ['name', 'url']);
+        LargeCategory::updateField($request, $largeCategory, ['image_id', 'name', 'url']);
     }
 }

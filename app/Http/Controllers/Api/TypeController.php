@@ -9,9 +9,12 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Exceptions\BaseException;
 use App\Http\Resources\TypeCollection;
 use App\Http\Resources\TypeResource;
+use App\Models\CategoryItem;
 use App\Models\Type;
+use Illuminate\Http\Request;
 
 class TypeController extends ApiController
 {
@@ -23,5 +26,60 @@ class TypeController extends ApiController
     public function show(Type $type)
     {
         return $this->success(new TypeResource($type));
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function store(Request $request)
+    {
+        \DB::transaction(function () use ($request) {
+            $type = Type::create(['name' => $request->name]);
+
+            if (isset($request->category_id)) {
+                CategoryItem::create([
+                    'category_id' => $request->category_id,
+                    'item_id' => $type->id,
+                    'item_type' => 1
+                ]);
+            }
+        });
+
+        return $this->created();
+    }
+
+    /**
+     * @param Request $request
+     * @param Type $type
+     * @throws \Throwable
+     */
+    public function update(Request $request, Type $type)
+    {
+        \DB::transaction(function () use ($request, $type) {
+            Type::updateField($request, $type, ['name']);
+
+            if (isset($request->category_id)) {
+                CategoryItem::where('item_id', $type->id)
+                    ->where('type', 1)
+                    ->update(['category_id' => $request->category_id]);
+            }
+        });
+    }
+
+    /**
+     * @param Type $type
+     * @return mixed
+     * @throws BaseException
+     */
+    public function destroy(Type $type)
+    {
+        if ($type->entities()->count() > 0)
+            throw new BaseException('该类型下已有商品，不可删除');
+
+        $type->delete();
+
+        return $this->message('删除成功');
     }
 }

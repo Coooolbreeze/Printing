@@ -2,14 +2,14 @@
 /**
  * Created by PhpStorm.
  * User: 392113643
- * Date: 2018/8/3
- * Time: 16:59
+ * Date: 2018/8/7
+ * Time: 10:04
  */
 
 namespace App\Http\Resources;
 
 
-class CategoryItemResource extends Resource
+class LargeCategoryItemResource extends Resource
 {
     public function toArray($request)
     {

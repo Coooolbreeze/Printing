@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Exceptions\BaseException;
 use App\Http\Resources\CategoryItemCollection;
 use App\Models\Category;
 use App\Models\Entity;
@@ -39,8 +40,16 @@ class CategoryController extends ApiController
         return $this->message('更新成功');
     }
 
+    /**
+     * @param Category $category
+     * @return mixed
+     * @throws BaseException
+     */
     public function destroy(Category $category)
     {
+        if ($category->items()->count() > 0)
+            throw new BaseException('该分类下已有产品，无法删除');
+
         $category->delete();
 
         return $this->message('删除成功');

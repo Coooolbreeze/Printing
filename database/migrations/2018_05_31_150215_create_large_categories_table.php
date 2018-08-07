@@ -15,6 +15,7 @@ class CreateLargeCategoriesTable extends Migration
     {
         Schema::create('large_categories', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('image_id');
             $table->string('name');
             $table->string('url')->nullable();
             $table->timestamps();

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCategoryItemsTable extends Migration
+class CreateLargeCategoryItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateCategoryItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('category_items', function (Blueprint $table) {
+        Schema::create('large_category_items', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('category_id');
+            $table->integer('large_category_id');
             $table->integer('item_id');
-            $table->tinyInteger('item_type')->default(1)->comment('1类型 2商品');
+            $table->integer('item_type')->default(1)->comment('1类型 2商品');
             $table->tinyInteger('is_hot')->default(0);
             $table->tinyInteger('is_new')->default(0);
             $table->timestamps();
@@ -31,6 +31,6 @@ class CreateCategoryItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_items');
+        Schema::dropIfExists('large_category_items');
     }
 }

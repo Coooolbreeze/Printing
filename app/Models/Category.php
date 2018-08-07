@@ -28,6 +28,7 @@ namespace App\Models;
  * @property string|null $url
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CategoryItem[] $categoryItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Category whereUrl($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CategoryItem[] $items
  */
 class Category extends Model
 {

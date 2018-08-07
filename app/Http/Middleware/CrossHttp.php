@@ -17,7 +17,7 @@ class CrossHttp
     public function handle($request, Closure $next)
     {
         $response = $next($request);
-        if (!$response instanceof BinaryFileResponse) {
+        if (method_exists($response, 'header')) {
             $response->header('Access-Control-Allow-Origin', '*');
             $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept, token');
             $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, OPTIONS, DELETE');

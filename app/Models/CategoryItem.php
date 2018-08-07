@@ -26,6 +26,12 @@ namespace App\Models;
  * @mixin \Eloquent
  * @property int $category_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CategoryItem whereCategoryId($value)
+ * @property int $is_hot
+ * @property int $is_new
+ * @property-read \App\Models\Entity $entity
+ * @property-read \App\Models\Type $type
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CategoryItem whereIsHot($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CategoryItem whereIsNew($value)
  */
 class CategoryItem extends Model
 {

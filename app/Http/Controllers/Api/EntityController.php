@@ -40,30 +40,6 @@ class EntityController extends ApiController
     }
 
     /**
-     * @param Request $request
-     * @param Entity $entity
-     * @return mixed
-     * @throws \Throwable
-     */
-    public function update(Request $request, Entity $entity)
-    {
-        \DB::transaction(function () use ($request, $entity) {
-            Entity::updateField($request, $entity, [
-                'type_id', 'secondary_type_id', 'name', 'summary', 'body', 'lead_time', 'title', 'keywords', 'describe'
-            ]);
-            isset($request->images) && $entity->images()->sync($request->images);
-
-            if (isset($request->category_id)) {
-                CategoryItem::where('item_id', $entity->id)
-                    ->where('type', 2)
-                    ->update(['category_id' => $request->category_id]);
-            }
-        });
-
-        return $this->message('更新成功');
-    }
-
-    /**
      * 添加商品
      *
      * @param Request $request
@@ -107,6 +83,30 @@ class EntityController extends ApiController
         });
 
         return $this->success(['id' => $entity->id]);
+    }
+
+    /**
+     * @param Request $request
+     * @param Entity $entity
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function update(Request $request, Entity $entity)
+    {
+        \DB::transaction(function () use ($request, $entity) {
+            Entity::updateField($request, $entity, [
+                'type_id', 'secondary_type_id', 'name', 'summary', 'body', 'lead_time', 'title', 'keywords', 'describe', 'status'
+            ]);
+            isset($request->images) && $entity->images()->sync($request->images);
+
+            if (isset($request->category_id)) {
+                CategoryItem::where('item_id', $entity->id)
+                    ->where('type', 2)
+                    ->update(['category_id' => $request->category_id]);
+            }
+        });
+
+        return $this->message('更新成功');
     }
 
     public static function customSpecs($entity, $specs)

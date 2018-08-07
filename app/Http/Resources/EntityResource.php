@@ -24,7 +24,12 @@ class EntityResource extends Resource
     {
         return $this->filterFields([
             'id' => $this->id,
-            'type' => (new TypeResource($this->type))->hide(['entities', 'secondary_types']),
+            'type' => (new TypeResource($this->type))->show(['id', 'name']),
+            'secondary_types' => $this->when(
+                $this->secondaryType,
+                (new SecondaryTypeResource($this->secondaryType))
+                    ->show(['id', 'name'])
+            ),
             'image' => new ImageResource($this->images()->first()),
             'images' => ImageResource::collection($this->images),
             'name' => $this->name,
@@ -39,7 +44,17 @@ class EntityResource extends Resource
             'custom_specs' => CustomAttributeResource::collection($this->customAttributes),
             'combinations' => CombinationResource::collection($this->combinations),
             'comments' => new CommentCollection($this->comments()->paginate(Comment::getLimit())),
+            'status' => $this->convertStatus($this->status),
             'created_at' => (string)$this->created_at
         ]);
+    }
+
+    public function convertStatus($value)
+    {
+        $status = [
+            1 => '销售中',
+            2 => '已下架'
+        ];
+        return $status[$value];
     }
 }

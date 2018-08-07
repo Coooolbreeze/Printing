@@ -27,6 +27,9 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('files', 'FileController')
         ->only(['store']);
 
+    Route::post('/ali_pay/notify', 'AliPayController@notify');
+    Route::post('/wx_pay/notify', 'WxPayController@notify');
+
     Route::apiResource('users', 'UserController')
         ->only(['show']);
 
@@ -149,6 +152,12 @@ Route::namespace('Api')->group(function () {
             Route::delete('/messages', 'MessageController@batchDestroy');
             Route::put('/messages', 'MessageController@batchUpdate');
         });
+
+        Route::apiResource('statistics', 'StatisticController')
+            ->only(['index']);
+
+        Route::get('/ali_pay/pay/{order_id}', 'AliPayController@pay');
+        Route::get('/wx_pay/pay/{order_id}', 'WxPayController@pay');
     });
 
     /**
@@ -222,7 +231,16 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('large_categories', 'LargeCategoryController')
             ->only(['update']);
 
+        Route::apiResource('large_category_items', 'LargeCategoryItemController')
+            ->only(['index', 'store', 'update', 'destroy']);
+
         Route::apiResource('categories', 'CategoryController')
+            ->only(['store', 'update', 'destroy']);
+
+        Route::apiResource('category_items', 'CategoryItemController')
+            ->only(['store', 'update', 'destroy']);
+
+        Route::apiResource('types', 'TypeController')
             ->only(['store', 'update', 'destroy']);
 
         // 商品
@@ -242,6 +260,8 @@ Route::namespace('Api')->group(function () {
     Route::middleware('permission:订单管理')->group(function () {
         Route::apiResource('gift_orders', 'GiftOrderController')
             ->only(['index', 'update']);
+
+        Route::post('/orders/back_order', 'OrderController@backOrder');
 
         Route::put('/orders/back_pay', 'OrderController@backPay');
 
@@ -299,6 +319,7 @@ Route::namespace('Api')->group(function () {
 
 
     Route::get('/test', function () {
+        return (new \App\Http\Controllers\Api\AliPayController())->pay();
         return \App\Models\MemberLevel::find(5)->users()->pluck('id');
 
         $array = array_merge_recursive([1, 2, 3], [5, 1, 4]);

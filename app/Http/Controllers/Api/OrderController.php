@@ -29,6 +29,7 @@ use App\Models\Express;
 use App\Models\File;
 use App\Models\Order;
 use App\Models\Receipt;
+use App\Models\User;
 use App\Models\UserCoupon;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
@@ -84,7 +85,8 @@ class OrderController extends ApiController
                 'total_weight' => $goodsInfo['total_weight'],
                 'freight' => $freight,
                 'snap_address' => $snapAddress,
-                'snap_content' => json_encode($goodsInfo['goods'])
+                'snap_content' => json_encode($goodsInfo['goods']),
+                'remark' => $request->remark
             ];
 
             $money = $order['goods_price'] + $order['freight'];
@@ -132,6 +134,49 @@ class OrderController extends ApiController
         return $this->message('更新成功');
     }
 
+    public function backOrder(Request $request)
+    {
+        \DB::transaction(function () use ($request, &$goodsInfo) {
+            CartController::checkCartsInfo($request->entity);
+            $cart = Cart::create(CartController::getSaveInfo($request->entity, $request->user_id));
+            $goodsInfo = self::cartOrder([$cart->id], $request->user_id);
+
+            $snapAddress = json_encode($request->address);
+
+            $freight = Express::getFreight(
+                $request->express_id,
+                $request->address['province'],
+                $goodsInfo['total_price'],
+                $goodsInfo['total_weight']
+            );
+
+            $order = [
+                'order_no' => 'E-' . makeOrderNo(),
+                'user_id' => $request->user_id,
+                'title' => $goodsInfo['title'],
+                'goods_count' => $goodsInfo['total_count'],
+                'goods_price' => $goodsInfo['total_price'],
+                'total_weight' => $goodsInfo['total_weight'],
+                'total_price' => $goodsInfo['total_price'] + $freight,
+                'freight' => $freight,
+                'snap_address' => $snapAddress,
+                'snap_content' => json_encode($goodsInfo['goods']),
+                'remark' => $request->remark
+            ];
+
+            $order = Order::create($order);
+
+            $order->update([
+                'status' => OrderStatusEnum::PAID,
+                'pay_type' => OrderPayTypeEnum::BACK_PAY
+            ]);
+
+            event(new OrderPaid($order));
+        });
+
+        return $this->created();
+    }
+
     public function backPay(Request $request)
     {
         $order = Order::findOrFail($request->id);
@@ -146,20 +191,33 @@ class OrderController extends ApiController
         return $this->message('支付状态更新成功');
     }
 
+    /**
+     * @param $entity
+     * @return null
+     * @throws \Throwable
+     */
     private static function entityOrder($entity)
     {
-
+        $goodsInfo = null;
+        \DB::transaction(function () use ($entity, &$goodsInfo) {
+            CartController::checkCartsInfo($entity);
+            $cart = Cart::create(CartController::getSaveInfo($entity));
+            $goodsInfo = self::cartOrder([$cart->id]);
+        });
+        return $goodsInfo;
     }
 
     /**
      * @param $ids
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @param null $userId
+     * @return array
      * @throws BaseException
      * @throws \App\Exceptions\TokenException
      */
-    private static function cartOrder($ids)
+    private static function cartOrder($ids, $userId = null)
     {
-        $cartsAll = TokenFactory::getCurrentUser()->carts()->pluck('id')->toArray();
+        $user = $userId ? User::findOrFail($userId) : TokenFactory::getCurrentUser();
+        $cartsAll = $user->carts()->pluck('id')->toArray();
         if (array_intersect($ids, $cartsAll) != $ids) throw new BaseException('提交订单中有不存在购物车中的数据');
 
         $carts = Cart::whereIn('id', $ids)->get();
