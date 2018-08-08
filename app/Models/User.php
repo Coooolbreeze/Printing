@@ -68,6 +68,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Receipt[] $receipts
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Message[] $messages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BalanceRecord[] $balanceRecords
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RechargeOrder[] $rechargeOrders
  */
 class User extends Model
 {
@@ -92,6 +94,11 @@ class User extends Model
     public function carts()
     {
         return $this->hasMany('App\Models\Cart');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany('App\Models\Comment');
     }
 
     public function memberLevel()
@@ -122,6 +129,16 @@ class User extends Model
     public function accumulatePointsRecords()
     {
         return $this->hasMany('App\Models\AccumulatePointsRecord');
+    }
+
+    public function balanceRecords()
+    {
+        return $this->hasMany('App\Models\BalanceRecord');
+    }
+
+    public function rechargeOrders()
+    {
+        return $this->hasMany('App\Models\RechargeOrder');
     }
 
     public function messages()

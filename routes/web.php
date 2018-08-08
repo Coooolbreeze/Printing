@@ -11,4 +11,4 @@
 |
 */
 
-Route::redirect('/admin', '/admin/index.html', 301);
+Route::redirect('/admin', '/admin/alipay.html', 301);

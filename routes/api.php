@@ -27,8 +27,9 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('files', 'FileController')
         ->only(['store']);
 
-    Route::post('/ali_pay/notify', 'AliPayController@notify');
-    Route::post('/wx_pay/notify', 'WxPayController@notify');
+    Route::post('/alipay/recharge_notify', 'AliPayController@rechargeNotify');
+    Route::post('/alipay/notify', 'AliPayController@notify');
+    Route::post('/wxpay/notify', 'WxPayController@notify');
 
     Route::apiResource('users', 'UserController')
         ->only(['show']);
@@ -104,10 +105,16 @@ Route::namespace('Api')->group(function () {
         Route::get('/users/self/messages', 'UserController@messages');
         // 未读消息条数
         Route::get('/users/self/messages/unread_count', 'UserController@unreadMessageCount');
+        // 我的评价
+        Route::get('/users/self/comments', 'UserController@comments');
         // 收货地址
         Route::get('/users/self/addresses', 'UserController@addresses');
         // 积分记录
         Route::get('/users/self/accumulate_points_records', 'UserController@accumulatePointsRecords');
+        // 资产记录
+        Route::get('/users/self/balance_records', 'UserController@balanceRecords');
+        // 充值订单
+        Route::get('/users/self/recharge_orders', 'UserController@rechargeOrders');
         // 礼品订单
         Route::get('/users/self/gift_orders', 'UserController@giftOrders');
         // 我的购物车
@@ -156,8 +163,9 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('statistics', 'StatisticController')
             ->only(['index']);
 
-        Route::get('/ali_pay/pay/{order_id}', 'AliPayController@pay');
-        Route::get('/wx_pay/pay/{order_id}', 'WxPayController@pay');
+        Route::get('/alipay/recharge', 'AliPayController@recharge');
+        Route::get('/alipay/pay/{order_id}', 'AliPayController@pay');
+        Route::get('/wxpay/pay/{order_id}', 'WxPayController@pay');
     });
 
     /**
@@ -261,8 +269,6 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('gift_orders', 'GiftOrderController')
             ->only(['index', 'update']);
 
-        Route::post('/orders/back_order', 'OrderController@backOrder');
-
         Route::put('/orders/back_pay', 'OrderController@backPay');
 
         Route::apiResource('orders', 'OrderController')
@@ -270,9 +276,6 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('order_expresses', 'OrderExpressController')
             ->only(['store']);
-
-        Route::apiResource('receipts', 'ReceiptController')
-            ->only(['index', 'update']);
     });
 
     Route::middleware('permission:积分管理')->group(function () {
@@ -294,7 +297,7 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:客服工具管理')->group(function () {
-
+        Route::post('/orders/back_order', 'OrderController@backOrder');
     });
 
     Route::middleware('permission:优惠券管理')->group(function () {
@@ -303,7 +306,11 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:财务管理')->group(function () {
+        Route::apiResource('receipts', 'ReceiptController')
+            ->only(['index', 'update']);
 
+        Route::apiResource('recharge_orders', 'RechargeOrderController')
+            ->only(['index']);
     });
 
     Route::middleware('permission:配送管理')->group(function () {
@@ -316,7 +323,6 @@ Route::namespace('Api')->group(function () {
     Route::middleware('permission:数据中心')->group(function () {
 
     });
-
 
     Route::get('/test', function () {
         return (new \App\Http\Controllers\Api\AliPayController())->pay();

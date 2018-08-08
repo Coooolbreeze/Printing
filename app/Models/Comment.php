@@ -33,6 +33,19 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment whereGrade($value)
  * @property string|null $target
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment whereTarget($value)
+ * @property float|null $describe_grade
+ * @property string $goods_comment
+ * @property int $is_anonymous
+ * @property float|null $logistics_grade
+ * @property float|null $seller_grade
+ * @property string $service_comment
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment whereDescribeGrade($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment whereGoodsComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment whereIsAnonymous($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment whereLogisticsGrade($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment whereSellerGrade($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Comment whereServiceComment($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Image[] $images
  */
 class Comment extends Model
 {
@@ -44,5 +57,10 @@ class Comment extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function images()
+    {
+        return $this->belongsToMany('App\Models\Image');
     }
 }

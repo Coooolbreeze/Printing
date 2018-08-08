@@ -18,9 +18,13 @@ class CreateCommentsTable extends Migration
             $table->integer('user_id');
             $table->integer('commentable_id');
             $table->string('commentable_type');
-            $table->text('body');
             $table->string('target')->nullable();
-            $table->float('grade')->nullable();
+            $table->text('goods_comment');
+            $table->text('service_comment');
+            $table->float('describe_grade')->nullable();
+            $table->float('seller_grade')->nullable();
+            $table->float('logistics_grade')->nullable();
+            $table->tinyInteger('is_anonymous')->default(0);
             $table->timestamps();
         });
     }

@@ -7,23 +7,28 @@ use App\Exceptions\BaseException;
 use App\Http\Requests\UpdateUser;
 use App\Http\Resources\AccumulatePointsRecordCollection;
 use App\Http\Resources\AddressResource;
+use App\Http\Resources\BalanceRecordCollection;
 use App\Http\Resources\CartCollection;
+use App\Http\Resources\CommentCollection;
 use App\Http\Resources\CouponCollection;
 use App\Http\Resources\GiftOrderCollection;
 use App\Http\Resources\MessageCollection;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\ReceiptCollection;
+use App\Http\Resources\RechargeOrderCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserCouponCollection;
 use App\Http\Resources\UserResource;
 use App\Models\AccumulatePointsRecord;
 use App\Models\BalanceRecord;
 use App\Models\Cart;
+use App\Models\Comment;
 use App\Models\Coupon;
 use App\Models\GiftOrder;
 use App\Models\Message;
 use App\Models\Order;
 use App\Models\Receipt;
+use App\Models\RechargeOrder;
 use App\Models\User;
 use App\Services\Tokens\TokenFactory;
 use Carbon\Carbon;
@@ -182,6 +187,40 @@ class UserController extends ApiController
     }
 
     /**
+     * 我的资产记录
+     *
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
+    public function balanceRecords()
+    {
+        return $this->success(
+            new BalanceRecordCollection(TokenFactory::getCurrentUser()
+                ->balanceRecords()
+                ->latest()
+                ->paginate(BalanceRecord::getLimit())
+            )
+        );
+    }
+
+    /**
+     * 我的充值订单
+     *
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
+    public function rechargeOrders()
+    {
+        return $this->success(
+            new RechargeOrderCollection(TokenFactory::getCurrentUser()
+                ->rechargeOrders()
+                ->latest()
+                ->paginate(RechargeOrder::getLimit())
+            )
+        );
+    }
+
+    /**
      * 我的收货地址
      *
      * @param Request $request
@@ -264,6 +303,21 @@ class UserController extends ApiController
             ->receipts()
             ->latest()
             ->paginate(Receipt::getLimit())
+        ));
+    }
+
+    /**
+     * 我的评价
+     *
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
+    public function comments()
+    {
+        return $this->success(new CommentCollection(TokenFactory::getCurrentUser()
+            ->comments()
+            ->latest()
+            ->paginate(Comment::getLimit())
         ));
     }
 

@@ -13,8 +13,11 @@ use App\Enum\OrderPayTypeEnum;
 use App\Enum\OrderStatusEnum;
 use App\Events\OrderPaid;
 use App\Exceptions\BaseException;
+use App\Models\BalanceRecord;
 use App\Models\Order;
+use App\Models\RechargeOrder;
 use App\Services\Tokens\TokenFactory;
+use Illuminate\Http\Request;
 use Yansongda\LaravelPay\Facades\Pay;
 
 class AliPayController extends ApiController
@@ -42,8 +45,27 @@ class AliPayController extends ApiController
         $order = [
             'out_trade_no' => $order->order_no,
             'total_amount' => $order->total_price,
-            'subject' => '易特印',
+            'subject' => '易特印-商品订单支付'
         ];
+
+        self::setNotifyUrl('/api/alipay/notify');
+        self::setReturnUrl(config('app.url') . '/alipay.html');
+
+        return Pay::alipay()->web($order);
+    }
+
+    public function recharge(Request $request)
+    {
+        $balanceOrder = RechargeOrder::generate($request->price);
+
+        $order = [
+            'out_trade_no' => $balanceOrder->order_no,
+            'total_amount' => $balanceOrder->price,
+            'subject' => '易特印-余额充值'
+        ];
+
+        self::setNotifyUrl('/api/alipay/recharge_notify');
+        self::setReturnUrl(config('app.url') . '/alipay.html');
 
         return Pay::alipay()->web($order);
     }
@@ -68,12 +90,6 @@ class AliPayController extends ApiController
         \DB::transaction(function () use ($aliPay) {
             $data = $aliPay->verify();
 
-            // 请自行对 trade_status 进行判断及其它逻辑进行判断，在支付宝的业务通知中，只有交易通知状态为 TRADE_SUCCESS 或 TRADE_FINISHED 时，支付宝才会认定为买家付款成功。
-            // 1、商户需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号；
-            // 2、判断total_amount是否确实为该订单的实际金额（即商户订单创建时的金额）；
-            // 3、校验通知中的seller_id（或者seller_email) 是否为out_trade_no这笔单据的对应的操作方（有的时候，一个商户可能有多个seller_id/seller_email）；
-            // 4、验证app_id是否为该商户本身。
-            // 5、其它业务逻辑情况
             if ($data->trade_status == 'TRADE_SUCCESS') {
                 $order = Order::where('order_no', $data->out_trade_no)
                     ->lockForUpdate()
@@ -92,5 +108,51 @@ class AliPayController extends ApiController
         });
 
         return $aliPay->success();
+    }
+
+    /**
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function rechargeNotify()
+    {
+        $aliPay = Pay::alipay();
+
+        \DB::transaction(function () use ($aliPay) {
+            $data = $aliPay->verify();
+
+            if ($data->trade_status == 'TRADE_SUCCESS') {
+                $order = RechargeOrder::withoutGlobalScope('is_paid')
+                    ->where('order_no', $data->out_trade_no)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($order->is_paid == 0) {
+                    $order->update([
+                        'is_paid' => 1,
+                        'pay_type' => OrderPayTypeEnum::ALI_PAY
+                    ]);
+                    BalanceRecord::income($order->price, '支付宝充值', $order->user);
+                }
+            }
+
+            \Log::debug('Alipay notify', $data->all());
+        });
+
+        return $aliPay->success();
+    }
+
+    public static function setNotifyUrl($notify)
+    {
+        config([
+            'pay.alipay.notify_url' => config('app.url') . $notify
+        ]);
+    }
+
+    public static function setReturnUrl($return)
+    {
+        config([
+            'pay.alipay.return_url' => $return
+        ]);
     }
 }

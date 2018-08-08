@@ -6,10 +6,10 @@ return [
         'app_id' => env('ALI_APP_ID', ''),
 
         // 支付宝异步通知地址
-        'notify_url' => env('ALI_NOTIFY_URL', ''),
+        'notify_url' => '',
 
         // 支付成功后同步通知地址
-        'return_url' => env('ALI_RETURN_URL', ''),
+        'return_url' => '',
 
         // 阿里公共密钥，验证签名时使用
         'ali_public_key' => env('ALI_PUBLIC_KEY', ''),
@@ -41,7 +41,7 @@ return [
         'mch_id' => env('WECHAT_MCH_ID', ''),
 
         // 微信支付异步通知地址
-        'notify_url' => env('WECHAT_NOTIFY_URL', ''),
+        'notify_url' => '',
 
         // 微信支付签名秘钥
         'key' => env('WECHAT_KEY', ''),
