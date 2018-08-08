@@ -166,8 +166,7 @@ Route::namespace('Api')->group(function () {
         Route::post('/balance/pay', 'BalancePayController@pay');
 
         Route::get('/alipay/recharge', 'AliPayController@recharge');
-        Route::get('/alipay/pay/{order_id}', 'AliPayController@pay');
-        Route::get('/wxpay/pay/{order_id}', 'WxPayController@pay');
+        Route::get('/alipay/pay', 'AliPayController@pay');
     });
 
     /**

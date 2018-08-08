@@ -16,6 +16,7 @@ use App\Exceptions\BaseException;
 use App\Models\BalanceRecord;
 use App\Models\Order;
 use App\Models\RechargeOrder;
+use App\Models\User;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 use Yansongda\LaravelPay\Facades\Pay;
@@ -23,14 +24,14 @@ use Yansongda\LaravelPay\Facades\Pay;
 class AliPayController extends ApiController
 {
     /**
-     * @param $orderId
+     * @param Request $request
      * @return mixed
      * @throws BaseException
      * @throws \App\Exceptions\TokenException
      */
-    public function pay($orderId)
+    public function pay(Request $request)
     {
-        $order = Order::findOrFail($orderId);
+        $order = Order::findOrFail($request->order_id);
 
         if (!TokenFactory::isValidOperate($order->user_id)) {
             throw new BaseException('不能支付他人的订单');
@@ -42,9 +43,26 @@ class AliPayController extends ApiController
             throw new BaseException('该订单已支付，请不要重复支付');
         }
 
+        $totalPrice = $order->total_price;
+
+        if ($request->balance) {
+            if (TokenFactory::getCurrentUser()->balance < $request->balance)
+                throw new BaseException('可用余额不足');
+
+            $order->update([
+                'balance_deducted' => $request->balance
+            ]);
+
+            $totalPrice -= $request->balance;
+        } else {
+            $order->update([
+                'balance_deducted' => 0
+            ]);
+        }
+
         $order = [
             'out_trade_no' => $order->order_no,
-            'total_amount' => $order->total_price,
+            'total_amount' => $totalPrice,
             'subject' => '易特印-商品订单支付'
         ];
 
@@ -96,6 +114,10 @@ class AliPayController extends ApiController
                     ->first();
 
                 if ($order->status <= OrderStatusEnum::UNPAID) {
+                    if ($order->balance_deducted > 0) {
+                        BalanceRecord::expend($order->balance_deducted, '订单抵扣', $order->user);
+                    }
+
                     $order->update([
                         'status' => OrderStatusEnum::PAID,
                         'pay_type' => OrderPayTypeEnum::ALI_PAY
