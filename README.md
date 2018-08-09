@@ -5,8 +5,9 @@
 
 ### 公共请求参数
     base_url: http://printing.besthtml5.com/api
-    header: {
-        token: 登录或注册成功返回的access_token
+    header:
+    {
+        token: 登录或注册接口返回的access_token
     }
 
 ### 公共返回参数
@@ -38,7 +39,7 @@
     
 ### 1. 图片上传
     POST /images
-    response
+    response:
     [
         {
             id: 图片ID，
@@ -49,7 +50,7 @@
     
 ### 2. 文件上传
     POST /files
-    response
+    response:
     [
         {
             id: 文件ID，
@@ -59,74 +60,125 @@
         ...
     ]
 
-### 3. 获取验证码
+### 3. 获取短信验证码
     POST /sms (同个IP每分钟只能请求一次)
-    request
+    request:
     {
         phone: 手机号,
         ^is_register: true (注册时需加上此字段)
     }
-    response 
+    response:
     {
         verification_token: 验证令牌
     }
     
-### 4. 注册
+### 4. 获取邮箱验证码
+    POST /mail
+    request:
+    {
+        email: 邮箱地址,
+        ^is_register: true (注册时需加上此字段)
+    }
+    response:
+    {
+        verification_token: 验证令牌
+    }
+    
+### 5. 注册
     POST /register
-    request
+    request:
     {
         verification_code: 验证码，
         verification_token: 获取验证码接口返回的verification_token,
         password: 密码
     }
-    response
+    response:
     {
         access_token: 令牌,
-        refresh_token: 刷新令牌,
-        access_token_expire:令牌过期时间,
+        refresh_token: 刷新令牌,可在令牌过期后进行刷新,过期时间为access_token_expire * 10
+        access_token_expire:令牌有效期 单位秒,
     }
 
-### 5. 验证码登录
+### 6. 验证码登录
     POST /login
-    request
+    request:
     {
         verification_code: 验证码，
         verification_token: 获取验证码接口返回的verification_token
     }
-    response
+    response:
     {
         access_token: 令牌,
-        refresh_token: 刷新令牌,
-        access_token_expire:令牌过期时间,
+        refresh_token: 刷新令牌,可在令牌过期后进行刷新,过期时间为access_token_expire * 10
+        access_token_expire:令牌有效期 单位秒,
     }
     
-### 6. 账号密码登录
+### 7. 账号密码登录
     POST /login
-    request
+    request:
     {
         username: 用户名,
         password: 密码,
         ^is_admin: true (管理员登录需加上此字段)
     }
-    response
+    response:
     {
         access_token: 令牌,
-        refresh_token: 刷新令牌,
-        access_token_expire:令牌过期时间
+        refresh_token: 刷新令牌,可在令牌过期后进行刷新,过期时间为access_token_expire * 10
+        access_token_expire:令牌有效期 单位秒
     }
     
-### 7. 修改密码
+### 8. 刷新令牌
+    POST /refresh
+    header:
+    {
+        token: 登录或注册接口返回的refresh_token
+    }
+    response:
+    {
+        access_token: 令牌,
+        refresh_token: 刷新令牌,可在令牌过期后进行刷新,过期时间为access_token_expire * 10
+        access_token_expire:令牌有效期 单位秒
+    }
+    
+### 9. 修改密码
     PUT /repassword
-    request
+    request:
     {
         verification_code: 验证码，
         verification_token: 获取验证码接口返回的verification_token,
         password: 密码
     }
     
-### 8. 获取自己的资料
+### 10. 微信登录
+    POST /wechat/login
+
+### 11. 绑定手机号
+    POST /bind/phone
+    request:
+    {
+        verification_code: 验证码，
+        verification_token: 获取短信验证码接口返回的verification_token
+    }
+
+### 12. 绑定邮箱
+    POST /bind/email
+    request:
+    {
+        verification_code: 验证码，
+        verification_token: 获取邮箱验证码接口返回的verification_token
+    }
+
+### 13. 解绑登录方式
+    POST /unbind
+    request:
+    {
+        type: 需解绑的登录方式(phone|email)
+    }
+    
+### 14. 获取自己的资料
     GET /users/self
-    response
+    response:
     {
         id: 用户ID,
         nickname: 昵称,
@@ -151,9 +203,9 @@
         created_at: 注册日期
     }
     
-### 9. 获取拥有的权限列表
+### 15. 获取拥有的权限列表
     POST /users/self/permissions
-    response
+    response:
     [
         "搜索管理",
         "首页推荐管理",
