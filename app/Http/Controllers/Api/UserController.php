@@ -149,7 +149,7 @@ class UserController extends ApiController
      */
     public function permissions()
     {
-        return TokenFactory::getCurrentPermissions();
+        return $this->success(TokenFactory::getCurrentPermissions());
     }
 
     /**
