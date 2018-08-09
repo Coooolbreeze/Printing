@@ -11,7 +11,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\RegisterException;
 use App\Exceptions\UserNotFoundException;
+use App\Models\UserAuth;
 use App\Services\Account;
+use App\Services\VerificationCode;
 use Illuminate\Http\Request;
 use App\Services\Tokens\TokenFactory;
 
@@ -52,8 +54,9 @@ class TokenController extends ApiController
      * @param Request $request
      * @return mixed
      * @throws RegisterException
+     * @throws \App\Exceptions\AccountErrorException
      * @throws \App\Exceptions\RePasswordException
-     * @throws \App\Exceptions\TokenException
+     * @throws \App\Exceptions\VerificationCodeException
      */
     public function rePassword(Request $request)
     {
@@ -62,7 +65,16 @@ class TokenController extends ApiController
         if (!preg_match('/^\w{6,18}$/', $password))
             throw new RegisterException('密码为6~18位字母、数字或下划线');
 
-        TokenFactory::rePassword(TokenFactory::getCurrentUID(), $password);
+        $username = VerificationCode::getContact($request->verification_code, $request->verification_token);
+
+        $type = Account::judgeAccountType($username);
+
+        $userAuth = UserAuth::where('platform', 'local')
+            ->where('identity_type', $type)
+            ->where('identifier', $username)
+            ->firstOrFail();
+
+        TokenFactory::rePassword($userAuth->user_id, $password);
 
         return $this->message('修改密码成功');
     }

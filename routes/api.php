@@ -16,6 +16,10 @@ Route::namespace('Api')->group(function () {
     Route::post('/register', 'TokenController@register')->name('tokens.register');
     // 用户登录
     Route::post('/login', 'TokenController@login')->name('tokens.login');
+    // 刷新token
+    Route::post('/refresh', 'TokenController@refresh')->name('tokens.refresh');
+    // 修改密码
+    Route::put('/repassword', 'TokenController@rePassword')->name('token.rePassword');
     // 获取自己的资料
     Route::get('/users/self', 'UserController@self')->name('users.self');
 
@@ -97,10 +101,6 @@ Route::namespace('Api')->group(function () {
      * 需登录后访问
      */
     Route::middleware('token')->group(function () {
-        // 刷新token
-        Route::post('/refresh', 'TokenController@refresh')->name('tokens.refresh');
-        // 修改密码
-        Route::put('/repassword', 'TokenController@rePassword')->name('token.rePassword');
         // 获取拥有的权限
         Route::get('/users/self/permissions', 'UserController@permissions');
         // 我的消息

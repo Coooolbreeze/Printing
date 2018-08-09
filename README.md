@@ -35,8 +35,31 @@
         message: 提示信息，当status为error或者本次操作无数据返回时(如资源创建、更新、删除等操作),
         data: 请求到的数据，下列所有接口中的response如无特殊说明都是指这里面的数据
     }
+    
+### 1. 图片上传
+    POST /images
+    response
+    [
+        {
+            id: 图片ID，
+            src: 图片链接
+        },
+        ...
+    ]
+    
+### 2. 文件上传
+    POST /files
+    response
+    [
+        {
+            id: 文件ID，
+            name: 文件名,
+            src: 文件链接
+        },
+        ...
+    ]
 
-### 1. 获取验证码
+### 3. 获取验证码
     POST /sms (同个IP每分钟只能请求一次)
     request
     {
@@ -48,7 +71,7 @@
         verification_token: 验证令牌
     }
     
-### 2. 注册
+### 4. 注册
     POST /register
     request
     {
@@ -63,7 +86,7 @@
         access_token_expire:令牌过期时间,
     }
 
-### 3. 验证码登录
+### 5. 验证码登录
     POST /login
     request
     {
@@ -77,7 +100,7 @@
         access_token_expire:令牌过期时间,
     }
     
-### 4. 账号密码登录
+### 6. 账号密码登录
     POST /login
     request
     {
@@ -92,7 +115,16 @@
         access_token_expire:令牌过期时间
     }
     
-### 5. 获取自己的资料
+### 7. 修改密码
+    PUT /repassword
+    request
+    {
+        verification_code: 验证码，
+        verification_token: 获取验证码接口返回的verification_token,
+        password: 密码
+    }
+    
+### 8. 获取自己的资料
     GET /users/self
     response
     {
@@ -119,7 +151,7 @@
         created_at: 注册日期
     }
     
-### 6. 获取拥有的权限列表
+### 9. 获取拥有的权限列表
     POST /users/self/permissions
     response
     [
