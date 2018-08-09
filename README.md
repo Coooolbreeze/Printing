@@ -1,7 +1,7 @@
 # 易特印API文档
 
 ### 说明
-* 参数前带^为非必填字段或非必返回字段
+* 参数前带 ^ 为非必填字段或非必返回字段
 
 ### 公共请求参数
     base_url: http://printing.besthtml5.com/api
