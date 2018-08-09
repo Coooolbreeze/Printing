@@ -9,7 +9,7 @@
 namespace App\Services;
 
 
-require_once dirname(__DIR__) . '/../vendor/aliyun-dysms/vendor/autoload.php';
+require_once dirname(__DIR__) . '/../extend/aliyun-dysms/vendor/autoload.php';
 
 use Aliyun\Core\Config;
 use Aliyun\Core\Profile\DefaultProfile;
@@ -17,7 +17,6 @@ use Aliyun\Core\DefaultAcsClient;
 use Aliyun\Api\Sms\Request\V20170525\SendSmsRequest;
 use Aliyun\Api\Sms\Request\V20170525\SendBatchSmsRequest;
 use Aliyun\Api\Sms\Request\V20170525\QuerySendDetailsRequest;
-use Illuminate\Support\Facades\Input;
 
 // 加载区域结点配置
 Config::load();
