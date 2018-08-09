@@ -101,6 +101,8 @@ Route::namespace('Api')->group(function () {
         Route::put('/repassword', 'TokenController@rePassword')->name('token.rePassword');
         // 获取自己的资料
         Route::get('/users/self', 'UserController@self')->name('users.self');
+        // 获取拥有的权限
+        Route::get('/users/self/permissions', 'UserController@permissions');
         // 我的消息
         Route::get('/users/self/messages', 'UserController@messages');
         // 未读消息条数

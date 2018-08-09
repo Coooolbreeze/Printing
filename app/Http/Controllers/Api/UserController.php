@@ -142,6 +142,17 @@ class UserController extends ApiController
     }
 
     /**
+     * 获取拥有的权限
+     *
+     * @return array
+     * @throws \App\Exceptions\TokenException
+     */
+    public function permissions()
+    {
+        return TokenFactory::getCurrentPermissions();
+    }
+
+    /**
      * 我的优惠券
      *
      * @param Request $request
