@@ -21,6 +21,7 @@ class CommentResource extends Resource
                 TokenFactory::isAdmin() || $this->is_anonymous != 0,
                 (new UserResource($this->user))->show(['id', 'nickname', 'avatar'])
             ),
+            'goods' => $this->getCommentEl($this->commentable),
             'target' => $this->when($this->target, $this->target),
             'goods_comment' => $this->goods_comment,
             'service_comment' => $this->service_comment,
@@ -31,5 +32,14 @@ class CommentResource extends Resource
             'is_anonymous' => (bool)$this->is_anonymous,
             'created_at' => (string)$this->created_at
         ]);
+    }
+
+    public function getCommentEl($commentable)
+    {
+        $class = get_class($commentable);
+
+        if ($class == 'App\Models\Entity') {
+            return (new EntityResource($commentable))->show(['id', 'name']);
+        }
     }
 }

@@ -22,6 +22,8 @@ Route::namespace('Api')->group(function () {
     Route::put('/repassword', 'TokenController@rePassword')->name('token.rePassword');
     // 获取自己的资料
     Route::get('/users/self', 'UserController@self')->name('users.self');
+    // 更新自己的资料
+    Route::put('/users/self', 'UserController@selfUpdate')->name('users.selfUpdate');
 
     // 发送短信
     Route::post('/sms', 'SmsController@sendSms')->middleware('throttle:2,1');
@@ -101,6 +103,10 @@ Route::namespace('Api')->group(function () {
      * 需登录后访问
      */
     Route::middleware('token')->group(function () {
+        // 绑定登录方式
+        Route::post('/login_modes', 'TokenController@bindLoginMode');
+        // 解绑登录方式
+        Route::delete('/login_modes', 'TokenController@unbindLoginMode');
         // 获取拥有的权限
         Route::get('/users/self/permissions', 'UserController@permissions');
         // 我的消息
@@ -147,9 +153,6 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('receipts', 'ReceiptController')
             ->only(['show', 'store']);
-
-        Route::apiResource('users', 'UserController')
-            ->only(['update']);
 
         Route::apiResource('comments', 'CommentController')
             ->only(['store']);
@@ -293,7 +296,7 @@ Route::namespace('Api')->group(function () {
 
     Route::middleware('permission:用户管理')->group(function () {
         Route::apiResource('users', 'UserController')
-            ->only(['index', 'destroy']);
+            ->only(['index', 'update', 'destroy']);
 
         Route::apiResource('messages', 'MessageController')
             ->only(['index', 'store']);
@@ -328,6 +331,10 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::get('/test', function () {
+        return \App\Services\Tokens\TokenFactory::bindEmail('392113643@qq.com', function ($password) {
+            // TODO 发送密码
+
+        });
         return (new \App\Http\Controllers\Api\AliPayController())->pay();
         return \App\Models\MemberLevel::find(5)->users()->pluck('id');
 

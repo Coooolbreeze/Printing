@@ -84,35 +84,37 @@ class UserController extends ApiController
      */
     public function update(UpdateUser $request, User $user)
     {
-        if (TokenFactory::isAdmin()) {
-            if ($request->accumulate_points && $request->accumulate_points > $user->accumulate_points) {
-                AccumulatePointsRecord::income(
-                    $request->accumulate_points - $user->accumulate_points,
-                    '管理员' . TokenFactory::getCurrentUser()->nickname . '添加',
-                    $user
-                );
-            } elseif ($request->accumulate_points && $request->accumulate_points < $user->accumulate_points) {
-                AccumulatePointsRecord::expend(
-                    $user->accumulate_points - $request->accumulate_points,
-                    '管理员' . TokenFactory::getCurrentUser()->nickname . '扣除',
-                    $user
-                );
-            }
-            if ($request->balance && $request->balance > $user->balance) {
-                BalanceRecord::income(
-                    $request->balance - $user->balance,
-                    '管理员' . TokenFactory::getCurrentUser()->nickname . '添加',
-                    $user
-                );
-            } elseif ($request->balance && $request->balance < $user->balance) {
-                BalanceRecord::expend(
-                    $user->balance - $request->balance,
-                    '管理员' . TokenFactory::getCurrentUser()->nickname . '扣除',
-                    $user
-                );
-            }
-        } else {
-            User::updateField($request, $user, ['nickname', 'sex', 'avatar']);
+        // 添加积分
+        if ($request->accumulate_points && $request->accumulate_points > $user->accumulate_points) {
+            AccumulatePointsRecord::income(
+                $request->accumulate_points - $user->accumulate_points,
+                '管理员' . TokenFactory::getCurrentUser()->nickname . '添加',
+                $user
+            );
+        }
+        // 扣除积分
+        elseif ($request->accumulate_points && $request->accumulate_points < $user->accumulate_points) {
+            AccumulatePointsRecord::expend(
+                $user->accumulate_points - $request->accumulate_points,
+                '管理员' . TokenFactory::getCurrentUser()->nickname . '扣除',
+                $user
+            );
+        }
+        // 添加余额
+        if ($request->balance && $request->balance > $user->balance) {
+            BalanceRecord::income(
+                $request->balance - $user->balance,
+                '管理员' . TokenFactory::getCurrentUser()->nickname . '添加',
+                $user
+            );
+        }
+        // 扣除余额
+        elseif ($request->balance && $request->balance < $user->balance) {
+            BalanceRecord::expend(
+                $user->balance - $request->balance,
+                '管理员' . TokenFactory::getCurrentUser()->nickname . '扣除',
+                $user
+            );
         }
 
         return $this->message('更新成功');
@@ -139,6 +141,20 @@ class UserController extends ApiController
     public function self()
     {
         return $this->success(new UserResource(TokenFactory::getCurrentUser()));
+    }
+
+    /**
+     * 更新自己的资料
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
+    public function selfUpdate(Request $request)
+    {
+        User::updateField($request, TokenFactory::getCurrentUser(), ['nickname', 'sex', 'avatar']);
+
+        return $this->message('更新成功');
     }
 
     /**
@@ -203,11 +219,14 @@ class UserController extends ApiController
      * @return mixed
      * @throws \App\Exceptions\TokenException
      */
-    public function balanceRecords()
+    public function balanceRecords(Request $request)
     {
         return $this->success(
             new BalanceRecordCollection(TokenFactory::getCurrentUser()
                 ->balanceRecords()
+                ->when($request->type, function ($query) use ($request) {
+                    $query->where('type', $request->type);
+                })
                 ->latest()
                 ->paginate(BalanceRecord::getLimit())
             )

@@ -156,9 +156,9 @@ class TokenFactory
      */
     public static function unbind($type)
     {
-        $uid = self::getCurrentUID();
+        $user = TokenFactory::getCurrentUser();
 
-        $identity = UserAuth::where('user_id', $uid)
+        $identity = UserAuth::where('user_id', $user->id)
             ->where('identity_type', $type)
             ->first();
 
@@ -166,14 +166,18 @@ class TokenFactory
             throw new BindingLoginModeException('该账号未绑定' . $type);
         }
 
-        $identityCount = UserAuth::where('user_id', $uid)
+        $identityCount = UserAuth::where('user_id', $user->id)
             ->count();
 
         DB::beginTransaction();
         try {
             if ($identityCount == 1) {
-                User::where('id', $uid)
-                    ->delete();
+                $user->delete();
+            } else {
+                $user->update([
+                    $type => null,
+                    'is_bind_' . $type => 0
+                ]);
             }
             $identity->delete();
 
