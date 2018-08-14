@@ -76,7 +76,7 @@ class EntityController extends ApiController
             $entity->images()->sync($request->images);
 
             // 同步用户自定义属性
-            self::customSpecs($entity, $request->custom_specs);
+            isset($request->custom_specs) && self::customSpecs($entity, $request->custom_specs);
 
             // 同步商品属性
             self::syncSpecs($entity, $request->specs);

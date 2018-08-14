@@ -78,7 +78,7 @@ class OrderEventSubscriber
 
         $order->update(['received_at' => Carbon::now()]);
 
-        Message::orderDelivered($order->user_id);
+        Message::orderReceived($order->user_id);
     }
 
     /**

@@ -21,6 +21,7 @@ use App\Http\Requests\UpdateOrder;
 use App\Http\Resources\FileResource;
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\OrderCollection;
+use App\Http\Resources\OrderResource;
 use App\Models\Address;
 use App\Models\Cart;
 use App\Models\Combination;
@@ -53,6 +54,19 @@ class OrderController extends ApiController
             ->paginate(Order::getLimit());
 
         return $this->success(new OrderCollection($orders));
+    }
+
+    /**
+     * @param Order $order
+     * @return mixed
+     * @throws \App\Exceptions\ForbiddenException
+     * @throws \App\Exceptions\TokenException
+     */
+    public function show(Order $order)
+    {
+        if (TokenFactory::isValidOperate($order->user_id) || TokenFactory::can('用户管理')) {
+            return $this->success(new OrderResource($order));
+        }
     }
 
     /**
@@ -98,10 +112,12 @@ class OrderController extends ApiController
                 $money -= $quota;
             }
 
-            $order['total_price'] = $money;
+            $order['member_discount'] = $money * (1 - TokenFactory::getCurrentUser()->memberLevel->discount / 10);
+
+            $order['total_price'] = $money - $order['member_discount'];
 
             if ($request->receipt_info) {
-                $receipt = Receipt::receipted($request->receipt_info, $money);
+                $receipt = Receipt::receipted($request->receipt_info, $order['total_price']);
                 $order['receipt_id'] = $receipt->id;
             }
 
@@ -111,17 +127,24 @@ class OrderController extends ApiController
         return $this->created();
     }
 
+    /**
+     * @param UpdateOrder $request
+     * @param Order $order
+     * @return mixed
+     * @throws BaseException
+     * @throws \App\Exceptions\ForbiddenException
+     * @throws \App\Exceptions\TokenException
+     */
     public function update(UpdateOrder $request, Order $order)
     {
-        Order::updateField($request, $order, ['status']);
-
         $status = $request->status;
 
+        self::updateValidate($status, $order);
+
+        Order::updateField($request, $order, ['status']);
+
         // 分发事件
-        if ($status == OrderStatusEnum::PAID) {
-            event(new OrderPaid($order));
-        }
-        elseif ($status == OrderStatusEnum::UNDELIVERED) {
+        if ($status == OrderStatusEnum::UNDELIVERED) {
             event(new OrderAudited($order));
         }
         elseif ($status == OrderStatusEnum::DELIVERED) {
@@ -134,6 +157,11 @@ class OrderController extends ApiController
         return $this->message('更新成功');
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws \Throwable
+     */
     public function backOrder(Request $request)
     {
         \DB::transaction(function () use ($request, &$goodsInfo) {
@@ -177,16 +205,30 @@ class OrderController extends ApiController
         return $this->created();
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws \Throwable
+     */
     public function backPay(Request $request)
     {
-        $order = Order::findOrFail($request->id);
+        \DB::transaction(function () use ($request) {
+            $order = Order::lockForUpdate()->findOrFail($request->id);
 
-        $order->update([
-            'status' => OrderStatusEnum::PAID,
-            'pay_type' => OrderPayTypeEnum::BACK_PAY
-        ]);
+            if ($order->status == OrderStatusEnum::EXPIRE) {
+                throw new BaseException('该订单已过期，无法支付');
+            }
+            if ($order->status >= OrderStatusEnum::PAID) {
+                throw new BaseException('该订单已支付，请不要重复支付');
+            }
 
-        event(new OrderPaid($order));
+            $order->update([
+                'status' => OrderStatusEnum::PAID,
+                'pay_type' => OrderPayTypeEnum::BACK_PAY
+            ]);
+
+            event(new OrderPaid($order));
+        });
 
         return $this->message('支付状态更新成功');
     }
@@ -289,5 +331,36 @@ class OrderController extends ApiController
             $count = $arr[0][0];
         }
         return $count;
+    }
+
+    /**
+     * @param $status
+     * @param $order
+     * @throws BaseException
+     * @throws \App\Exceptions\ForbiddenException
+     * @throws \App\Exceptions\TokenException
+     */
+    private static function updateValidate($status, $order)
+    {
+        if ($status == OrderStatusEnum::UNDELIVERED) {
+            TokenFactory::can('订单管理');
+            if ($order->status >= OrderStatusEnum::UNDELIVERED) {
+                throw new BaseException('该订单已审核');
+            }
+        }
+        elseif ($status == OrderStatusEnum::DELIVERED) {
+            TokenFactory::can('订单管理');
+            if ($order->status >= OrderStatusEnum::DELIVERED) {
+                throw new BaseException('该订单已发货');
+            }
+        }
+        elseif ($status == OrderStatusEnum::RECEIVED) {
+            if (!TokenFactory::isValidOperate($order->user_id)) {
+                throw new BaseException('不能操作别人的订单');
+            }
+            if ($order->status >= OrderStatusEnum::RECEIVED) {
+                throw new BaseException('该订单已确认收货');
+            }
+        }
     }
 }

@@ -9,13 +9,17 @@
 namespace App\Http\Requests;
 
 
+use Illuminate\Validation\Rule;
+
 class UpdateOrder extends Request
 {
     public function rules()
     {
         // TODO 验证
         return [
-
+            'status' => [
+                Rule::in([3, 4, 5])
+            ]
         ];
     }
 }

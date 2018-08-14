@@ -36,10 +36,8 @@ class OrderResource extends Resource
             'goods_count' => $this->goods_count,
             'total_weight' => $this->total_weight,
             'freight' => $this->freight,
-            'discount_amount' => $this->when(
-                $this->status >= OrderStatusEnum::PAID,
-                $this->discount_amount
-            ),
+            'discount_amount' => $this->discount_amount,
+            'member_discount' => $this->member_discount,
             'balance_deducted' => $this->when(
                 $this->status >= OrderStatusEnum::PAID,
                 $this->balance_deducted

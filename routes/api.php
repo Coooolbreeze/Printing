@@ -149,7 +149,7 @@ Route::namespace('Api')->group(function () {
             ->only(['show', 'store']);
 
         Route::apiResource('orders', 'OrderController')
-            ->only(['show', 'store']);
+            ->only(['show', 'store', 'update']);
 
         Route::apiResource('receipts', 'ReceiptController')
             ->only(['show', 'store']);
@@ -275,10 +275,10 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('gift_orders', 'GiftOrderController')
             ->only(['index', 'update']);
 
-        Route::put('/orders/back_pay', 'OrderController@backPay');
+        Route::put('/back_pay', 'OrderController@backPay');
 
         Route::apiResource('orders', 'OrderController')
-            ->only(['index', 'update']);
+            ->only(['index']);
 
         Route::apiResource('order_expresses', 'OrderExpressController')
             ->only(['store']);
@@ -303,7 +303,7 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:客服工具管理')->group(function () {
-        Route::post('/orders/back_order', 'OrderController@backOrder');
+        Route::post('/back_order', 'OrderController@backOrder');
     });
 
     Route::middleware('permission:优惠券管理')->group(function () {
@@ -331,6 +331,9 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::get('/test', function () {
+        return [
+            'data' => true || \App\Services\Tokens\TokenFactory::can('用户管理')
+        ];
         return \App\Services\Tokens\TokenFactory::bindEmail('392113643@qq.com', function ($password) {
             // TODO 发送密码
 

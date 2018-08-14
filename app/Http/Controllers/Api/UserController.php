@@ -298,6 +298,7 @@ class UserController extends ApiController
     {
         return $this->success(new CartCollection(TokenFactory::getCurrentUser()
             ->carts()
+            ->latest()
             ->paginate(Cart::getLimit())
         ));
     }
@@ -313,7 +314,7 @@ class UserController extends ApiController
     {
         return $this->success(new OrderCollection(TokenFactory::getCurrentUser()
             ->orders()
-            ->when($request->status, function ($query) use ($request) {
+            ->when(isset($request->status), function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
             ->latest()
@@ -362,7 +363,7 @@ class UserController extends ApiController
     {
         return $this->success(new MessageCollection(TokenFactory::getCurrentUser()
             ->messages()
-            ->when($request->is_read, function ($query) use ($request) {
+            ->when(isset($request->is_read), function ($query) use ($request) {
                 $query->where('is_read', $request->is_read);
             })
             ->orderBy('is_read', 'asc')

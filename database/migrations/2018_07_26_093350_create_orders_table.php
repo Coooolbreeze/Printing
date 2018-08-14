@@ -27,6 +27,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('freight');
             $table->string('coupon_no')->nullable();
             $table->decimal('discount_amount')->default(0);
+            $table->decimal('member_discount')->default(0);
             $table->decimal('balance_deducted')->default(0);
             $table->decimal('total_price');
             $table->string('remark')->nullable();

@@ -251,7 +251,10 @@
     GET /users/self/messages
     request:
     {
-        ^is_read: 0|1 指定返回已读或未读消息
+        ^is_read: 筛选已读或未读消息 (
+            0 未读消息,
+            1 已读消息
+        ),
     }
     response:
     {
@@ -464,7 +467,7 @@
                     province: 省份,
                     city: 市,
                     county: 区/县,
-                    detail: 详细地址,
+                    detail: 详细地址
                 }，
                 content: {
                     id: 礼品ID,
@@ -482,4 +485,455 @@
             },
             ...
         ]
+    }
+    
+### 26. 获取我的商品订单
+    GET /users/self/orders
+    request:
+    {
+        ^status: 筛选订单状态(
+            0 已失效
+            1 未支付
+            2 已支付
+            3 待发货
+            4 已发货
+            5 已收货
+            6 已评论
+        )
+    }
+    response:
+    {
+        data:
+        [
+            {
+                id: 订单ID,
+                receipt_id: 发票ID,
+                order_no: 订单编号,
+                user: {
+                    id: 用户ID,
+                    nickname: 用户昵称
+                },
+                title: 订单标题,
+                address: {
+                    name: 收货人姓名,
+                    phone: 收货人手机号,
+                    province: 省份,
+                    city: 市,
+                    county: 区/县,
+                    detail: 详细地址
+                },
+                goods_price: 商品总金额,
+                goods_count: 商品总数量,
+                total_weight: 商品总重量,
+                freight: 运费,
+                status: 订单状态 (已失效|待支付|已支付|待发货|已发货|已收货|已评论),
+                discount_amount: 优惠券、活动等抵扣金额,
+                member_discount: 会员折扣金额,
+                total_price: 订单总金额,
+                remark: 订单备注,
+                created_at: 订单创建日期,
+                ^expresses: 物流信息 (订单发货后显示) {
+                    id: 物流ID,
+                    company: 物流公司,
+                    track_no: 物流单号
+                },
+                ^balance_deducted: 账户余额抵扣 (订单支付后显示),
+                ^pay_type: 支付方式 (订单支付后显示),
+                ^paid_at: 订单支付日期 (订单支付后显示),
+                ^audited_at: 订单审核日期 (订单审核通过后显示),
+                ^delivered_at: 订单发货日期 (订单发货后显示),
+                ^received_at: 订单收货日期 (订单收货后显示)
+            },
+            ...
+        ]
+    }
+    
+### 27. 获取我的购物车商品信息
+    GET /users/self/carts
+    reponse:
+    {
+        data:
+        [
+            {
+                id: 购物车商品ID,
+                entity: {
+                    id: 商品ID,
+                    image: {
+                        id: 商品图片ID,
+                        src: 商品图片链接
+                    },
+                    name: 商品名称,
+                    lead_time: 出货周期
+                },
+                ^file: {
+                    id: 文件ID,
+                    name: 文件名称,
+                    src: 文件链接
+                },
+                specs: {
+                    商品属性(如工艺): 属性值(如烫金),
+                    ...
+                },
+                custom_specs: {
+                    自定义属性(如尺寸): {
+                        单位属性(如宽): 属性值(如1),
+                        ...
+                    },
+                    ...
+                },
+                count: 商品数量,
+                price: 商品价格,
+                weight: 商品重量,
+                remark: 备注
+            },
+            ...
+        ]
+    }
+    
+### 28. 获取我的发票信息
+    GET /users/self/receipts
+    response:
+    {
+        data:
+        [
+            {
+                id: 发票ID,
+                user: {
+                    id: 用户ID,
+                    nickname: 用户昵称
+                },
+                order: [
+                    {
+                        id: 订单ID,
+                        title: 订单标题
+                    },
+                    ...
+                ],
+                company: 公司,
+                tax_no: 纳税号,
+                contact: 联系人,
+                contact_way: 联系方式,
+                address: 联系地址,
+                money: 发票金额,
+                is_receipted: 是否已开票,
+                created_at: 申请日期,
+                updated_at: 开票日期
+            },
+            ...
+        ]
+    }
+
+### 29. 获取用户列表 (需用户管理权限)
+    GET /users
+    request:
+    {
+        ^member_level_id: 按会员等级ID筛选,
+        ^nickname: 用户昵称模糊搜索,
+        ^phone: 手机号模糊搜索
+    }
+    reponse:
+    {
+        data:
+        [
+            {
+                id: 用户ID,
+                nickname: 昵称,
+                avatar: 头像地址,
+                sex: 性别,
+                account: 账号,
+                phone: 手机号,
+                email: 邮箱,
+                member_level: {
+                    id: 会员等级ID，
+                    name: 会员等级名称,
+                    accumulate_points: 当前等级所需积分,
+                    discount: 当前等级折扣
+                },
+                accumulate_points: 当前剩余积分,
+                history_accumulate_points: 历史总积分,
+                balance: 账户余额,
+                is_bind_account: 是否已绑定账号,
+                is_bind_phone: 是否已绑定手机号,
+                is_bind_email: 是否已绑定邮箱,
+                is_bind_wx: 是否已绑定微信,
+                created_at: 注册日期
+            },
+            ...
+        ]
+    }
+    
+### 30. 查看用户信息
+    GET /users/{id}
+    response:
+    {
+        id: 用户ID,
+        nickname: 昵称,
+        avatar: 头像地址,
+        sex: 性别,
+        account: 账号,
+        phone: 手机号 (非管理员隐藏4-7位),
+        email: 邮箱 (非管理员隐藏2-5位),
+        member_level: {
+            id: 会员等级ID，
+            name: 会员等级名称,
+            accumulate_points: 当前等级所需积分,
+            discount: 当前等级折扣
+        },
+        accumulate_points: 当前剩余积分,
+        history_accumulate_points: 历史总积分,
+        ^balance: 账户余额 (非管理员不返回),
+        is_bind_account: 是否已绑定账号,
+        is_bind_phone: 是否已绑定手机号,
+        is_bind_email: 是否已绑定邮箱,
+        is_bind_wx: 是否已绑定微信,
+        created_at: 注册日期
+    }
+    
+### 31. 更新用户信息 (需用户管理权限)
+    PUT /users/{id}
+    request:
+    {
+        ^accumulate_points: 更新用户积分,
+        ^balance: 更新用户余额
+    }
+    
+### 32. 删除用户 (需用户管理权限)
+    DELETE /users/{id}
+    
+### 33. 添加商品到购物车
+    POST /carts
+    request:
+    {
+        entity_id: 商品ID,
+        price: 商品总价格,
+        combination_id: 商品组合ID,
+        specs: {
+            商品属性(如工艺): 属性值(如烫金),
+            ...
+        },
+        ^custom_specs: {
+            自定义属性(如尺寸): {
+                单位属性(如宽): 属性值(如1),
+                ...
+            },
+            ...
+        },
+        remark: 备注 (多人数量信息，如 张三:10盒;李四:20盒;)
+    }
+    
+### 34. 批量添加商品到购物车,用于用户登录后上传本地缓存中的购物车数据
+    POST /batch/carts
+    request:
+    {
+        carts:
+        [
+            {
+                  entity_id: 商品ID,
+                  price: 商品总价格,
+                  combination_id: 商品组合ID,
+                  specs: {
+                      商品属性(如工艺): 属性值(如烫金),
+                      ...
+                  },
+                  ^custom_specs: {
+                      自定义属性(如尺寸): {
+                          单位属性(如宽): 属性值(如1),
+                          ...
+                      },
+                      ...
+                  },
+                  remark: 备注 (多人数量信息，如 张三:10盒;李四:20盒;)
+            },
+            ...
+        ]
+    }
+    
+### 35. 删除购物车商品
+    DELETE /carts/{id}
+    
+### 36. 批量删除购物车商品
+    DELETE /batch/carts
+    request:
+    {
+        ids: 购物车商品ID数组，如[1,2,3]
+    }
+    
+### 37. 创建商品订单
+    POST /orders
+    request:
+    {
+        ^ids: 购物车商品ID数组，如[1,2,3]，购物车内下单需传,
+        ^entity: 直接下单需传 {
+            entity_id: 商品ID,
+            price: 商品总价格,
+            combination_id: 商品组合ID,
+            specs: {
+                商品属性(如工艺): 属性值(如烫金),
+                ...
+            },
+            ^custom_specs: {
+                自定义属性(如尺寸): {
+                    单位属性(如宽): 属性值(如1),
+                    ...
+                },
+                ...
+            },
+            remark: 备注 (多人数量信息，如 张三:10盒;李四:20盒;)
+        },
+        express_id: 快递公司ID,
+        remark: 订单备注,
+        ^receipt_info: 开票信息 {
+            company: 公司,
+            tax_no: 纳税号,
+            contact: 联系人,
+            contact_way: 联系方式,
+            address: 地址
+        }
+    }
+    
+### 38. 获取商品订单列表 (需订单管理权限)
+    GET /orders
+    request:
+    {
+        ^status: 筛选订单状态(
+            0 已失效
+            1 未支付
+            2 已支付
+            3 待发货
+            4 已发货
+            5 已收货
+            6 已评论
+        )
+    }
+    response:
+    {
+        data:
+        [
+            {
+                id: 订单ID,
+                receipt_id: 发票ID,
+                order_no: 订单编号,
+                user: {
+                    id: 用户ID,
+                    nickname: 用户昵称
+                },
+                title: 订单标题,
+                address: {
+                    name: 收货人姓名,
+                    phone: 收货人手机号,
+                    province: 省份,
+                    city: 市,
+                    county: 区/县,
+                    detail: 详细地址
+                },
+                goods_price: 商品总金额,
+                goods_count: 商品总数量,
+                total_weight: 商品总重量,
+                freight: 运费,
+                status: 订单状态 (已失效|待支付|已支付|待发货|已发货|已收货|已评论),
+                discount_amount: 优惠券、活动等抵扣金额,
+                member_discount: 会员折扣金额,
+                total_price: 订单总金额,
+                remark: 订单备注,
+                created_at: 订单创建日期,
+                ^expresses: 物流信息 (订单发货后显示) {
+                    id: 物流ID,
+                    company: 物流公司,
+                    track_no: 物流单号
+                },
+                ^balance_deducted: 账户余额抵扣 (订单支付后显示),
+                ^pay_type: 支付方式 (订单支付后显示),
+                ^paid_at: 订单支付日期 (订单支付后显示),
+                ^audited_at: 订单审核日期 (订单审核通过后显示),
+                ^delivered_at: 订单发货日期 (订单发货后显示),
+                ^received_at: 订单收货日期 (订单收货后显示)
+            },
+            ...
+        ]
+    }
+
+### 39. 查看商品订单详情 (需订单管理权限或者自己)
+    GET /orders/{id}
+    response:
+    {
+        id: 订单ID,
+        receipt_id: 发票ID,
+        order_no: 订单编号,
+        user: {
+            id: 用户ID,
+            nickname: 用户昵称
+        },
+        title: 订单标题,
+        address: {
+            name: 收货人姓名,
+            phone: 收货人手机号,
+            province: 省份,
+            city: 市,
+            county: 区/县,
+            detail: 详细地址
+        },
+        content: [
+            {
+                id: 商品ID,
+                name: 商品名称,
+                image: {
+                    id: 商品图片ID,
+                    src: 商品图片链接
+                },
+                combination: 商品组合信息,
+                specs: {
+                    商品属性(如工艺): 属性值(如烫金),
+                    ...
+                },
+                custom_specs: {
+                    自定义属性(如尺寸): {
+                        单位属性(如宽): 属性值(如1),
+                        ...
+                    },
+                    ...
+                },
+                weight: 商品重量,
+                count: 商品数量,
+                price: 商品价格,
+                remark: 商品备注
+            },
+            ...
+        ],
+        ^logs: 订单处理日志，操作用户为管理员且订单状态为已支付时返回 {
+            administrator: 操作管理员昵称,
+            action: 操作说明,
+            created_at: 操作日期
+        },
+        goods_price: 商品总金额,
+        goods_count: 商品总数量,
+        total_weight: 商品总重量,
+        freight: 运费,
+        status: 订单状态 (已失效|待支付|已支付|待发货|已发货|已收货|已评论),
+        discount_amount: 优惠券、活动等抵扣金额,
+        member_discount: 会员折扣金额,
+        total_price: 订单总金额,
+        remark: 订单备注,
+        created_at: 订单创建日期,
+        ^expresses: 物流信息 (订单发货后显示) {
+            id: 物流ID,
+            company: 物流公司,
+            track_no: 物流单号
+        },
+        ^balance_deducted: 账户余额抵扣 (订单支付后显示),
+        ^pay_type: 支付方式 (订单支付后显示),
+        ^paid_at: 订单支付日期 (订单支付后显示),
+        ^audited_at: 订单审核日期 (订单审核通过后显示),
+        ^delivered_at: 订单发货日期 (订单发货后显示),
+        ^received_at: 订单收货日期 (订单收货后显示)
+    }
+    
+### 40. 更新订单状态
+    PUT /orders/{id}
+    request:
+    {
+        status: 订单状态 (
+            3 审核通过,
+            4 发货,
+            5 确认收货
+        )
     }

@@ -32,6 +32,20 @@ use App\Exceptions\BaseException;
  */
 class Combination extends Model
 {
+    public function scopeActive($query)
+    {
+        return $query->where('price', '<>', null)
+            ->where('price', '<>', '')
+            ->where('price', '<>', 0);
+    }
+
+    public function scopeDisabled($query)
+    {
+        return $query->where('price', null)
+            ->orWhere('price', '')
+            ->orWhere('price', 0);
+    }
+
     public static function isEntityMatch($combinationId, $entityId)
     {
         return self::findOrFail($combinationId)->entity_id == $entityId;

@@ -16,7 +16,7 @@ class OrderCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => OrderResource::collection($this->collection)->hide(['snap_content']),
+            'data' => OrderResource::collection($this->collection)->hide(['content', 'logs']),
             'count' => $this->count(),
             'total' => $this->total(),
             'current_page' => $this->currentPage(),

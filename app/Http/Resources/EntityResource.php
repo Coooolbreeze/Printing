@@ -42,7 +42,8 @@ class EntityResource extends Resource
             'describe' => $this->describe,
             'specs' => AttributeResource::collection($this->attributes),
             'custom_specs' => CustomAttributeResource::collection($this->customAttributes),
-            'combinations' => CombinationResource::collection($this->combinations),
+            'combinations' => CombinationResource::collection($this->combinations()->active()->get()),
+            'disabled_combinations' => $this->combinations()->disabled()->pluck('combination'),
             'comments' => new CommentCollection($this->comments()->paginate(Comment::getLimit())),
             'status' => $this->convertStatus($this->status),
             'created_at' => (string)$this->created_at
