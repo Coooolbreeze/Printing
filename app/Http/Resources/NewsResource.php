@@ -24,12 +24,13 @@ class NewsResource extends Resource
     {
         return $this->filterFields([
             'id' => $this->id,
+            'category' => (new NewsCategoryResource($this->newsCategory))->show(['id', 'title']),
             'image' => new ImageResource($this->image),
             'title' => $this->title,
             'from' => $this->from,
             'summary' => $this->summary,
             'body' => $this->body,
-            'sort' => $this->sort,
+//            'sort' => $this->sort,
             'status' => $this->convertStatus($this->status)
         ]);
     }

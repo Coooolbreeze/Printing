@@ -10,6 +10,7 @@ namespace App\Http\Resources;
 
 
 use App\Models\Entity;
+use App\Services\Tokens\TokenFactory;
 
 class SecondaryTypeResource extends Resource
 {
@@ -18,7 +19,7 @@ class SecondaryTypeResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'name' => $this->name,
-            'entities' => new EntityCollection($this->entities()->paginate(Entity::getLimit()))
+            'entities' => $this->when(!TokenFactory::isAdmin(), new EntityCollection($this->entities()->paginate(Entity::getLimit())))
         ]);
     }
 }

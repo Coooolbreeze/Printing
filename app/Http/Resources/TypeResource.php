@@ -26,8 +26,9 @@ class TypeResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'name' => $this->name,
+            'image' => new ImageResource($this->image),
             'secondary_types' => $this->when(
-                !TokenFactory::isAdmin() && $this->secondaryTypes,
+                $this->secondaryTypes,
                 SecondaryTypeResource::collection($this->secondaryTypes)
             ),
             'entities' => $this->when(

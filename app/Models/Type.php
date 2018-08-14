@@ -35,4 +35,9 @@ class Type extends Model
     {
         return $this->hasMany('App\Models\Entity');
     }
+
+    public function image()
+    {
+        return $this->belongsTo('App\Models\Image');
+    }
 }

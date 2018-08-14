@@ -42,6 +42,7 @@ class NewsController extends ApiController
     public function store(StoreNews $request)
     {
         News::create([
+            'news_category_id' => $request->news_category_id,
             'image_id' => $request->image_id,
             'title' => $request->title,
             'from' => $request->from,

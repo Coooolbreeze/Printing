@@ -13,6 +13,7 @@ use App\Exceptions\BaseException;
 use App\Http\Resources\TypeCollection;
 use App\Http\Resources\TypeResource;
 use App\Models\CategoryItem;
+use App\Models\SecondaryType;
 use App\Models\Type;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,21 @@ class TypeController extends ApiController
     public function store(Request $request)
     {
         \DB::transaction(function () use ($request) {
-            $type = Type::create(['name' => $request->name]);
+            $type = Type::create([
+                'name' => $request->name,
+                'image_id' => $request->image_id
+            ]);
+
+            if (isset($request->secondary_types)) {
+                $secondaryTypes = [];
+                foreach ($request->secondary_types as $name) {
+                    array_push($secondaryTypes, [
+                        'type_id' => $type->id,
+                        'name' => $name
+                    ]);
+                }
+                SecondaryType::saveAll($secondaryTypes);
+            }
 
             if (isset($request->category_id)) {
                 CategoryItem::create([
@@ -58,7 +73,7 @@ class TypeController extends ApiController
     public function update(Request $request, Type $type)
     {
         \DB::transaction(function () use ($request, $type) {
-            Type::updateField($request, $type, ['name']);
+            Type::updateField($request, $type, ['name', 'image_id']);
 
             if (isset($request->category_id)) {
                 CategoryItem::where('item_id', $type->id)

@@ -54,6 +54,9 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('entities', 'EntityController')
         ->only(['index', 'show']);
 
+    Route::apiResource('news_categories', 'NewsCategoryController')
+        ->only(['index', 'show']);
+
     Route::apiResource('news', 'NewsController')
         ->only(['index', 'show']);
 
@@ -207,6 +210,9 @@ Route::namespace('Api')->group(function () {
     Route::middleware('permission:新闻管理')->group(function () {
         Route::apiResource('news', 'NewsController')
             ->only(['store', 'update', 'destroy']);
+
+        Route::apiResource('news_categories', 'NewsCategoryController')
+            ->only(['update']);
 
         Route::prefix('batch')->group(function () {
             Route::delete('/news', 'NewsController@batchDestroy');
