@@ -52,7 +52,7 @@ class WxPay extends Pay
         \DB::transaction(function () use ($wxPay) {
             $data = $wxPay->verify();
 
-            if ($data->trade_status == 'TRADE_SUCCESS') {
+            if ($data->result_code == 'SUCCESS') {
                 $this->setPayType(OrderPayTypeEnum::WX_PAY)->successful($data->out_trade_no);
             }
 
