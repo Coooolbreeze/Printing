@@ -34,7 +34,7 @@ class WxPay extends Pay
 
         $order = [
             'out_trade_no' => $balanceOrder->order_no,
-            'total_fee' => $balanceOrder->price,
+            'total_fee' => $balanceOrder->price * 100,
             'body' => '易特印-余额充值'
         ];
 
