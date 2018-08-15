@@ -147,7 +147,7 @@ class Pay
                 'pay_type' => $this->payType
             ]);
 
-            BalanceRecord::income($order->price, '支付宝充值', $order->user);
+            BalanceRecord::income($order->price, $this->payType == 1 ? '支付宝充值' : '微信充值', $order->user);
         }
     }
 
