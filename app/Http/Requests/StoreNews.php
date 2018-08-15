@@ -14,6 +14,7 @@ class StoreNews extends Request
     public function rules()
     {
         return [
+            'news_category_id' => 'required',
             'image_id' => 'required',
             'title' => 'required',
             'from' => 'required',

@@ -26,7 +26,7 @@ Route::namespace('Api')->group(function () {
     Route::put('/users/self', 'UserController@selfUpdate')->name('users.selfUpdate');
 
     // 发送短信
-    Route::post('/sms', 'SmsController@sendSms')->middleware('throttle:2,1');
+    Route::post('/sms', 'SmsController@sendSms');
 
     // 图片上传
     Route::apiResource('images', 'ImageController')
@@ -35,7 +35,6 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('files', 'FileController')
         ->only(['store']);
 
-    Route::post('/alipay/recharge_notify', 'AliPayController@rechargeNotify');
     Route::post('/alipay/notify', 'AliPayController@notify');
     Route::post('/wxpay/notify', 'WxPayController@notify');
 
@@ -175,6 +174,8 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/alipay/recharge', 'AliPayController@recharge');
         Route::get('/alipay/pay', 'AliPayController@pay');
+        Route::get('/wxpay/recharge', 'WxPayController@recharge');
+        Route::get('/wxpay/pay', 'WxPayController@pay');
     });
 
     /**

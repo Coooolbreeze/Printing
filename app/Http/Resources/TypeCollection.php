@@ -16,7 +16,7 @@ class TypeCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => TypeResource::collection($this->collection)->hide(['entities', 'secondary_types']),
+            'data' => TypeResource::collection($this->collection)->hide(['entities', 'secondary_types', 'detail']),
             'count' => $this->count(),
             'total' => $this->total(),
             'current_page' => $this->currentPage(),

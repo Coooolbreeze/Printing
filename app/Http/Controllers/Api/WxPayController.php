@@ -2,26 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: 392113643
- * Date: 2018/8/7
- * Time: 16:51
+ * Date: 2018/8/15
+ * Time: 10:20
  */
 
 namespace App\Http\Controllers\Api;
 
 
-use App\Enum\OrderPayTypeEnum;
-use App\Enum\OrderStatusEnum;
-use App\Events\OrderPaid;
 use App\Exceptions\BaseException;
-use App\Models\BalanceRecord;
 use App\Models\Order;
-use App\Models\RechargeOrder;
-use App\Services\AliPay;
-use App\Services\Tokens\TokenFactory;
+use App\Services\WxPay;
 use Illuminate\Http\Request;
-use Yansongda\LaravelPay\Facades\Pay;
 
-class AliPayController extends ApiController
+class WxPayController extends ApiController
 {
     /**
      * @param Request $request
@@ -30,14 +23,14 @@ class AliPayController extends ApiController
      */
     public function pay(Request $request)
     {
-        return (new AliPay())
+        return (new WxPay())
             ->setOrder(Order::findOrFail($request->order_id))
             ->pay();
     }
 
     public function recharge(Request $request)
     {
-        return (new AliPay())->recharge($request->price);
+        return (new WxPay())->recharge($request->price);
     }
 
     /**
@@ -46,6 +39,6 @@ class AliPayController extends ApiController
      */
     public function notify()
     {
-        return (new AliPay())->notify();
+        return (new WxPay())->notify();
     }
 }

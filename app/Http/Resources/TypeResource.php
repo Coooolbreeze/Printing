@@ -27,6 +27,7 @@ class TypeResource extends Resource
             'id' => $this->id,
             'name' => $this->name,
             'image' => new ImageResource($this->image),
+            'detail' => $this->detail,
             'secondary_types' => $this->when(
                 $this->secondaryTypes,
                 SecondaryTypeResource::collection($this->secondaryTypes)

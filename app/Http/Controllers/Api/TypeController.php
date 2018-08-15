@@ -39,7 +39,8 @@ class TypeController extends ApiController
         \DB::transaction(function () use ($request) {
             $type = Type::create([
                 'name' => $request->name,
-                'image_id' => $request->image_id
+                'image_id' => $request->image_id,
+                'detail' => $request->detail
             ]);
 
             if (isset($request->secondary_types)) {
@@ -73,7 +74,7 @@ class TypeController extends ApiController
     public function update(Request $request, Type $type)
     {
         \DB::transaction(function () use ($request, $type) {
-            Type::updateField($request, $type, ['name', 'image_id']);
+            Type::updateField($request, $type, ['name', 'image_id', 'detail']);
 
             if (isset($request->category_id)) {
                 CategoryItem::where('item_id', $type->id)
