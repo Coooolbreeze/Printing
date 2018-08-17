@@ -54,12 +54,7 @@ class NewsController extends ApiController
 
     public function update(StoreNews $request, News $news)
     {
-        isset($request->image_id) && $news->image_id = $request->image_id;
-        isset($request->title) && $news->title = $request->title;
-        isset($request->from) && $news->from = $request->from;
-        isset($request->summary) && $news->summary = $request->summary;
-        isset($request->body) && $news->body = $request->body;
-        $news->save();
+        News::updateField($request, $news, ['news_category_id', 'image_id', 'title', 'from', 'summary', 'body']);
 
         return $this->message('更新成功');
     }
