@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enum\NewsStatusEnum;
 use App\Http\Requests\StoreNews;
+use App\Http\Requests\UpdateNews;
 use App\Http\Resources\NewsCollection;
 use App\Http\Resources\NewsResource;
 use App\Models\News;
@@ -52,7 +53,7 @@ class NewsController extends ApiController
         return $this->created();
     }
 
-    public function update(StoreNews $request, News $news)
+    public function update(UpdateNews $request, News $news)
     {
         News::updateField($request, $news, ['news_category_id', 'image_id', 'title', 'from', 'summary', 'body']);
 
