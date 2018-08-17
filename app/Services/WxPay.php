@@ -25,20 +25,36 @@ class WxPay extends Pay
             'body' => '易特印-商品订单支付'
         ];
 
-        return LaravelPay::wechat()->scan($order);
+        $res = LaravelPay::wechat()->scan($order);
+
+        $this->getOrder()->update([
+            'prepay_id' => $res->prepay_id
+        ]);
+
+        return [
+            'code_url' => $res->code_url
+        ];
     }
 
     public function recharge($price)
     {
-        $balanceOrder = RechargeOrder::generate($price);
+        $rechargeOrder = RechargeOrder::generate($price);
 
         $order = [
-            'out_trade_no' => $balanceOrder->order_no,
-            'total_fee' => $balanceOrder->price * 100,
+            'out_trade_no' => $rechargeOrder->order_no,
+            'total_fee' => $rechargeOrder->price * 100,
             'body' => '易特印-余额充值'
         ];
 
-        return LaravelPay::wechat()->scan($order);
+        $res = LaravelPay::wechat()->scan($order);
+
+        $rechargeOrder->update([
+            'prepay_id' => $res->prepay_id
+        ]);
+
+        return [
+            'code_url' => $res->code_url
+        ];
     }
 
     /**

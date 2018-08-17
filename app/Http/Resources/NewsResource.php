@@ -31,7 +31,8 @@ class NewsResource extends Resource
             'summary' => $this->summary,
             'body' => $this->body,
 //            'sort' => $this->sort,
-            'status' => $this->convertStatus($this->status)
+            'status' => $this->convertStatus($this->status),
+            'created_at' => (string)$this->created_at
         ]);
     }
 

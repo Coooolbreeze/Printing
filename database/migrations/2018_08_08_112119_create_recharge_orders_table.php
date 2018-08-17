@@ -18,6 +18,7 @@ class CreateRechargeOrdersTable extends Migration
             $table->integer('user_id');
             $table->string('order_no');
             $table->decimal('price');
+            $table->string('prepay_id')->nullable();
             $table->tinyInteger('is_paid')->default(0);
             $table->tinyInteger('pay_type')->comment('1支付宝 2微信');
             $table->timestamps();

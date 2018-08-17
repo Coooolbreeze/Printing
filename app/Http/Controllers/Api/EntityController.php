@@ -25,6 +25,9 @@ class EntityController extends ApiController
     public function index(Request $request)
     {
         $entities = (new Entity())
+            ->when($request->type_id, function ($query) use ($request) {
+                $query->where('type_id', $request->type_id);
+            })
             ->when($request->keyword, function ($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->keyword . '%')
                     ->orWhere('keywords', 'like', '%' . $request->keyword . '%');
@@ -112,12 +115,12 @@ class EntityController extends ApiController
     public static function customSpecs($entity, $specs)
     {
         $valueArr = [];
-        foreach ($specs as $key => $values) {
+        foreach ($specs as $spec) {
             $attribute = CustomAttribute::create([
                 'entity_id' => $entity->id,
-                'name' => $key
+                'name' => $spec['attribute']
             ]);
-            foreach ($values as $value) {
+            foreach ($spec['value'] as $value) {
                 $value['custom_attribute_id'] = $attribute->id;
                 array_push($valueArr, $value);
             }
@@ -129,19 +132,19 @@ class EntityController extends ApiController
     {
         $valuesArr = [];
         $values = [];
-        foreach ($specs as $key => $value) {
+        foreach ($specs as $spec) {
             $attribute = Attribute::create([
                 'entity_id' => $entity->id,
-                'name' => $key
+                'name' => $spec['attribute']
             ]);
-            foreach ($value as $name) {
+            foreach ($spec['value'] as $value) {
                 array_push($values, [
                     'attribute_id' => $attribute->id,
-                    'name' => $name
+                    'name' => $value
                 ]);
             }
 
-            array_push($valuesArr, $value);
+            array_push($valuesArr, $spec['value']);
         }
         Value::saveAll($values);
 

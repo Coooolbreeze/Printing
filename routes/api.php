@@ -174,8 +174,8 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/alipay/recharge', 'AliPayController@recharge');
         Route::get('/alipay/pay', 'AliPayController@pay');
-        Route::get('/wxpay/recharge', 'WxPayController@recharge');
-        Route::get('/wxpay/pay', 'WxPayController@pay');
+        Route::post('/wxpay/recharge', 'WxPayController@recharge');
+        Route::post('/wxpay/pay', 'WxPayController@pay');
     });
 
     /**
@@ -264,6 +264,9 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('types', 'TypeController')
             ->only(['store', 'update', 'destroy']);
 
+        Route::apiResource('secondary_types', 'SecondaryTypeController')
+            ->only(['store', 'update', 'destroy']);
+
         // 商品
         Route::apiResource('entities', 'EntityController')
             ->only(['store', 'update']);
@@ -338,6 +341,7 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::get('/test', function () {
+        return \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(500)->generate('111');
         return [
             'data' => true || \App\Services\Tokens\TokenFactory::can('用户管理')
         ];

@@ -18,19 +18,28 @@ class WxPayController extends ApiController
 {
     /**
      * @param Request $request
+     * @return mixed
      * @throws BaseException
      * @throws \App\Exceptions\TokenException
      */
     public function pay(Request $request)
     {
-        return (new WxPay())
-            ->setOrder(Order::findOrFail($request->order_id))
-            ->pay();
+        return $this->success(
+            (new WxPay())
+                ->setOrder(Order::findOrFail($request->order_id))
+                ->pay()
+        );
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
     public function recharge(Request $request)
     {
-        return (new WxPay())->recharge($request->price);
+        return $this->success(
+            (new WxPay())->recharge($request->price)
+        );
     }
 
     /**
