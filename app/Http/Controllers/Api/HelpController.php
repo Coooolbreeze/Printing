@@ -57,7 +57,7 @@ class HelpController extends ApiController
         return $this->message('删除成功');
     }
 
-    public function batchDelete(Request $request)
+    public function batchDestroy(Request $request)
     {
         Help::whereIn('id', $request->ids)
             ->delete();
