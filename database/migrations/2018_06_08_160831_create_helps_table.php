@@ -18,7 +18,7 @@ class CreateHelpsTable extends Migration
             $table->integer('help_category_id');
             $table->string('title')->unique();
             $table->longText('body');
-            $table->tinyInteger('status')->default(0)->comment('0未发布 1已发布');
+            $table->tinyInteger('status')->default(1)->comment('0未发布 1已发布');
             $table->timestamps();
         });
     }

@@ -46,11 +46,7 @@ class HelpController extends ApiController
 
     public function update(Request $request, Help $help)
     {
-        isset($request->help_category_id) && $help->help_category_id = $request->help_category_id;
-        isset($request->title) && $help->title = $request->title;
-        isset($request->body) && $help->body = $request->body;
-        isset($request->status) && $help->status = $request->status;
-        $help->save();
+        Help::updateField($request, $help, ['help_category_id', 'title', 'body', 'status']);
 
         return $this->message('更新成功');
     }

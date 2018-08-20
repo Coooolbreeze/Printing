@@ -22,9 +22,10 @@ class HelpResource extends Resource
     {
         return [
             'id' => $this->id,
-            'category' => (new HelpCategoryResource($this->category))->show(['id', 'title']),
+            'category' => (new HelpCategoryResource($this->helpCategory))->show(['id', 'name']),
             'title' => $this->title,
             'body' => $this->body,
+            'status' => $this->status,
             'updated_at' => (string)$this->updated_at
         ];
     }
