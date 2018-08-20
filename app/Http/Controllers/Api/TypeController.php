@@ -69,6 +69,7 @@ class TypeController extends ApiController
     /**
      * @param Request $request
      * @param Type $type
+     * @return mixed
      * @throws \Throwable
      */
     public function update(Request $request, Type $type)
@@ -82,6 +83,8 @@ class TypeController extends ApiController
                     ->update(['category_id' => $request->category_id]);
             }
         });
+
+        return $this->message('更新成功');
     }
 
     /**
