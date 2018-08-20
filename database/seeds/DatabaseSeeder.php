@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             CommonValuesTableSeeder::class,
             ImagesTableSeeder::class,
             FilesTableSeeder::class,
+            HelpCategoriesTableSeeder::class,
             NewsCategoriesTableSeeder::class,
             MemberLevelsTableSeeder::class,
             CacheFlushSeeder::class,
