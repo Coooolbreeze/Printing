@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enum\OrderStatusEnum;
 use App\Exceptions\BaseException;
 use App\Models\MemberLevel;
 use App\Services\Tokens\TokenFactory;
@@ -37,6 +38,9 @@ class UserResource extends Resource
             'accumulate_points' => $this->accumulate_points,
             'history_accumulate_points' => $this->history_accumulate_points,
             'balance' => $this->when($this->isSelfOrAdmin(), $this->balance),
+            'consume' => $this->consume,
+            'order_unpaid_count' => $this->orders()->where('status', OrderStatusEnum::UNPAID)->count(),
+            'order_delivered_count' => $this->orders()->where('status', OrderStatusEnum::DELIVERED)->count(),
             'is_bind_account' => (bool)$this->is_bind_account,
             'is_bind_phone' => (bool)$this->is_bind_phone,
             'is_bind_email' => (bool)$this->is_bind_email,

@@ -36,6 +36,8 @@ class OrderEventSubscriber
 
         $points = floor($order->total_price / config('setting.accumulate_points_money'));
         AccumulatePointsRecord::income($points, '购买商品', $order->user);
+
+        $order->user()->increment('consume', $order->total_price);
     }
 
     /**

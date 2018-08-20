@@ -24,7 +24,7 @@ class CreateEntitiesTable extends Migration
             $table->tinyInteger('custom_number')->default(0)->comment('0不允许自定义 1单人数量 2多人数量');
             $table->string('title');
             $table->string('keywords');
-            $table->string('describe');
+            $table->string('describe')->nullable();
             $table->integer('sales')->default(0);
             $table->tinyInteger('status')->default(1)->comment('0未发布 1销售中 2已下架');
             $table->timestamps();

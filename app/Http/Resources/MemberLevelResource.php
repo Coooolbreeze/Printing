@@ -15,6 +15,7 @@ class MemberLevelResource extends Resource
     {
         return [
             'id' => $this->id,
+            'icon' => new ImageResource($this->image),
             'name' => $this->name,
             'accumulate_points' => $this->accumulate_points,
             'discount' => $this->discount

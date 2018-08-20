@@ -15,6 +15,7 @@ class CreateMemberLevelsTable extends Migration
     {
         Schema::create('member_levels', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('image_id');
             $table->string('name');
             $table->integer('accumulate_points')->comment('所需积分');
             $table->float('discount')->comment('折扣率');
