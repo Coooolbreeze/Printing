@@ -206,6 +206,11 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('partners', 'PartnerController')
             ->only(['store', 'update', 'destroy']);
+
+        Route::prefix('batch')->group(function () {
+            Route::delete('/links', 'LinkController@batchDestroy');
+            Route::delete('/partners', 'PartnerController@batchDestroy');
+        });
     });
 
     Route::middleware('permission:新闻管理')->group(function () {

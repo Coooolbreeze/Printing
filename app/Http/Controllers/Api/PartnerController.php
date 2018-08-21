@@ -50,4 +50,11 @@ class PartnerController extends ApiController
         $partner->delete();
         return $this->message('删除成功');
     }
+
+    public function batchDestroy(Request $request)
+    {
+        Partner::whereIn('id', $request->ids)
+            ->delete();
+        return $this->message('删除成功');
+    }
 }
