@@ -26,6 +26,10 @@ class DatabaseSeeder extends Seeder
             HelpCategoriesTableSeeder::class,
             NewsCategoriesTableSeeder::class,
             MemberLevelsTableSeeder::class,
+            BannersTableSeeder::class,
+            RecommendNewsTableSeeder::class,
+            RecommendNewEntitiesTableSeeder::class,
+            RecommendEntitiesTableSeeder::class,
             CacheFlushSeeder::class,
         ]);
     }

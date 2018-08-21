@@ -19,8 +19,8 @@ class CreateUserCouponsTable extends Migration
             $table->string('coupon_no');
             $table->string('name');
             $table->tinyInteger('type')->default(1)->comment('1满减 2抵扣');
-            $table->decimal('quota');
-            $table->decimal('satisfy')->nullable();
+            $table->integer('quota');
+            $table->integer('satisfy')->nullable();
             $table->tinyInteger('is_meanwhile')->default(0);
             $table->tinyInteger('is_used')->default(0);
             $table->timestamp('finished_at');

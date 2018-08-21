@@ -10,11 +10,18 @@ namespace App\Http\Resources;
 
 
 use App\Enum\CouponTypeEnum;
+use App\Services\Tokens\TokenFactory;
 
 class CouponResource extends Resource
 {
     public function toArray($request)
     {
+        $received = [];
+        try {
+            $received = TokenFactory::getCurrentUser()->receivedCoupons()->pluck('id')->toArray();
+        } catch (\Exception $exception) {
+        }
+
         return [
             'id' => $this->id,
             'coupon_no' => $this->coupon_no,
@@ -24,6 +31,7 @@ class CouponResource extends Resource
             'satisfy' => $this->when($this->type == CouponTypeEnum::FULL_SUBTRACTION, $this->satisfy),
             'number' => $this->number,
             'surplus' => $this->number - $this->received,
+            'is_received' => in_array($this->id, $received),
 //            'is_meanwhile' => (bool)$this->is_meanwhile,
             'finished_at' => (string)$this->finished_at,
             'created_at' => (string)$this->created_at

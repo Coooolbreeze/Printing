@@ -73,12 +73,8 @@ class CommentController extends ApiController
      */
     public static function getCommentableType($value)
     {
-        $commentableType = null;
-        try {
-            $commentableType = $value['commentable_type'];
-        } catch (\Exception $exception) {
-            $commentableType = 'Entity';
-        }
-        return $commentableType;
+        return array_key_exists('commentable_type', $value)
+            ? $value['commentable_type']
+            : 'Entity';
     }
 }

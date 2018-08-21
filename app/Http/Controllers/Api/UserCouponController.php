@@ -32,7 +32,7 @@ class UserCouponController extends ApiController
                 ->firstOrFail();
 
             $received = TokenFactory::getCurrentUser()->receivedCoupons()->pluck('id')->toArray();
-            if (in_array($coupon->id, $received)) throw new BaseException('已领取过该优惠券');
+            if (in_array($coupon->id, $received)) throw new BaseException('已经领取，不可重复领取');
             if ($coupon->received >= $coupon->number) throw new BaseException('该优惠券已被领完');
 
             UserCoupon::create([

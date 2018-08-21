@@ -1022,6 +1022,7 @@
                 ^satisfy: 需满足金额，type为满减时返回,
                 number: 优惠券数量,
                 surplus: 剩余数量,
+                is_received: 是否已领取过,
                 finished_at: 过期时间,
                 created_at: 创建时间
             },

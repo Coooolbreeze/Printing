@@ -101,6 +101,18 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('gifts', 'GiftController')
         ->only(['index', 'show']);
 
+    Route::apiResource('banners', 'BannerController')
+        ->only(['index']);
+
+    Route::apiResource('recommend_new_entities', 'RecommendNewEntityController')
+        ->only(['index']);
+
+    Route::apiResource('recommend_entities', 'RecommendEntityController')
+        ->only(['index']);
+
+    Route::apiResource('recommend_news', 'RecommendNewsController')
+        ->only(['index']);
+
     /**
      * 需登录后访问
      */
@@ -206,6 +218,18 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('partners', 'PartnerController')
             ->only(['store', 'update', 'destroy']);
+
+        Route::apiResource('banners', 'BannerController')
+            ->only(['update']);
+
+        Route::apiResource('recommend_new_entities', 'RecommendNewEntityController')
+            ->only(['update']);
+
+        Route::apiResource('recommend_entities', 'RecommendEntityController')
+            ->only(['update']);
+
+        Route::apiResource('recommend_news', 'RecommendNewsController')
+            ->only(['update']);
 
         Route::prefix('batch')->group(function () {
             Route::delete('/links', 'LinkController@batchDestroy');
