@@ -19,12 +19,7 @@ class HelpCategoryController extends ApiController
 {
     public function index()
     {
-        if (TokenFactory::isAdmin())
-            $helps = new HelpCategoryCollection(HelpCategory::pagination());
-        else
-            $helps = HelpCategoryResource::collection(HelpCategory::all());
-
-        return $this->success($helps);
+        return $this->success(HelpCategoryResource::collection(HelpCategory::all()));
     }
 
     public function show(HelpCategory $helpCategory)
