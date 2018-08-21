@@ -9,6 +9,7 @@
 namespace App\Models;
 
 
+use App\Enum\OrderStatusEnum;
 use App\Events\OrderUpdated;
 
 /**
@@ -88,5 +89,35 @@ class Order extends Model
     public function receipt()
     {
         return $this->belongsTo('App\Models\Receipt');
+    }
+
+    public function scopeUnpaid($query)
+    {
+        return $query->where('status', OrderStatusEnum::UNPAID);
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('status', OrderStatusEnum::PAID);
+    }
+
+    public function scopeUndelivered($query)
+    {
+        return $query->where('status', OrderStatusEnum::UNDELIVERED);
+    }
+
+    public function scopeDelivered($query)
+    {
+        return $query->where('status', OrderStatusEnum::DELIVERED);
+    }
+
+    public function scopeReceived($query)
+    {
+        return $query->where('status', OrderStatusEnum::RECEIVED);
+    }
+
+    public function scopeCommented($query)
+    {
+        return $query->where('status', OrderStatusEnum::COMMENTED);
     }
 }

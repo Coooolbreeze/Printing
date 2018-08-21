@@ -9,14 +9,22 @@
 namespace App\Http\Resources;
 
 
+use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class OrderCollection extends ResourceCollection
 {
     public function toArray($request)
     {
+        $orders = TokenFactory::getCurrentUser()->orders();
+
         return [
-            'data' => OrderResource::collection($this->collection)->hide(['content', 'logs']),
+            'data' => OrderResource::collection($this->collection)->hide(['logs']),
+            'unpaid_count' => $this->when(!TokenFactory::isAdmin(), $orders->unpaid()->count()),
+            'paid_count' => $this->when(!TokenFactory::isAdmin(), $orders->paid()->count()),
+            'undelivered_count' => $this->when(!TokenFactory::isAdmin(), $orders->undelivered()->count()),
+            'delivered_count' => $this->when(!TokenFactory::isAdmin(), $orders->delivered()->count()),
+            'received_count' => $this->when(!TokenFactory::isAdmin(), $orders->received()->count()),
             'count' => $this->count(),
             'total' => $this->total(),
             'current_page' => $this->currentPage(),

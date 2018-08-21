@@ -13,6 +13,7 @@ use App\Enum\OrderPayTypeEnum;
 use App\Enum\OrderStatusEnum;
 use App\Events\OrderAudited;
 use App\Events\OrderDelivered;
+use App\Events\OrderFailed;
 use App\Events\OrderPaid;
 use App\Events\OrderReceived;
 use App\Exceptions\BaseException;
@@ -137,21 +138,38 @@ class OrderController extends ApiController
      */
     public function update(UpdateOrder $request, Order $order)
     {
-        $status = $request->status;
-
-        self::updateValidate($status, $order);
-
-        Order::updateField($request, $order, ['status']);
-
-        // 分发事件
-        if ($status == OrderStatusEnum::UNDELIVERED) {
-            event(new OrderAudited($order));
+        if ($request->key && $request->file_id) {
+            $content = json_decode($order->snap_content, true);
+            foreach ($content as $key => &$entity) {
+                if ($entity['key'] == $request->key) {
+                    $entity['file'] = new FileResource(File::findOrFail($request->file_id));
+                }
+            }
+            $order->update([
+                'snap_content' => json_encode($content),
+                'status' => OrderStatusEnum::PAID
+            ]);
         }
-        elseif ($status == OrderStatusEnum::DELIVERED) {
-            event(new OrderDelivered($order));
-        }
-        elseif ($status == OrderStatusEnum::RECEIVED) {
-            event(new OrderReceived($order));
+        else {
+            $status = $request->status;
+
+            self::updateValidate($status, $order);
+
+            Order::updateField($request, $order, ['status']);
+
+            // 分发事件
+            if ($status == OrderStatusEnum::UNDELIVERED) {
+                event(new OrderAudited($order));
+            }
+            elseif ($status == OrderStatusEnum::DELIVERED) {
+                event(new OrderDelivered($order));
+            }
+            elseif ($status == OrderStatusEnum::RECEIVED) {
+                event(new OrderReceived($order));
+            }
+            elseif ($status == OrderStatusEnum::FAILED) {
+                event(new OrderFailed($order));
+            }
         }
 
         return $this->message('更新成功');
@@ -269,11 +287,12 @@ class OrderController extends ApiController
         $totalPrice = 0;
         $totalCount = 0;
         $title = '';
-        $carts->each(function ($value) use (&$goods, &$totalWeight, &$totalPrice, &$totalCount, &$title) {
+        $carts->each(function ($value, $key) use (&$goods, &$totalWeight, &$totalPrice, &$totalCount, &$title) {
             $combination = Combination::findOrFail($value->combination_id);
             $entityModel = Entity::findOrFail($value->entity_id);
 
             $entity = [
+                'key' => $key + 1,
                 'id' => $entityModel->id,
                 'name' => $entityModel->name,
                 'image' => new ImageResource($entityModel->images()->first()),
@@ -342,7 +361,10 @@ class OrderController extends ApiController
      */
     private static function updateValidate($status, $order)
     {
-        if ($status == OrderStatusEnum::UNDELIVERED) {
+        if ($status == OrderStatusEnum::EXPIRE) {
+            TokenFactory::isValidOperate($order->user_id) || TokenFactory::can('订单管理');
+        }
+        elseif ($status == OrderStatusEnum::UNDELIVERED || $status == OrderStatusEnum::FAILED) {
             TokenFactory::can('订单管理');
             if ($order->status >= OrderStatusEnum::UNDELIVERED) {
                 throw new BaseException('该订单已审核');

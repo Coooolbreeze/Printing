@@ -30,7 +30,12 @@ class EntityController extends ApiController
             })
             ->when($request->keyword, function ($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->keyword . '%')
-                    ->orWhere('keywords', 'like', '%' . $request->keyword . '%');
+                    ->orWhere('keywords', 'like', '%' . $request->keyword . '%')
+                    ->orWhere(function ($query) use ($request) {
+                        $query->whereHas('type', function ($query) use ($request) {
+                            $query->Where('name', 'like', '%' . $request->keyword . '%');
+                        });
+                    });
             })
             ->paginate(Entity::getLimit());
 

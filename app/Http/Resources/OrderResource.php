@@ -82,11 +82,12 @@ class OrderResource extends Resource
         $status = [
             OrderStatusEnum::EXPIRE => '已失效',
             OrderStatusEnum::UNPAID => '待支付',
-            OrderStatusEnum::PAID => '已支付',
+            OrderStatusEnum::PAID => '待审核',
             OrderStatusEnum::UNDELIVERED => '待发货',
             OrderStatusEnum::DELIVERED => '已发货',
             OrderStatusEnum::RECEIVED => '已收货',
-            OrderStatusEnum::COMMENTED => '已评论'
+            OrderStatusEnum::COMMENTED => '已评论',
+            OrderStatusEnum::FAILED => '未通过'
         ];
         return $status[$value];
     }

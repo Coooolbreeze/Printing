@@ -34,6 +34,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OrderReceived' => [
 //            'App\Listeners\OrderEventSubscriber@onOrderReceived'
         ],
+        'App\Events\OrderFailed' => [
+//            'App\Listeners\OrderEventSubscriber@onOrderFailed'
+        ],
     ];
 
     protected $subscribe = [

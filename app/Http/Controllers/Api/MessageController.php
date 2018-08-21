@@ -64,7 +64,7 @@ class MessageController extends ApiController
             $ids = array_flip($ids);
         }
 
-        Message::send($ids, $request->title, $request->body, TokenFactory::getCurrentUser()->nickname);
+        Message::send($ids, $request->title, $request->body);
 
         return $this->created();
     }

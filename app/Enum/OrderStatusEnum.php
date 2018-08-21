@@ -31,4 +31,7 @@ class OrderStatusEnum
 
     // 已评论
     const COMMENTED = 6;
+
+    // 未通过
+    const FAILED = 7;
 }

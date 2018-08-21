@@ -199,6 +199,10 @@
         email: 邮箱,
         member_level: {
             id: 会员等级ID，
+            icon: {
+                id: 会员图标ID,
+                src: 会员图标链接
+            },
             name: 会员等级名称,
             accumulate_points: 当前等级所需积分,
             discount: 当前等级折扣
@@ -206,6 +210,12 @@
         accumulate_points: 当前剩余积分,
         history_accumulate_points: 历史总积分,
         balance: 账户余额,
+        consume: 总消费,
+        order_unpaid_count: 待付款订单数量,
+        order_undelivered_count: 待印刷订单数量,
+        order_delivered_count: 配送中订单数量,
+        order_received_count: 待评价订单数量,
+        coupon_count: 可用优惠券数量,
         is_bind_account: 是否已绑定账号,
         is_bind_phone: 是否已绑定手机号,
         is_bind_email: 是否已绑定邮箱,
@@ -493,16 +503,22 @@
     {
         ^status: 筛选订单状态(
             0 已失效
-            1 未支付
-            2 已支付
-            3 待发货
-            4 已发货
-            5 已收货
-            6 已评论
+            1 待付款
+            2 待审核
+            3 印刷中
+            4 待收货
+            5 待评价
+            6 已评价
+            7 未通过
         )
     }
     response:
     {
+        unpaid_count: 待付款订单数量,
+        paid_count: 待审核订单数量,
+        undelivered_count: 印刷中订单数量,
+        delivered_count: 待收货订单数量,
+        received_count: 待评价订单数量,
         data:
         [
             {
@@ -526,7 +542,7 @@
                 goods_count: 商品总数量,
                 total_weight: 商品总重量,
                 freight: 运费,
-                status: 订单状态 (已失效|待支付|已支付|待发货|已发货|已收货|已评论),
+                status: 订单状态 (已失效|待支付|待审核|待发货|已发货|已收货|已评论|未通过),
                 discount_amount: 优惠券、活动等抵扣金额,
                 member_discount: 会员折扣金额,
                 total_price: 订单总金额,
@@ -989,4 +1005,33 @@
             ]
         },
         ...
+    }
+    
+ ### 42. 获取优惠券列表
+    GET /coupons
+    response:
+    {
+        data:
+        [
+            {
+                id: 优惠券ID,
+                coupon_no: 优惠券编号,
+                name: 优惠券名称,
+                type: 优惠券类型 (满减|抵扣),
+                quota: 优惠券金额,
+                ^satisfy: 需满足金额，type为满减时返回,
+                number: 优惠券数量,
+                surplus: 剩余数量,
+                finished_at: 过期时间,
+                created_at: 创建时间
+            },
+            ...
+        ]
+    }
+    
+ ### 43. 领取优惠券
+    POST /user_coupons
+    request:
+    {
+        coupon_no: 优惠券编号
     }

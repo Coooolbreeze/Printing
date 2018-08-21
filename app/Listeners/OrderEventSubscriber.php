@@ -56,6 +56,21 @@ class OrderEventSubscriber
     }
 
     /**
+     * 订单审核未通过
+     *
+     * @param $event
+     */
+    public function onOrderFailed($event) {
+        $order = $event->order;
+
+        $order->update(['audited_at' => Carbon::now()]);
+
+        OrderLog::write($order->id, '审核未通过');
+
+        Message::orderFailed($order->user_id);
+    }
+
+    /**
      * 订单发货
      *
      * @param $event
@@ -106,6 +121,11 @@ class OrderEventSubscriber
         $events->listen(
             'App\Events\OrderReceived',
             'App\Listeners\OrderEventSubscriber@onOrderReceived'
+        );
+
+        $events->listen(
+            'App\Events\OrderFailed',
+            'App\Listeners\OrderEventSubscriber@onOrderFailed'
         );
     }
 }

@@ -53,22 +53,27 @@ class Message extends Model
 
     public static function orderPaid($id)
     {
-        self::send($id, '订单支付提醒', '您的订单已成功支付，我们会尽快为您审核！');
+        self::send($id, '订单支付提醒', '您的订单已成功支付，我们会尽快为您审核！', '订单消息');
     }
 
     public static function orderAudited($id)
     {
-        self::send($id, '订单审核通过提醒','您的订单已审核通过，我们会尽快为您发货！');
+        self::send($id, '订单审核通过提醒','您的订单已审核通过，我们会尽快为您发货！', '订单消息');
     }
 
     public static function orderDelivered($id)
     {
-        self::send($id, '订单发货提醒', '您的订单已发货，请耐心等待收货！');
+        self::send($id, '订单发货提醒', '您的订单已发货，请耐心等待收货！', '订单消息');
     }
 
     public static function orderReceived($id)
     {
-        self::send($id, '订单收货提醒', '您的订单已确认收货，祝您购物愉快！');
+        self::send($id, '订单收货提醒', '您的订单已确认收货，祝您购物愉快！', '订单消息');
+    }
+
+    public static function orderFailed($id)
+    {
+        self::send($id, '订单审核未通过', request('body', '您的订单审核未通过，请前往订单列表重新上传文件！'), '订单消息');
     }
 
     /**

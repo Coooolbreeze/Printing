@@ -49,6 +49,11 @@ class UserCoupon extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_used', 0)->whereDate('finished_at', '>', Carbon::now());
+    }
+
     /**
      * @param $couponNo
      * @param $price

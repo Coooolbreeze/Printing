@@ -2,10 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Enum\CouponTypeEnum;
 use App\Enum\OrderStatusEnum;
 use App\Exceptions\BaseException;
 use App\Models\MemberLevel;
 use App\Services\Tokens\TokenFactory;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends Resource
@@ -39,8 +41,11 @@ class UserResource extends Resource
             'history_accumulate_points' => $this->history_accumulate_points,
             'balance' => $this->when($this->isSelfOrAdmin(), $this->balance),
             'consume' => $this->consume,
-            'order_unpaid_count' => $this->orders()->where('status', OrderStatusEnum::UNPAID)->count(),
-            'order_delivered_count' => $this->orders()->where('status', OrderStatusEnum::DELIVERED)->count(),
+            'order_unpaid_count' => $this->orders()->unpaid()->count(),
+            'order_undelivered_count' => $this->orders()->undelivered()->count(),
+            'order_delivered_count' => $this->orders()->delivered()->count(),
+            'order_received_count' => $this->orders()->received()->count(),
+            'coupon_count' => $this->coupons()->active()->count(),
             'is_bind_account' => (bool)$this->is_bind_account,
             'is_bind_phone' => (bool)$this->is_bind_phone,
             'is_bind_email' => (bool)$this->is_bind_email,

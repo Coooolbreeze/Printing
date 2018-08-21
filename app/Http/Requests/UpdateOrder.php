@@ -18,7 +18,7 @@ class UpdateOrder extends Request
         // TODO 验证
         return [
             'status' => [
-                Rule::in([3, 4, 5])
+                Rule::in([0, 3, 4, 5, 7])
             ]
         ];
     }

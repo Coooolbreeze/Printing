@@ -24,7 +24,7 @@ class CouponResource extends Resource
             'satisfy' => $this->when($this->type == CouponTypeEnum::FULL_SUBTRACTION, $this->satisfy),
             'number' => $this->number,
             'surplus' => $this->number - $this->received,
-            'is_meanwhile' => (bool)$this->is_meanwhile,
+//            'is_meanwhile' => (bool)$this->is_meanwhile,
             'finished_at' => (string)$this->finished_at,
             'created_at' => (string)$this->created_at
         ];
