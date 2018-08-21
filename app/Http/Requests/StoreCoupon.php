@@ -15,7 +15,6 @@ class StoreCoupon extends Request
         return [
             'type' => 'required',
             'quota' => 'required',
-            'satisfy' => 'required',
             'number' => 'required',
             'is_meanwhile' => 'required',
             'finished_at' => 'required'
