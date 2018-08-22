@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\LargeCategoryResource;
 use App\Models\LargeCategory;
+use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 
 class LargeCategoryController extends ApiController
@@ -23,7 +24,17 @@ class LargeCategoryController extends ApiController
 
     public function show(LargeCategory $largeCategory)
     {
-        return $this->success(CategoryResource::collection($largeCategory->categories)->hide(['items']));
+        if (TokenFactory::isAdmin()) {
+            return $this->success(CategoryResource::collection($largeCategory->categories)->hide(['items']));
+        }
+        else {
+            $types = [];
+            $largeCategory->categories()->each(function ($category) use (&$types) {
+                array_push($types, $category->items);
+            });
+
+            return $types;
+        }
     }
 
     public function update(Request $request, LargeCategory $largeCategory)

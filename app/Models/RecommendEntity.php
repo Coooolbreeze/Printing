@@ -13,6 +13,6 @@ class RecommendEntity extends Model
 {
     public function image()
     {
-        return $this->belongsTo('App\Models\Image');
+        return $this->belongsTo('App\Models\Image')->withDefault();
     }
 }
