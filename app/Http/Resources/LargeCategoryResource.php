@@ -11,6 +11,13 @@ namespace App\Http\Resources;
 
 class LargeCategoryResource extends Resource
 {
+    public static function collection($resource)
+    {
+        return tap(new LargeCategoryResourceCollection($resource), function ($collection) {
+            $collection->collects = __CLASS__;
+        });
+    }
+
     public function toArray($request)
     {
         return $this->filterFields([

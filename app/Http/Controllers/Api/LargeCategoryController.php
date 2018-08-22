@@ -10,7 +10,9 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\EntityResource;
 use App\Http\Resources\LargeCategoryResource;
+use App\Models\Entity;
 use App\Models\LargeCategory;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
@@ -28,12 +30,35 @@ class LargeCategoryController extends ApiController
             return $this->success(CategoryResource::collection($largeCategory->categories)->hide(['items']));
         }
         else {
-            $types = [];
-            $largeCategory->categories()->each(function ($category) use (&$types) {
-                array_push($types, $category->items);
+            $entities = [];
+            $largeCategory->categories->each(function ($category) use (&$entities) {
+                $category->items->each(function ($item) use (&$entities) {
+                    if ($item->item_type == 2) array_push($entities, $item->entity);
+                    else $item->type->entities->each(function ($entity) use (&$entities) {
+                        array_push($entities, $entity);
+                    });
+                });
             });
 
-            return $types;
+            $currentPage = (int)\request('page', 1);
+            $limit = Entity::getLimit();
+
+            $collection = collect($entities);
+            $entities = $collection->sortByDesc('sales')->values()->forPage($currentPage, $limit);
+            $count = count($entities);
+            $total = $collection->count();
+            $lastPage = ceil($total / $limit);
+            $hasMorePage = $currentPage < $lastPage;
+
+            return $this->success([
+                'large_categories' => LargeCategoryResource::collection(LargeCategory::all())->show(['id', 'name']),
+                'data' => EntityResource::collection($entities)->show(['id', 'image', 'name', 'summary', 'status', 'sales', 'comment_count']),
+                'count' => $count,
+                'total' => $total,
+                'current_page' => $currentPage,
+                'last_page' => $lastPage,
+                'has_more_pages' => $hasMorePage
+            ]);
         }
     }
 

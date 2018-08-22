@@ -1036,3 +1036,144 @@
     {
         coupon_no: 优惠券编号
     }
+    
+ ### 44. 全部商品
+    GET /large_categories/{id}
+    response:
+    {
+        large_categories: 商品分类
+        [
+            {
+                id: 分类ID,
+                name: 分类名称
+            },
+            ...
+        ],
+        data:
+        [
+            {
+                id: 商品ID,
+                image: {
+                    id: 商品图片ID,
+                    src: 商品图片链接
+                },
+                name: 商品名称,
+                summary: 商品描述,
+                status: 商品状态(销售中|已下架),
+                sales: 销量,
+                comment_count: 评价数量
+            },
+            ...
+        ]
+    }
+    
+ ### 45. 查看商品详情
+    GET /entities/{id}
+    response:
+    {
+        id: 商品ID,
+        type: {
+            id: 商品类型ID,
+            name: 商品类型名称
+        },
+        ^secondary_type: {
+            id: 商品二级类型ID,
+            name: 商品二级类型名称
+        },
+        images: 商品相册
+        [
+            {
+                id: 图片ID,
+                src: 图片链接
+            },
+            ...
+        ],
+        name: 商品名称,
+        summary: 商品描述,
+        body: 商品介绍,
+        lead_time: 商品出货周期,
+        custom_number: 是否支持用户自定义数量(
+            0 不支持,
+            1 支持单人数量,
+            2 支持多人数量
+        ),
+        title: 页面标题,
+        keywords: 页面关键词,
+        describe: 页面描述,
+        specs: 商品常规属性
+        [
+            {
+                attribute: 属性名称（如颜色）,
+                values: 属性值（如['红色', '黄色', '绿色']）
+            },
+            ...
+        ],
+        custom_specs: 允许用户自定义的属性
+        [
+            {
+                attribute: 属性名称（如尺寸）,
+                values:
+                [
+                    {
+                        name: 单位属性（如宽）,
+                        unit: 属性单位（如m）,
+                        min: 支持的最小值（如0.5）,
+                        max: 支持的最大值（如2）,
+                        default: 默认值（如1）
+                    },
+                    ...
+                ]
+            },
+            ...
+        ],
+        combinations: 商品组合
+        [
+            {
+                id: 组合ID,
+                combination: 组合（如 烫金|水晶|10盒，根据商品常规属性的顺序组合）,
+                price: 该组合价格,
+                weight: 该组合重量
+            },
+            ...
+        ],
+        disabled_combinations: 不可选的组合（如 ['烫金|炫金|40盒', '烫银|铂金|40盒']）,
+        comments: 商品评价
+        {
+            data:
+            [
+                {
+                    id: 评价ID,
+                    ^user: 非匿名评价时返回 {
+                        id: 评价用户ID,
+                        nickname: 评价用户昵称,
+                        avatar: 评价用户头像
+                    },
+                    goods: {
+                        id: 评价商品ID,
+                        name: 评价商品名称
+                    },
+                    target: 评价商品组合,
+                    goods_comment: 商品评价,
+                    service_comment: 服务评价,
+                    images:
+                    [
+                        {
+                            id: 评价图片id,
+                            src: 评价图片链接
+                        },
+                        ...
+                    ],
+                    describe_grade: 描述相符分数,
+                    seller_grade: 卖家服务分数,
+                    logistics_grade: 物流服务分数,
+                    is_anonymous: 是否匿名评价,匿名时不返回user字段,
+                    created_at: 评价日期
+                },
+                ...
+            ]
+        },
+        comment_count: 评价数量,
+        status: 状态（销售中|已下架）,
+        sales: 销量,
+        created_at: 创建日期
+    }

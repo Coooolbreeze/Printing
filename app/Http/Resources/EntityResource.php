@@ -25,7 +25,7 @@ class EntityResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'type' => (new TypeResource($this->type))->show(['id', 'name']),
-            'secondary_types' => $this->when(
+            'secondary_type' => $this->when(
                 $this->secondaryType,
                 (new SecondaryTypeResource($this->secondaryType))
                     ->show(['id', 'name'])
@@ -45,7 +45,9 @@ class EntityResource extends Resource
             'combinations' => CombinationResource::collection($this->combinations()->active()->get()),
             'disabled_combinations' => $this->combinations()->disabled()->pluck('combination'),
             'comments' => new CommentCollection($this->comments()->paginate(Comment::getLimit())),
+            'comment_count' => $this->comments()->count(),
             'status' => $this->convertStatus($this->status),
+            'sales' => $this->sales,
             'created_at' => (string)$this->created_at
         ]);
     }
