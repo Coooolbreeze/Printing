@@ -275,6 +275,7 @@ Route::namespace('Api')->group(function () {
             ->only(['index', 'show']);
         Route::apiResource('scene_goods', 'SceneGoodController')
             ->only(['show', 'store', 'update', 'destroy']);
+        Route::delete('/batch/scene_goods', 'SceneGoodController@batchDestroy');
     });
 
     Route::middleware('permission:商品管理')->group(function () {

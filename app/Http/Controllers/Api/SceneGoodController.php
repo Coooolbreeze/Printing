@@ -45,4 +45,11 @@ class SceneGoodController extends ApiController
         $sceneGood->delete();
         return $this->message('删除成功');
     }
+
+    public function batchDestroy(Request $request)
+    {
+        SceneGood::whereIn('id', $request->ids)
+            ->delete();
+        return $this->message('删除成功');
+    }
 }
