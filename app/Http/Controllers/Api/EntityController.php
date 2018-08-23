@@ -17,11 +17,18 @@ use App\Models\Combination;
 use App\Models\CustomAttribute;
 use App\Models\CustomValue;
 use App\Models\Entity;
+use App\Models\Type;
 use App\Models\Value;
+use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 
 class EntityController extends ApiController
 {
+    public function all()
+    {
+        return $this->success([Type::with('entities')->get(['id', 'name'])]);
+    }
+
     public function index(Request $request)
     {
         $entities = (new Entity())
@@ -60,7 +67,7 @@ class EntityController extends ApiController
         \DB::transaction(function () use ($request, &$entity) {
             // 创建商品
             $entity = Entity::create([
-                'type_id' => $request->category_id,
+                'type_id' => $request->type_id,
                 'secondary_type_id' => $request->secondary_type_id,
                 'name' => $request->name,
                 'summary' => $request->summary,
@@ -115,6 +122,17 @@ class EntityController extends ApiController
         });
 
         return $this->message('更新成功');
+    }
+
+    /**
+     * @param Entity $entity
+     * @return mixed
+     * @throws \Exception
+     */
+    public function destroy(Entity $entity)
+    {
+        $entity->delete();
+        return $this->message('删除成功');
     }
 
     public static function customSpecs($entity, $specs)

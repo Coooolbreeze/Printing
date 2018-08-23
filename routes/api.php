@@ -299,7 +299,8 @@ Route::namespace('Api')->group(function () {
 
         // 商品
         Route::apiResource('entities', 'EntityController')
-            ->only(['store', 'update']);
+            ->only(['store', 'update', 'destroy']);
+        Route::get('/all/entities', 'EntityController@all');
 
         // 修改组合价格
         Route::apiResource('combinations', 'CombinationController')
