@@ -274,7 +274,7 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('scene_categories', 'SceneCategoryController')
             ->only(['index', 'show']);
         Route::apiResource('scene_goods', 'SceneGoodController')
-            ->only(['store', 'update', 'destroy']);
+            ->only(['show', 'store', 'update', 'destroy']);
     });
 
     Route::middleware('permission:商品管理')->group(function () {
