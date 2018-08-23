@@ -9,11 +9,17 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Resources\SceneGoodResource;
 use App\Models\SceneGood;
 use Illuminate\Http\Request;
 
 class SceneGoodController extends ApiController
 {
+    public function show(SceneGood $sceneGood)
+    {
+        return $this->success(new SceneGoodResource($sceneGood));
+    }
+
     public function store(Request $request)
     {
         SceneGood::create([
