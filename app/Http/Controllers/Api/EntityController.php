@@ -26,7 +26,7 @@ class EntityController extends ApiController
 {
     public function all()
     {
-        return $this->success([Type::with('entities')->get(['id', 'name'])]);
+        return $this->success(Type::with('entities')->get(['id', 'name']));
     }
 
     public function index(Request $request)

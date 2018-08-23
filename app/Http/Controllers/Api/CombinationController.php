@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Exports\EntityCombinationsExport;
+use App\Http\Resources\CombinationCollection;
 use App\Http\Resources\CombinationResource;
 use App\Models\Combination;
 use App\Models\Entity;
@@ -21,8 +22,8 @@ class CombinationController extends ApiController
 {
     public function index(Request $request)
     {
-        return $this->success(CombinationResource::collection(
-            Combination::where('entity_id', $request->entity_id)->get()
+        return $this->success(new CombinationCollection(
+            Combination::where('entity_id', $request->entity_id)->paginate(Combination::getLimit())
         ));
     }
 

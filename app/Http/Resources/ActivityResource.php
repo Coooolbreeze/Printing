@@ -10,6 +10,8 @@ namespace App\Http\Resources;
 
 
 use App\Enum\ActivityStatusEnum;
+use App\Models\Entity;
+use App\Services\Tokens\TokenFactory;
 
 class ActivityResource extends Resource
 {
@@ -27,7 +29,7 @@ class ActivityResource extends Resource
             'image' => new ImageResource($this->image),
             'name' => $this->name,
             'describe' => $this->describe,
-            'entities' => new EntityCollection($this->entities()->paginate($request->limit ?: 10)),
+            'entities' => $this->getEntities(),
             'status' => $this->convertStatus($this->status),
             'finished_at' => (string)$this->finished_at,
             'created_at' => (string)$this->created_at
@@ -42,5 +44,14 @@ class ActivityResource extends Resource
             ActivityStatusEnum::FINISHED => '已结束'
         ];
         return $status[$value];
+    }
+
+    public function getEntities()
+    {
+        if (TokenFactory::isAdmin()) {
+            return $this->entities()->pluck('id');
+        } else {
+            return new EntityCollection($this->entities()->paginate(Entity::getLimit()));
+        }
     }
 }
