@@ -55,12 +55,10 @@ class ActivityController extends ApiController
     public function update(Request $request, Activity $activity)
     {
         \DB::transaction(function () use ($request, $activity) {
-            isset($request->image_id) && $activity->image_id = $request->image_id;
-            isset($request->name) && $activity->name = $request->name;
-            isset($request->describe) && $activity->describe = $request->describe;
-            isset($request->finished_at) && $activity->finished_at = Carbon::parse(date('Y-m-d H:i:s', $request->finished_at));
+            isset($request->finished_at) && $request->finished_at = Carbon::parse(date('Y-m-d H:i:s', $request->finished_at));
+            Activity::updateField($request, $activity, ['image_id', 'name', 'describe', 'finished_at']);
+
             isset($request->entities) && $activity->entities()->sync($request->entities);
-            $activity->save();
         });
         return $this->message('更新成功');
     }

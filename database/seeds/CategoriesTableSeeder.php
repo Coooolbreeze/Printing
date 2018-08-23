@@ -21,6 +21,8 @@ class CategoriesTableSeeder extends Seeder
             ['id' => 7, 'large_category_id' => 3, 'name' => '制造类'],
             ['id' => 8, 'large_category_id' => 4, 'name' => '印刷类'],
             ['id' => 9, 'large_category_id' => 4, 'name' => '制造类'],
+            ['id' => 10, 'large_category_id' => 5, 'name' => '印刷类'],
+            ['id' => 11, 'large_category_id' => 5, 'name' => '制造类'],
         ]);
     }
 }

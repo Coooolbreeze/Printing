@@ -270,11 +270,11 @@ Route::namespace('Api')->group(function () {
 
     Route::middleware('permission:场景用途管理')->group(function () {
         Route::apiResource('scenes', 'SceneController')
-            ->only(['store', 'update', 'destroy']);
+            ->only(['update']);
         Route::apiResource('scene_categories', 'SceneCategoryController')
-            ->only(['update', 'destroy']);
+            ->only(['index', 'show']);
         Route::apiResource('scene_goods', 'SceneGoodController')
-            ->only(['update', 'destroy']);
+            ->only(['store', 'update', 'destroy']);
     });
 
     Route::middleware('permission:商品管理')->group(function () {
@@ -294,7 +294,7 @@ Route::namespace('Api')->group(function () {
             ->only(['store', 'update', 'destroy']);
 
         Route::apiResource('secondary_types', 'SecondaryTypeController')
-            ->only(['store', 'update', 'destroy']);
+            ->only(['index', 'store', 'update', 'destroy']);
 
         // 商品
         Route::apiResource('entities', 'EntityController')

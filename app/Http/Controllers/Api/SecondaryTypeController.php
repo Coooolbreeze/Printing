@@ -10,11 +10,19 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Exceptions\BaseException;
+use App\Http\Resources\SecondaryTypeResource;
 use App\Models\SecondaryType;
 use Illuminate\Http\Request;
 
 class SecondaryTypeController extends ApiController
 {
+    public function index(Request $request)
+    {
+        return $this->success([
+            'data' => SecondaryTypeResource::collection(SecondaryType::where('type_id', $request->type_id)->get())
+        ]);
+    }
+
     public function store(Request $request)
     {
         SecondaryType::create([

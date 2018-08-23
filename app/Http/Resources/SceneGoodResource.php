@@ -17,7 +17,8 @@ class SceneGoodResource extends Resource
             'id' => $this->id,
             'image' => new ImageResource($this->image),
             'name' => $this->name,
-            'describe' => $this->describe
+            'describe' => $this->describe,
+            'url' => $this->url
         ]);
     }
 }

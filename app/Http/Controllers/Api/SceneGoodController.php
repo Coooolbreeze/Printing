@@ -14,13 +14,22 @@ use Illuminate\Http\Request;
 
 class SceneGoodController extends ApiController
 {
+    public function store(Request $request)
+    {
+        SceneGood::create([
+            'scene_category_id' => $request->scene_category_id,
+            'image_id' => $request->image_id,
+            'name' => $request->name,
+            'describe' => $request->describe,
+            'url' => $request->url
+        ]);
+
+        return $this->created();
+    }
+
     public function update(Request $request, SceneGood $sceneGood)
     {
-        isset($request->image_id) && $sceneGood->image_id = $request->image_id;
-        isset($request->name) && $sceneGood->name = $request->name;
-        isset($request->describe) && $sceneGood->describe = $request->describe;
-        isset($request->url) && $sceneGood->url = $request->url;
-        $sceneGood->save();
+        SceneGood::updateField($request, $sceneGood, ['image_id', 'name', 'describe', 'url']);
 
         return $this->message('更新成功');
     }

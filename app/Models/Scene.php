@@ -36,9 +36,4 @@ class Scene extends Model
     {
         return $this->hasMany('App\Models\SceneCategory');
     }
-
-    public function image()
-    {
-        return $this->belongsTo('App\Models\Image');
-    }
 }

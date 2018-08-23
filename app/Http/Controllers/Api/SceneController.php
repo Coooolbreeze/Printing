@@ -21,7 +21,21 @@ class SceneController extends ApiController
 {
     public function index()
     {
-        return $this->success((new SceneCollection(Scene::pagination())));
+        return $this->success([
+            'data' => SceneResource::collection(Scene::all())->show(['id', 'name', 'is_open'])
+        ]);
+    }
+
+    public function show(Scene $scene)
+    {
+        return $this->success(new SceneResource($scene));
+    }
+
+    public function update(Request $request, Scene $scene)
+    {
+        Scene::updateField($request, $scene, ['name', 'is_open']);
+
+        return $this->message('更新成功');
     }
 
     public function store(Request $request)
@@ -51,21 +65,6 @@ class SceneController extends ApiController
         SceneGood::saveAll($goods);
 
         return $this->created();
-    }
-
-    public function show(Scene $scene)
-    {
-        return $this->success(new SceneResource($scene));
-    }
-
-    public function update(Request $request, Scene $scene)
-    {
-        isset($request->image_id) && $scene->image_id = $request->image_id;
-        isset($request->name) && $scene->name = $request->name;
-        isset($request->describe) && $scene->describe = $request->describe;
-        $scene->save();
-
-        return $this->message('更新成功');
     }
 
     public function destroy($id)

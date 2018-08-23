@@ -9,12 +9,30 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Resources\SceneCategoryCollection;
+use App\Http\Resources\SceneGoodCollection;
 use App\Models\SceneCategory;
 use App\Models\SceneGood;
 use Illuminate\Http\Request;
 
 class SceneCategoryController extends ApiController
 {
+    public function index(Request $request)
+    {
+        return $this->success(
+            new SceneCategoryCollection(
+                SceneCategory::where('scene_id', $request->scene_id)->paginate(SceneCategory::getLimit())
+            )
+        );
+    }
+
+    public function show(SceneCategory $sceneCategory)
+    {
+        return $this->success(
+            new SceneGoodCollection($sceneCategory->sceneGoods()->paginate(SceneGood::getLimit()))
+        );
+    }
+
     public function update(Request $request, SceneCategory $sceneCategory)
     {
         $sceneCategory->update([

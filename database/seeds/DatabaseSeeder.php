@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             FilesTableSeeder::class,
             HelpCategoriesTableSeeder::class,
             NewsCategoriesTableSeeder::class,
+            SceneTablesSeeder::class,
             MemberLevelsTableSeeder::class,
             BannersTableSeeder::class,
             RecommendNewsTableSeeder::class,

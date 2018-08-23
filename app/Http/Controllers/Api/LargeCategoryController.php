@@ -21,7 +21,13 @@ class LargeCategoryController extends ApiController
 {
     public function index()
     {
-        return $this->success(LargeCategoryResource::collection(LargeCategory::all()));
+        if (TokenFactory::isAdmin()) {
+            $largeCategories = LargeCategory::with('categories')->get(['id', 'name']);
+        } else {
+            $largeCategories = LargeCategoryResource::collection(LargeCategory::all());
+        }
+
+        return $this->success($largeCategories);
     }
 
     public function show(LargeCategory $largeCategory)
