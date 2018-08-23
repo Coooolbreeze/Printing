@@ -27,6 +27,8 @@ Route::namespace('Api')->group(function () {
 
     // 发送短信
     Route::post('/sms', 'SmsController@sendSms');
+    // 验证验证码
+    Route::post('/code/validate', 'TokenController@validateVerificationCode');
 
     // 图片上传
     Route::apiResource('images', 'ImageController')

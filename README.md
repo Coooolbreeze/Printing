@@ -1177,3 +1177,15 @@
         sales: 销量,
         created_at: 创建日期
     }
+    
+ ### 46. 验证验证码
+    POST /code/validate
+    request:
+    {
+        verification_code: 验证码，
+        verification_token: 获取验证码接口返回的verification_token
+    }
+    response:
+    {
+        result: true
+    }

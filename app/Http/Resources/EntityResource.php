@@ -9,6 +9,7 @@
 namespace App\Http\Resources;
 
 
+use App\Models\CategoryItem;
 use App\Models\Comment;
 
 class EntityResource extends Resource
@@ -24,6 +25,7 @@ class EntityResource extends Resource
     {
         return $this->filterFields([
             'id' => $this->id,
+            'category' => $this->when($this->getCategory(), $this->getCategory()),
             'type' => (new TypeResource($this->type))->show(['id', 'name']),
             'secondary_type' => $this->when(
                 $this->secondaryType,
@@ -59,5 +61,14 @@ class EntityResource extends Resource
             2 => '已下架'
         ];
         return $status[$value];
+    }
+
+    public function getCategory()
+    {
+        $categoryItem = CategoryItem::where('item_type', 2)
+            ->where('item_id', $this->id)
+            ->first();
+        if ($categoryItem) return (new CategoryResource($categoryItem->category))->hide(['items']);
+        else return false;
     }
 }

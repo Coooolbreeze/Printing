@@ -50,6 +50,20 @@ class TokenController extends ApiController
     }
 
     /**
+     * @param Request $request
+     * @return bool
+     * @throws \App\Exceptions\VerificationCodeException
+     */
+    public function validateVerificationCode(Request $request)
+    {
+        VerificationCode::validate($request->verification_code, $request->verification_token);
+
+        return $this->success([
+            'result' => true
+        ]);
+    }
+
+    /**
      * 修改密码
      *
      * @param Request $request
