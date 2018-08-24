@@ -9,6 +9,9 @@
 namespace App\Models;
 
 
+use App\Services\Tokens\TokenFactory;
+use Illuminate\Database\Query\Builder;
+
 /**
  * App\Models\Scene
  *
@@ -32,6 +35,17 @@ namespace App\Models;
  */
 class Scene extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+
+        if (!TokenFactory::isAdmin()) {
+            static::addGlobalScope('is_open', function (Builder $builder) {
+                $builder->where('is_open', 1);
+            });
+        }
+    }
+
     public function sceneCategories()
     {
         return $this->hasMany('App\Models\SceneCategory');

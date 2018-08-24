@@ -11,7 +11,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\BaseException;
 use App\Http\Resources\SecondaryTypeResource;
+use App\Models\Entity;
 use App\Models\SecondaryType;
+use App\Models\Type;
 use Illuminate\Http\Request;
 
 class SecondaryTypeController extends ApiController
@@ -25,10 +27,18 @@ class SecondaryTypeController extends ApiController
 
     public function store(Request $request)
     {
-        SecondaryType::create([
+        $secondaryType = SecondaryType::create([
             'type_id' => $request->type_id,
             'name' => $request->name
         ]);
+
+        $type = Type::find($request->type_id);
+
+        if ($type->secondaryTypes()->count() == 1) {
+            $type->entities()->update([
+                'secondary_type_id' => $secondaryType->id
+            ]);
+        }
 
         return $this->created();
     }
@@ -42,8 +52,19 @@ class SecondaryTypeController extends ApiController
 
     public function destroy(SecondaryType $secondaryType)
     {
-        if ($secondaryType->entities()->count() > 0)
-            throw new BaseException('该类型下已有商品，无法删除');
+        if ($secondaryType->entities()->count() > 0) {
+            $secondaryTypes = Type::find($secondaryType->type_id)->secondaryTypes;
+            if($secondaryTypes->count() > 1) {
+                $secondaryTypeId = $secondaryTypes->where('id', '<>', $secondaryType->id)->first()->id;
+                $secondaryType->entities()->update([
+                    'secondary_type_id' => $secondaryTypeId
+                ]);
+            } else {
+                $secondaryType->entities()->update([
+                    'secondary_type_id' => null
+                ]);
+            }
+        }
 
         $secondaryType->delete();
 

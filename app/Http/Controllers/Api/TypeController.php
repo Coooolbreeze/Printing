@@ -78,9 +78,10 @@ class TypeController extends ApiController
             Type::updateField($request, $type, ['name', 'image_id', 'detail']);
 
             if (isset($request->category_id)) {
-                CategoryItem::where('item_id', $type->id)
-                    ->where('type', 1)
-                    ->update(['category_id' => $request->category_id]);
+                CategoryItem::updateOrCreate(
+                    ['item_id' => $type->id, 'item_type' => 1],
+                    ['category_id' => $request->category_id]
+                );
             }
         });
 

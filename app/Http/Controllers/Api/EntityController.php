@@ -115,9 +115,10 @@ class EntityController extends ApiController
             isset($request->images) && $entity->images()->sync($request->images);
 
             if (isset($request->category_id)) {
-                CategoryItem::where('item_id', $entity->id)
-                    ->where('type', 2)
-                    ->update(['category_id' => $request->category_id]);
+                CategoryItem::updateOrCreate(
+                    ['item_id' => $entity->id, 'item_type' => 2],
+                    ['category_id' => $request->category_id]
+                );
             }
         });
 

@@ -288,7 +288,7 @@ Route::namespace('Api')->group(function () {
             ->only(['index', 'store', 'update', 'destroy']);
 
         Route::apiResource('categories', 'CategoryController')
-            ->only(['store', 'update', 'destroy']);
+            ->only(['index', 'store', 'update', 'destroy']);
 
         Route::apiResource('category_items', 'CategoryItemController')
             ->only(['store', 'update', 'destroy']);

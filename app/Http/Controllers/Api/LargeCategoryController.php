@@ -22,7 +22,9 @@ class LargeCategoryController extends ApiController
     public function index()
     {
         if (TokenFactory::isAdmin()) {
-            $largeCategories = LargeCategory::with('categories')->get(['id', 'name']);
+            $largeCategories = [
+                'data' => LargeCategory::with('categories')->get(['id', 'name'])
+            ];
         } else {
             $largeCategories = LargeCategoryResource::collection(LargeCategory::all());
         }
@@ -71,5 +73,7 @@ class LargeCategoryController extends ApiController
     public function update(Request $request, LargeCategory $largeCategory)
     {
         LargeCategory::updateField($request, $largeCategory, ['image_id', 'name', 'url']);
+
+        return $this->message('更新成功');
     }
 }
