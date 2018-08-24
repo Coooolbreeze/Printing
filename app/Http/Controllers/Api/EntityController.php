@@ -17,6 +17,7 @@ use App\Models\Combination;
 use App\Models\CustomAttribute;
 use App\Models\CustomValue;
 use App\Models\Entity;
+use App\Models\LargeCategoryItem;
 use App\Models\Type;
 use App\Models\Value;
 use App\Services\Tokens\TokenFactory;
@@ -79,7 +80,7 @@ class EntityController extends ApiController
                 'describe' => $request->describe
             ]);
 
-            if (isset($request->category_id)) {
+            if ($request->category_id) {
                 CategoryItem::create([
                     'category_id' => $request->category_id,
                     'item_id' => $entity->id,
@@ -114,7 +115,7 @@ class EntityController extends ApiController
             ]);
             isset($request->images) && $entity->images()->sync($request->images);
 
-            if (isset($request->category_id)) {
+            if ($request->category_id) {
                 CategoryItem::updateOrCreate(
                     ['item_id' => $entity->id, 'item_type' => 2],
                     ['category_id' => $request->category_id]
@@ -128,11 +129,22 @@ class EntityController extends ApiController
     /**
      * @param Entity $entity
      * @return mixed
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function destroy(Entity $entity)
     {
-        $entity->delete();
+        \DB::transaction(function () use ($entity) {
+            CategoryItem::where('item_type', 2)
+                ->where('item_id', $entity->id)
+                ->delete();
+
+            LargeCategoryItem::where('item_type', 2)
+                ->where('item_id', $entity->id)
+                ->delete();
+
+            $entity->delete();
+        });
+
         return $this->message('删除成功');
     }
 
