@@ -10,7 +10,7 @@ namespace App\Models;
 
 
 use App\Services\Tokens\TokenFactory;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * App\Models\Scene
