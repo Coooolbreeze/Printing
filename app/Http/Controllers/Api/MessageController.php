@@ -61,7 +61,7 @@ class MessageController extends ApiController
         }
 
         if (count($ids) > 1) {
-            $ids = array_flip($ids);
+            $ids = array_unique($ids);
         }
 
         Message::send($ids, $request->title, $request->body);
