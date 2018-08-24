@@ -20,7 +20,7 @@ class MessageResource extends Resource
 
     public function toArray($request)
     {
-        return $this->filterFields([
+        $res = $this->filterFields([
             'id' => $this->id,
             'user' => (new UserResource($this->user))->show(['id', 'nickname']),
             'sender' => $this->sender,
@@ -28,6 +28,17 @@ class MessageResource extends Resource
             'body' => $this->body,
             'is_read' => (bool)$this->is_read,
             'created_at' => (string)$this->created_at
+        ]);
+
+        $this->setRead();
+
+        return $res;
+    }
+
+    public function setRead()
+    {
+        $this->update([
+            'is_read' => 1
         ]);
     }
 }

@@ -16,7 +16,7 @@ class MessageCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => MessageResource::collection($this->collection)->hide(['body']),
+            'data' => MessageResource::collection($this->collection),
             'count' => $this->count(),
             'total' => $this->total(),
             'current_page' => $this->currentPage(),
