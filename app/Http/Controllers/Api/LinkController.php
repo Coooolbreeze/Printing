@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\LinkCollection;
 use App\Http\Resources\LinkResource;
 use App\Models\Link;
+use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
@@ -19,7 +20,12 @@ class LinkController extends ApiController
 {
     public function index()
     {
-        return $this->success(new LinkCollection(Link::pagination()));
+        if(TokenFactory::isAdmin()) {
+            $links = new LinkCollection(Link::pagination());
+        }else {
+            $links = LinkResource::collection(Link::all());
+        }
+        return $this->success($links);
     }
 
     public function show(Link $link)

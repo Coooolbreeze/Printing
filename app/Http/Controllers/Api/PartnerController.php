@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\PartnerCollection;
 use App\Http\Resources\PartnerResource;
 use App\Models\Partner;
+use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
@@ -19,7 +20,12 @@ class PartnerController extends ApiController
 {
     public function index()
     {
-        return $this->success(new PartnerCollection(Partner::pagination()));
+        if (TokenFactory::isAdmin()) {
+            $partners = new PartnerCollection(Partner::pagination());
+        } else {
+            $partners = PartnerResource::collection(Partner::all());
+        }
+        return $this->success($partners);
     }
 
     public function show(Partner $partner)

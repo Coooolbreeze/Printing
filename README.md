@@ -538,6 +538,40 @@
                     county: 区/县,
                     detail: 详细地址
                 },
+                content: 
+                [
+                    {
+                        key: 该订单内商品唯一标识,
+                        id: 商品ID,
+                        name: 商品名称,
+                        image: {
+                            id: 商品图片ID,
+                            src: 商品图片链接
+                        },
+                        combination: 商品组合,
+                        specs: {
+                            商品属性(如工艺): 属性值(如烫金),
+                            ...
+                        },
+                        custom_specs: {
+                            自定义属性(如尺寸): {
+                                单位属性(如宽): 属性值(如1),
+                                ...
+                            },
+                            ...
+                        },
+                        weight: 重量,
+                        count: 数量,
+                        price: 价格,
+                        remark: 备注,
+                        file: {
+                            id: 文件ID,
+                            name: 文件名称,
+                            src: 文件链接
+                        }
+                    },
+                    ...
+                ]
                 goods_price: 商品总金额,
                 goods_count: 商品总数量,
                 total_weight: 商品总重量,
@@ -1206,3 +1240,94 @@
         },
         ...
     ]
+    
+ ### 48. 首页Banner
+    GET /banners
+    response:
+    [
+        {
+            id: BannerID,
+            image: {
+                id: 图片ID,
+                src: 图片链接
+            },
+            url: 点击跳转链接
+        },
+        ...
+    ]
+    
+ ### 49. 新品推荐
+    GET /recommend_new_entities
+    response:
+    [
+        {
+            id: 新品推荐ID,
+            image: {
+                id: 图片ID,
+                src: 图片链接
+            },
+            url: 点击跳转链接
+        },
+        ...
+    ]
+    
+ ### 50. 推荐商品
+    GET /recommend_entities
+    response:
+    {
+        '推荐名片': [
+            {
+                id: 推荐ID,
+                image: {
+                    id: 图片ID,
+                    src: 图片链接
+                },
+                url: 点击跳转链接
+            },
+            ...
+        ],
+        '企业办公': 同上,
+        '营销宣传': 同上,
+        '数码速印': 同上
+    }
+    
+ ### 51. 合作伙伴
+    GET /partners
+    response:
+    [
+        {
+            id: 合作伙伴ID,
+            image: {
+                id: 图片ID,
+                src: 图片链接
+            },
+            url: 跳转链接
+        },
+        ...
+    ]
+    
+ ### 52. 友情链接
+    GET /links
+    response:
+    [
+        {
+            id: 友链ID,
+            name: 友链名称,
+            url: 跳转链接
+        },
+        ...
+    ]
+ ### 53. 推荐新闻
+    GET /recommend_news
+    response:
+    {
+        '印刷活动': [
+            {
+                id: 推荐新闻ID,
+                title: 新闻标题,
+                url: 点击跳转链接
+            },
+            ...
+        ],
+        '印刷知识': 同上
+    }
