@@ -1041,7 +1041,7 @@
         ...
     }
     
- ### 42. 获取优惠券列表
+### 42. 获取优惠券列表
     GET /coupons
     response:
     {
@@ -1064,14 +1064,14 @@
         ]
     }
     
- ### 43. 领取优惠券
+### 43. 领取优惠券
     POST /user_coupons
     request:
     {
         coupon_no: 优惠券编号
     }
     
- ### 44. 全部商品
+### 44. 全部商品
     GET /large_categories/{id}
     response:
     {
@@ -1101,7 +1101,7 @@
         ]
     }
     
- ### 45. 查看商品详情
+### 45. 查看商品详情
     GET /entities/{id}
     response:
     {
@@ -1212,7 +1212,7 @@
         created_at: 创建日期
     }
     
- ### 46. 验证验证码
+### 46. 验证验证码
     POST /code/validate
     request:
     {
@@ -1224,7 +1224,7 @@
         result: true
     }
     
- ### 47. 获取会员等级信息
+### 47. 获取会员等级信息
     GET /member_levels
     response:
     [
@@ -1241,7 +1241,7 @@
         ...
     ]
     
- ### 48. 首页Banner
+### 48. 首页Banner
     GET /banners
     response:
     [
@@ -1256,7 +1256,7 @@
         ...
     ]
     
- ### 49. 新品推荐
+### 49. 新品推荐
     GET /recommend_new_entities
     response:
     [
@@ -1271,7 +1271,7 @@
         ...
     ]
     
- ### 50. 推荐商品
+### 50. 推荐商品
     GET /recommend_entities
     response:
     {
@@ -1291,7 +1291,7 @@
         '数码速印': 同上
     }
     
- ### 51. 合作伙伴
+### 51. 合作伙伴
     GET /partners
     response:
     [
@@ -1306,7 +1306,7 @@
         ...
     ]
     
- ### 52. 友情链接
+### 52. 友情链接
     GET /links
     response:
     [
@@ -1317,7 +1317,7 @@
         },
         ...
     ]
- ### 53. 推荐新闻
+### 53. 推荐新闻
     GET /recommend_news
     response:
     {
@@ -1365,7 +1365,7 @@
         ...
     ]
     
- ### 55. 获取新闻列表
+### 55. 获取新闻列表
     GET /news_categories/{id}
     response:
     {
@@ -1395,7 +1395,7 @@
         }
     }
     
- ### 56. 查看新闻详情
+### 56. 查看新闻详情
     GET /news/{id}
     response:
     {
