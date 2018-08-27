@@ -212,6 +212,10 @@ Route::namespace('Api')->group(function () {
     Route::middleware('permission:搜索管理')->group(function () {
         Route::apiResource('hot_keywords', 'HotKeywordController')
             ->only(['store', 'update', 'destroy']);
+
+        Route::prefix('batch')->group(function () {
+            Route::delete('/hot_keywords', 'HotKeywordController@batchDestroy');
+        });
     });
 
     Route::middleware('permission:首页推荐管理')->group(function () {

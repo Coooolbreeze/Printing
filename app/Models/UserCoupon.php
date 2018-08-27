@@ -67,6 +67,7 @@ class UserCoupon extends Model
         if ($coupon->is_used == 1) throw new BaseException('该优惠券已被使用');
         if ($coupon->finished_at < Carbon::now()) throw new BaseException('该优惠券已过期');
         if ($coupon->type == 1 && $coupon->satisfy > $price) throw new BaseException('不满足该优惠券使用条件');
+        if ($coupon->quota > $price) throw new BaseException('订单金额不能小与优惠券金额');
 
         $coupon->update(['is_used' => 1]);
 

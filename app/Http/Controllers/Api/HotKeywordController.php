@@ -10,14 +10,22 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Resources\HotKeywordCollection;
+use App\Http\Resources\HotKeywordResource;
 use App\Models\HotKeyword;
+use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 
 class HotKeywordController extends ApiController
 {
     public function index()
     {
-        return $this->success(new HotKeywordCollection(HotKeyword::pagination()));
+        if (TokenFactory::isAdmin()) {
+            $hotKeywords = new HotKeywordCollection(HotKeyword::pagination());
+        }else {
+            $hotKeywords = HotKeywordResource::collection(HotKeyword::all());
+        }
+
+        return $this->success($hotKeywords);
     }
 
     public function store(Request $request)
@@ -31,11 +39,7 @@ class HotKeywordController extends ApiController
 
     public function update(Request $request, HotKeyword $hotKeyword)
     {
-        isset($request->name) && $hotKeyword->name = $request->name;
-        isset($request->url) && $hotKeyword->url = $request->url;
-        isset($request->sort) && $hotKeyword->sort = $request->sort;
-        isset($request->status) && $hotKeyword->status = $request->status;
-        $hotKeyword->save();
+        HotKeyword::updateField($request, $hotKeyword, ['name', 'url', 'sort', 'status']);
 
         return $this->message('更新成功');
     }
@@ -43,6 +47,13 @@ class HotKeywordController extends ApiController
     public function destroy(HotKeyword $hotKeyword)
     {
         $hotKeyword->delete();
+        return $this->message('删除成功');
+    }
+
+    public function batchDestroy(Request $request)
+    {
+        HotKeyword::whereIn('id', $request->ids)
+            ->delete();
         return $this->message('删除成功');
     }
 }
