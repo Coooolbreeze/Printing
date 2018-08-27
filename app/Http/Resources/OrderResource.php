@@ -84,8 +84,8 @@ class OrderResource extends Resource
             OrderStatusEnum::UNPAID => '待支付',
             OrderStatusEnum::PAID => '待审核',
             OrderStatusEnum::UNDELIVERED => '待发货',
-            OrderStatusEnum::DELIVERED => '已发货',
-            OrderStatusEnum::RECEIVED => '已收货',
+            OrderStatusEnum::DELIVERED => '待收货',
+            OrderStatusEnum::RECEIVED => '待评论',
             OrderStatusEnum::COMMENTED => '已评论',
             OrderStatusEnum::FAILED => '未通过'
         ];

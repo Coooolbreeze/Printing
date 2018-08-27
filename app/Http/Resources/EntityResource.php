@@ -68,7 +68,7 @@ class EntityResource extends Resource
         $categoryItem = CategoryItem::where('item_type', 2)
             ->where('item_id', $this->id)
             ->first();
-        if ($categoryItem) return (new CategoryResource($categoryItem->category))->hide(['items']);
+        if ($categoryItem) return (new CategoryItemResource($categoryItem))->show(['category', 'is_hot', 'is_new']);
         else return false;
     }
 }

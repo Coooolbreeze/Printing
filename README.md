@@ -22,7 +22,7 @@
             404 请求资源未找到，
             500 服务器故障
         )，
-        error_code: 错误码，当status为error时返回 (
+        ^error_code: 错误码，当status为error时返回 (
             10003 权限不足，
             20000 账号不存在，
             20001 密码错误，
@@ -33,8 +33,8 @@
             20007 账号格式错误，
               999 其他错误，具体错误信息请查看message字段
         ),
-        message: 提示信息，当status为error或者本次操作无数据返回时(如资源创建、更新、删除等操作),
-        data: 请求到的数据，下列所有response如无特殊说明都是指这里面的数据
+        ^message: 提示信息，当status为error或者本次操作无数据返回时(如资源创建、更新、删除等操作),
+        ^data: 请求到的数据，下列所有response如无特殊说明都是指这里面的数据
     }
     
 ### 分页参数
@@ -1189,3 +1189,20 @@
     {
         result: true
     }
+    
+ ### 47. 获取会员等级信息
+    GET /member_levels
+    response:
+    [
+        {
+            id: 会员等级ID,
+            icon: {
+                id: 等级图标ID,
+                src: 等级图标链接
+            },
+            name: 等级名称,
+            accumulate_points: 升级所需积分,
+            discount: 折扣率
+        },
+        ...
+    ]

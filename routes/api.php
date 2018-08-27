@@ -323,6 +323,8 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('orders', 'OrderController')
             ->only(['index']);
 
+        Route::get('order_status', 'OrderController@statusList');
+
         Route::apiResource('order_expresses', 'OrderExpressController')
             ->only(['store']);
     });

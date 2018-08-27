@@ -35,7 +35,7 @@ namespace App\Models;
  */
 class CategoryItem extends Model
 {
-    public function Category()
+    public function category()
     {
         return $this->belongsTo('App\Models\Category');
     }

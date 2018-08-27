@@ -15,6 +15,7 @@ class CategoryItemResource extends Resource
     {
         return $this->filterFields([
             'id' => $this->id,
+            'category' => (new CategoryResource($this->category))->show(['id', 'name']),
             'type' => $this->item_type,
             'item' => $this->item_type == 1
                 ? (new TypeResource($this->type))->show(['id', 'name'])

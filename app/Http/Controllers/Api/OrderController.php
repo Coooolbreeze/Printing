@@ -57,6 +57,28 @@ class OrderController extends ApiController
         return $this->success(new OrderCollection($orders));
     }
 
+    public function statusList()
+    {
+        return $this->success([
+            '待支付' => [
+                'value' => OrderStatusEnum::UNPAID,
+                'count' => Order::unpaid()->count()
+            ],
+            '待审核' => [
+                'value' => OrderStatusEnum::PAID,
+                'count' => Order::paid()->count()
+            ],
+            '待发货' => [
+                'value' => OrderStatusEnum::UNDELIVERED,
+                'count' => Order::undelivered()->count()
+            ],
+            '待收货' => [
+                'value' => OrderStatusEnum::DELIVERED,
+                'count' => Order::delivered()->count()
+            ]
+        ]);
+    }
+
     /**
      * @param Order $order
      * @return mixed
@@ -149,8 +171,7 @@ class OrderController extends ApiController
                 'snap_content' => json_encode($content),
                 'status' => OrderStatusEnum::PAID
             ]);
-        }
-        else {
+        } else {
             $status = $request->status;
 
             self::updateValidate($status, $order);
@@ -160,14 +181,11 @@ class OrderController extends ApiController
             // 分发事件
             if ($status == OrderStatusEnum::UNDELIVERED) {
                 event(new OrderAudited($order));
-            }
-            elseif ($status == OrderStatusEnum::DELIVERED) {
+            } elseif ($status == OrderStatusEnum::DELIVERED) {
                 event(new OrderDelivered($order));
-            }
-            elseif ($status == OrderStatusEnum::RECEIVED) {
+            } elseif ($status == OrderStatusEnum::RECEIVED) {
                 event(new OrderReceived($order));
-            }
-            elseif ($status == OrderStatusEnum::FAILED) {
+            } elseif ($status == OrderStatusEnum::FAILED) {
                 event(new OrderFailed($order));
             }
         }
@@ -363,20 +381,17 @@ class OrderController extends ApiController
     {
         if ($status == OrderStatusEnum::EXPIRE) {
             TokenFactory::isValidOperate($order->user_id) || TokenFactory::can('订单管理');
-        }
-        elseif ($status == OrderStatusEnum::UNDELIVERED || $status == OrderStatusEnum::FAILED) {
+        } elseif ($status == OrderStatusEnum::UNDELIVERED || $status == OrderStatusEnum::FAILED) {
             TokenFactory::can('订单管理');
             if ($order->status >= OrderStatusEnum::UNDELIVERED) {
                 throw new BaseException('该订单已审核');
             }
-        }
-        elseif ($status == OrderStatusEnum::DELIVERED) {
+        } elseif ($status == OrderStatusEnum::DELIVERED) {
             TokenFactory::can('订单管理');
             if ($order->status >= OrderStatusEnum::DELIVERED) {
                 throw new BaseException('该订单已发货');
             }
-        }
-        elseif ($status == OrderStatusEnum::RECEIVED) {
+        } elseif ($status == OrderStatusEnum::RECEIVED) {
             if (!TokenFactory::isValidOperate($order->user_id)) {
                 throw new BaseException('不能操作别人的订单');
             }

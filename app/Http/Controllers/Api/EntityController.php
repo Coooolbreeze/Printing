@@ -84,7 +84,9 @@ class EntityController extends ApiController
                 CategoryItem::create([
                     'category_id' => $request->category_id,
                     'item_id' => $entity->id,
-                    'item_type' => 2
+                    'item_type' => 2,
+                    'is_hot' => $request->is_hot,
+                    'is_new' => $request->is_new
                 ]);
             }
 
@@ -118,7 +120,11 @@ class EntityController extends ApiController
             if ($request->category_id) {
                 CategoryItem::updateOrCreate(
                     ['item_id' => $entity->id, 'item_type' => 2],
-                    ['category_id' => $request->category_id]
+                    [
+                        'category_id' => $request->category_id,
+                        'is_hot' => $request->is_hot,
+                        'is_new' => $request->is_new
+                    ]
                 );
             }
         });
