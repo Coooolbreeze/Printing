@@ -1331,3 +1331,87 @@
         ],
         '印刷知识': 同上
     }
+    
+### 54. 获取新闻分类
+    GET /news_categories
+    response:
+    [
+        {
+            id: 分类ID,
+            title: 分类名称,
+            news: 新闻列表 {
+                data:
+                [
+                    {
+                        id: 新闻ID,
+                        category: {
+                            id: 所属分类ID,
+                            title: 所属分类标题
+                        },
+                        image: {
+                            id: 图片ID,
+                            src: 图片链接
+                        },
+                        title: 新闻标题,
+                        from: 来源,
+                        summary: 摘要,
+                        created_at: 发布日期,
+                        updated_at: 更新日期
+                    },
+                    ...
+                ]
+            }
+        },
+        ...
+    ]
+    
+ ### 55. 获取新闻列表
+    GET /news_categories/{id}
+    response:
+    {
+        id: 新闻分类ID,
+        title: 新闻分类标题,
+        news: {
+            data:
+            [
+                {
+                    id: 新闻ID,
+                    category: {
+                        id: 所属分类ID,
+                        title: 所属分类标题
+                    },
+                    image: {
+                        id: 图片ID,
+                        src: 图片链接
+                    },
+                    title: 新闻标题,
+                    from: 来源,
+                    summary: 摘要,
+                    created_at: 发布日期,
+                    updated_at: 更新日期
+                },
+                ...
+            ]
+        }
+    }
+    
+ ### 56. 查看新闻详情
+    GET /news/{id}
+    response:
+    {
+        id: 新闻ID,
+        category: {
+            id: 所属分类ID,
+            title: 所属分类标题
+        },
+        image: {
+            id: 图片ID,
+            src: 图片链接
+        },
+        title: 新闻标题,
+        from: 来源,
+        summary: 摘要,
+        body: 新闻内容,
+        created_at: 发布日期,
+        updated_at: 更新日期
+    }
