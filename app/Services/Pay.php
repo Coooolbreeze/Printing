@@ -119,7 +119,10 @@ class Pay
 
         if ($order->status <= OrderStatusEnum::UNPAID) {
             if ($order->balance_deducted > 0) {
-                BalanceRecord::expend($order->balance_deducted, '订单抵扣', $order->user);
+                BalanceRecord::expend($order->balance_deducted, [
+                    'describe' => '订单抵扣',
+                    'order_no' => $order->order_no
+                ], $order->user);
             }
 
             $order->update([

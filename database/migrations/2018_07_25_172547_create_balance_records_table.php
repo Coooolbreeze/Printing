@@ -16,6 +16,7 @@ class CreateBalanceRecordsTable extends Migration
         Schema::create('balance_records', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
+            $table->string('order_no')->nullable();
             $table->decimal('number');
             $table->decimal('surplus');
             $table->string('describe');

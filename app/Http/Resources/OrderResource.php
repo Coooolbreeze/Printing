@@ -87,7 +87,8 @@ class OrderResource extends Resource
             OrderStatusEnum::DELIVERED => '待收货',
             OrderStatusEnum::RECEIVED => '待评论',
             OrderStatusEnum::COMMENTED => '已评论',
-            OrderStatusEnum::FAILED => '未通过'
+            OrderStatusEnum::FAILED => '未通过',
+            OrderStatusEnum::REFUNDED => '已退款'
         ];
         return $status[$value];
     }

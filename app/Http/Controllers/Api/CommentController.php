@@ -34,6 +34,7 @@ class CommentController extends ApiController
             foreach ($request->comments as $value) {
                 $comment = Comment::create([
                     'user_id' => TokenFactory::getCurrentUID(),
+                    'order_id' => $request->order_id,
                     'commentable_id' => $value['commentable_id'],
                     'commentable_type' => 'App\Models\\' . self::getCommentableType($value),
                     'target' => $value['target'],
@@ -45,8 +46,8 @@ class CommentController extends ApiController
                     'is_anonymous' => $value['is_anonymous']
                 ]);
                 $comment->images()->sync($value['images']);
-                $order->update(['status' => OrderStatusEnum::COMMENTED]);
             }
+            $order->update(['status' => OrderStatusEnum::COMMENTED]);
         });
 
         return $this->created();

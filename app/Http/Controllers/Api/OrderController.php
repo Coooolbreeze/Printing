@@ -75,7 +75,8 @@ class OrderController extends ApiController
             '待收货' => [
                 'value' => OrderStatusEnum::DELIVERED,
                 'count' => Order::delivered()->count()
-            ]
+            ],
+            ''
         ]);
     }
 

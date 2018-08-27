@@ -26,6 +26,7 @@ class BalanceRecordResource extends Resource
             'number' => $this->number,
             'surplus' => $this->surplus,
             'describe' => $this->describe,
+            'order_no' => $this->when($this->order_no, $this->order_no),
             'created_at' => (string)$this->created_at
         ]);
     }

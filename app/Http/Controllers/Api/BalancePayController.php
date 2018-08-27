@@ -40,7 +40,10 @@ class BalancePayController extends ApiController
                 throw new BaseException('该订单已支付，请不要重复支付');
             }
 
-            BalanceRecord::expend($order->total_price, '支付订单');
+            BalanceRecord::expend($order->total_price, [
+                'describe' => '订单消费',
+                'order_no' => $order->order_no
+            ]);
 
             $order->update([
                 'status' => OrderStatusEnum::PAID,

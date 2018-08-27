@@ -86,7 +86,8 @@ class BalanceRecord extends Model
                 'user_id' => $user->id,
                 'number' => $number,
                 'surplus' => $user->balance,
-                'describe' => $describe,
+                'describe' => is_array($describe) ? $describe['describe'] : $describe,
+                'order_no' => is_array($describe ? $describe['order_no'] : null),
                 'type' => 2
             ]);
         });

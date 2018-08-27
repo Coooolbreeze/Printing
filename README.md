@@ -403,6 +403,7 @@
                 number: 数量,
                 surplus: 剩余数量,
                 describe: 说明,
+                ^order_no: type为支出时返回,
                 created_at: 操作日期
             },
             ...

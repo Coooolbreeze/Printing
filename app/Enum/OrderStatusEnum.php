@@ -34,4 +34,7 @@ class OrderStatusEnum
 
     // 未通过
     const FAILED = 7;
+
+    // 已退款
+    const REFUNDED = 8;
 }
