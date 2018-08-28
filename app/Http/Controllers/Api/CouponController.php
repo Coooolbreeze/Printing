@@ -14,6 +14,8 @@ use App\Http\Requests\StoreCoupon;
 use App\Http\Resources\CouponCollection;
 use App\Http\Resources\CouponResource;
 use App\Models\Coupon;
+use App\Models\User;
+use App\Models\UserCoupon;
 use App\Services\Tokens\TokenFactory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -45,10 +47,43 @@ class CouponController extends ApiController
         return $this->created();
     }
 
+    /**
+     * 赠送优惠券
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     * @throws \Throwable
+     */
+    public function give(Request $request)
+    {
+        $user = User::where('phone', $request->phone)
+            ->firstOrFail();
+
+        Coupon::receive($request->coupon_no, $user);
+
+        return $this->message('赠送成功');
+    }
+
+    /**
+     * @param Request $request
+     * @param Coupon $coupon
+     * @return mixed
+     * @throws \Throwable
+     */
     public function update(Request $request, Coupon $coupon)
     {
-        isset($request->finished_at) && $coupon->finished_at = Carbon::parse(date('Y-m-d H:i:s', $request->finished_at));
-        Coupon::updateField($request, $coupon, ['name', 'type', 'quota', 'satisfy', 'number', 'is_meanwhile']);
+        \DB::transaction(function () use ($request, $coupon) {
+            isset($request->finished_at) && $coupon->finished_at = Carbon::parse(date('Y-m-d H:i:s', $request->finished_at));
+            Coupon::updateField($request, $coupon, ['name', 'type', 'quota', 'satisfy', 'number', 'is_meanwhile', 'is_disabled']);
+
+            if (isset($request->is_disabled)) {
+                UserCoupon::where('coupon_id', $coupon->id)
+                    ->update([
+                        'is_disabled' => $request->is_disabled
+                    ]);
+            }
+        });
 
         return $this->message('更新成功');
     }

@@ -34,6 +34,7 @@ use App\Models\Receipt;
 use App\Models\User;
 use App\Models\UserCoupon;
 use App\Services\Tokens\TokenFactory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends ApiController
@@ -50,6 +51,12 @@ class OrderController extends ApiController
         $orders = (new Order())
             ->when($request->status, function ($query) use ($request) {
                 $query->where('status', $request->status);
+            })
+            ->when($request->begin_time, function ($query) use ($request) {
+                $query->whereBetween('created_at', [
+                    Carbon::parse(date('Y-m-d H:i:s', $request->begin_time)),
+                    Carbon::parse(date('Y-m-d H:i:s', $request->end_time))
+                ]);
             })
             ->latest()
             ->paginate(Order::getLimit());
@@ -75,8 +82,7 @@ class OrderController extends ApiController
             '待收货' => [
                 'value' => OrderStatusEnum::DELIVERED,
                 'count' => Order::delivered()->count()
-            ],
-            ''
+            ]
         ]);
     }
 

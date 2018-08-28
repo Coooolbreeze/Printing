@@ -16,6 +16,7 @@ class CreateUserCouponsTable extends Migration
         Schema::create('user_coupons', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
+            $table->integer('coupon_id');
             $table->string('coupon_no');
             $table->string('name');
             $table->tinyInteger('type')->default(1)->comment('1满减 2抵扣');
@@ -23,6 +24,7 @@ class CreateUserCouponsTable extends Migration
             $table->integer('satisfy')->nullable();
             $table->tinyInteger('is_meanwhile')->default(0);
             $table->tinyInteger('is_used')->default(0);
+            $table->tinyInteger('is_disabled')->default(0);
             $table->timestamp('finished_at');
             $table->timestamps();
         });

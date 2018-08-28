@@ -356,6 +356,8 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:优惠券管理')->group(function () {
+        Route::apiResource('/coupons/give', 'CouponController@give');
+
         Route::apiResource('coupons', 'CouponController')
             ->only(['store', 'update', 'destroy']);
     });
@@ -380,6 +382,8 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::get('/test', function () {
+        return \Carbon\Carbon::parse(date('Y-m-d H:i:s', '1537654321'));
+
         return \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(500)->generate('111');
         return [
             'data' => true || \App\Services\Tokens\TokenFactory::can('用户管理')
@@ -421,8 +425,6 @@ Route::namespace('Api')->group(function () {
         ];
 
         return isset(request()->is_admin) ? request()->is_admin : 11;
-
-        return \Carbon\Carbon::parse(date('Y-m-d H:i:s', '1537654321'));
 
         return \Spatie\Permission\Models\Role::findOrFail(1)
             ->permissions()->pluck('name');

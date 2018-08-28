@@ -23,6 +23,7 @@ class CreateCouponsTable extends Migration
             $table->integer('number');
             $table->integer('received')->default(0);
             $table->tinyInteger('is_meanwhile')->default(0);
+            $table->tinyInteger('is_disabled')->default(0);
             $table->timestamp('finished_at');
             $table->timestamps();
         });
