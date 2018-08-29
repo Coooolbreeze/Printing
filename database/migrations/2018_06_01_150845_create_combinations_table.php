@@ -21,6 +21,8 @@ class CreateCombinationsTable extends Migration
             $table->string('combination');
             $table->timestamps();
         });
+
+        DB::update('ALTER TABLE combinations AUTO_INCREMENT = 100000');
     }
 
     /**

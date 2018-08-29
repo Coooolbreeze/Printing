@@ -49,7 +49,7 @@ class OrderController extends ApiController
     public function index(Request $request)
     {
         $orders = (new Order())
-            ->when($request->status, function ($query) use ($request) {
+            ->when(isset($request->status) && $request->status != null, function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
             ->when($request->begin_time, function ($query) use ($request) {
@@ -123,6 +123,7 @@ class OrderController extends ApiController
             $order = [
                 'order_no' => 'E-' . makeOrderNo(),
                 'user_id' => TokenFactory::getCurrentUID(),
+                'express_id' => $request->express_id,
                 'title' => $goodsInfo['title'],
                 'goods_count' => $goodsInfo['total_count'],
                 'goods_price' => $goodsInfo['total_price'],
@@ -167,6 +168,8 @@ class OrderController extends ApiController
      */
     public function update(UpdateOrder $request, Order $order)
     {
+        Order::updateField($request, $order, []);
+
         if ($request->key && $request->file_id) {
             $content = json_decode($order->snap_content, true);
             foreach ($content as $key => &$entity) {
@@ -183,7 +186,7 @@ class OrderController extends ApiController
 
             self::updateValidate($status, $order);
 
-            Order::updateField($request, $order, ['status']);
+            Order::updateField($request, $order, ['status', 'remark']);
 
             // 分发事件
             if ($status == OrderStatusEnum::UNDELIVERED) {
@@ -224,6 +227,7 @@ class OrderController extends ApiController
             $order = [
                 'order_no' => 'E-' . makeOrderNo(),
                 'user_id' => $request->user_id,
+                'express_id' => $request->express_id,
                 'title' => $goodsInfo['title'],
                 'goods_count' => $goodsInfo['total_count'],
                 'goods_price' => $goodsInfo['total_price'],
@@ -232,7 +236,8 @@ class OrderController extends ApiController
                 'freight' => $freight,
                 'snap_address' => $snapAddress,
                 'snap_content' => json_encode($goodsInfo['goods']),
-                'remark' => $request->remark
+                'remark' => $request->remark,
+                'creator' => TokenFactory::getCurrentUser()->nickname
             ];
 
             $order = Order::create($order);
@@ -266,6 +271,7 @@ class OrderController extends ApiController
             }
 
             $order->update([
+                'balance_deducted' => 0,
                 'status' => OrderStatusEnum::PAID,
                 'pay_type' => OrderPayTypeEnum::BACK_PAY
             ]);
@@ -321,7 +327,10 @@ class OrderController extends ApiController
                 'id' => $entityModel->id,
                 'name' => $entityModel->name,
                 'image' => new ImageResource($entityModel->images()->first()),
-                'combination' => $value->count ? $combination->combination : substr($combination->combination, 0, strripos($combination->combination, '|')),
+                'combination' => [
+                    'id' => $combination->id,
+                    'name' => $value->count ? $combination->combination : substr($combination->combination, 0, strripos($combination->combination, '|'))
+                ],
                 'specs' => $value->count ? json_decode($value->specs, true) : array_slice(json_decode($value->specs, true), 0, -1),
                 'custom_specs' => json_decode($value->custom_specs, true),
                 'weight' => $value->weight,

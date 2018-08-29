@@ -19,7 +19,7 @@ class ExpressController extends ApiController
 {
     public function index()
     {
-        return $this->success(new ExpressCollection(Express::pagination()));
+        return $this->success(ExpressResource::collection(Express::all()));
     }
 
     public function show(Express $express)

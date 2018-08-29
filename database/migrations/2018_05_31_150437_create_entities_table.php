@@ -29,6 +29,8 @@ class CreateEntitiesTable extends Migration
             $table->tinyInteger('status')->default(1)->comment('0未发布 1销售中 2已下架');
             $table->timestamps();
         });
+
+        DB::update('ALTER TABLE entities AUTO_INCREMENT = 100000');
     }
 
     /**

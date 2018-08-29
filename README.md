@@ -549,7 +549,10 @@
                             id: 商品图片ID,
                             src: 商品图片链接
                         },
-                        combination: 商品组合,
+                        combination: {
+                            id: 商品组合ID,
+                            name: 商品组合
+                        },
                         specs: {
                             商品属性(如工艺): 属性值(如烫金),
                             ...

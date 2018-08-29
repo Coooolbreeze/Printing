@@ -330,7 +330,7 @@ Route::namespace('Api')->group(function () {
         Route::get('order_status', 'OrderController@statusList');
 
         Route::apiResource('order_expresses', 'OrderExpressController')
-            ->only(['store']);
+            ->only(['index', 'store']);
     });
 
     Route::middleware('permission:积分管理')->group(function () {

@@ -13,13 +13,13 @@ class ExpressResource extends Resource
 {
     public function toArray($request)
     {
-        return [
+        return $this->filterFields([
             'id' => $this->id,
             'name' => $this->name,
             'first_weight' => $this->first_weight,
             'additional_weight' => $this->additional_weight,
             'capped' => $this->capped,
             'region' => $this->regions()->pluck('name')
-        ];
+        ]);
     }
 }
