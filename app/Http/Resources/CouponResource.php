@@ -33,6 +33,7 @@ class CouponResource extends Resource
             'surplus' => $this->number - $this->received,
             'is_received' => in_array($this->id, $received),
             'is_meanwhile' => (bool)$this->is_meanwhile,
+            'is_disabled' => (bool)$this->is_disabled,
             'finished_at' => (string)$this->finished_at,
             'created_at' => (string)$this->created_at
         ];
