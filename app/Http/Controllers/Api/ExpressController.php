@@ -13,13 +13,21 @@ use App\Http\Resources\ExpressCollection;
 use App\Http\Resources\ExpressResource;
 use App\Models\Express;
 use App\Models\ExpressRegion;
+use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 
 class ExpressController extends ApiController
 {
     public function index()
     {
-        return $this->success(ExpressResource::collection(Express::all()));
+        if (TokenFactory::isAdmin()) {
+            $expresses = [
+                'data' => ExpressResource::collection(Express::all())
+            ];
+        } else {
+            $expresses = ExpressResource::collection(Express::all());
+        }
+        return $this->success($expresses);
     }
 
     public function show(Express $express)

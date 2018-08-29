@@ -356,7 +356,7 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:优惠券管理')->group(function () {
-        Route::apiResource('/coupons/give', 'CouponController@give');
+        Route::post('/coupons/give', 'CouponController@give');
 
         Route::apiResource('coupons', 'CouponController')
             ->only(['store', 'update', 'destroy']);
