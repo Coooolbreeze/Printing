@@ -1419,3 +1419,49 @@
         created_at: 发布日期,
         updated_at: 更新日期
     }
+    
+ ### 57. 新闻相关阅读及最新发布
+    GET /news/recommend
+    response:
+    {
+        relevance: 相关阅读
+        [
+            {
+                id: 新闻ID,
+                category: {
+                    id: 所属分类ID,
+                    title: 所属分类标题
+                },
+                image: {
+                    id: 图片ID,
+                    src: 图片链接
+                },
+                title: 新闻标题,
+                from: 来源,
+                summary: 摘要,
+                created_at: 发布日期,
+                updated_at: 更新日期
+            },
+            ...
+        ],
+        new: 最新发布
+        [
+            {
+                id: 新闻ID,
+                category: {
+                    id: 所属分类ID,
+                    title: 所属分类标题
+                },
+                image: {
+                    id: 图片ID,
+                    src: 图片链接
+                },
+                title: 新闻标题,
+                from: 来源,
+                summary: 摘要,
+                created_at: 发布日期,
+                updated_at: 更新日期
+            },
+            ...
+        ]
+    }

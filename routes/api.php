@@ -58,6 +58,8 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('news_categories', 'NewsCategoryController')
         ->only(['index', 'show']);
 
+    Route::get('/news/recommend', 'NewsController@recommend');
+    
     Route::apiResource('news', 'NewsController')
         ->only(['index', 'show']);
 

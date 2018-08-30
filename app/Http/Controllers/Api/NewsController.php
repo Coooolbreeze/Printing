@@ -30,10 +30,20 @@ class NewsController extends ApiController
             ->when($request->title, function ($query) use ($request) {
                 $query->where('title', 'like', '%' . $request->title . '%');
             })
+            ->latest()
             ->paginate(News::getLimit());
 
         return $this->success(new NewsCollection($news));
     }
+
+    public function recommend()
+    {
+        return $this->success([
+            'relevance' => NewsResource::collection(News::inRandomOrder()->limit(4)->get()),
+            'new' => NewsResource::collection(News::latest()->limit(4)->get())
+        ]);
+    }
+
 
     public function show(News $news)
     {

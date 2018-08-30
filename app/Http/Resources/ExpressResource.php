@@ -19,7 +19,7 @@ class ExpressResource extends Resource
             'first_weight' => $this->first_weight,
             'additional_weight' => $this->additional_weight,
             'capped' => $this->capped,
-            'region' => $this->regions()->pluck('name')
+            'regions' => $this->regions()->pluck('name')
         ]);
     }
 }
