@@ -39,8 +39,8 @@ class NewsController extends ApiController
     public function recommend()
     {
         return $this->success([
-            'relevance' => NewsResource::collection(News::inRandomOrder()->limit(4)->get()),
-            'new' => NewsResource::collection(News::latest()->limit(4)->get())
+            'relevance' => (NewsResource::collection(News::inRandomOrder()->limit(4)->get()))->hide(['body']),
+            'new' => (NewsResource::collection(News::latest()->limit(4)->get()))->hide(['body'])
         ]);
     }
 
