@@ -1420,7 +1420,7 @@
         updated_at: 更新日期
     }
     
- ### 57. 新闻相关阅读及最新发布
+### 57. 新闻相关阅读及最新发布
     GET /news/recommend
     response:
     {
@@ -1465,3 +1465,48 @@
             ...
         ]
     }
+    
+### 58. 其他印刷新闻
+    GET /news/other
+    request: {
+        id: 当前正在浏览的新闻ID
+    }
+    response:
+    [
+        {
+            id: 新闻ID,
+            category: {
+                id: 所属分类ID,
+                title: 所属分类标题
+            },
+            image: {
+                id: 图片ID,
+                src: 图片链接
+            },
+            title: 新闻标题,
+            from: 来源,
+            summary: 摘要,
+            created_at: 发布日期,
+            updated_at: 更新日期
+        },
+        ...
+    ]
+    
+### 59. 商品推荐
+    response:
+    [
+        {
+            id: 商品ID,
+            image: {
+                id: 商品图片ID,
+                src: 商品图片链接
+            },
+            name: 商品名称,
+            summary: 商品描述,
+            status: 商品状态(销售中|已下架),
+            sales: 销量,
+            comment_count: 评价数量
+        },
+        ...
+    ]
+    

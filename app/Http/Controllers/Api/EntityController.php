@@ -50,6 +50,15 @@ class EntityController extends ApiController
         return $this->success(new EntityCollection($entities));
     }
 
+    public function recommend()
+    {
+        return $this->success(
+            EntityResource::collection(
+                Entity::inRandomOrder()->limit(4)->get()
+            )->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'comment_count'])
+        );
+    }
+
     public function show(Entity $entity)
     {
         return $this->success((new EntityResource($entity))->hide(['image']));

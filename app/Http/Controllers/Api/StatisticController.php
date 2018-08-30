@@ -13,10 +13,15 @@ use App\Enum\OrderStatusEnum;
 use App\Models\Order;
 use App\Models\Receipt;
 use App\Models\User;
+use App\Services\Tokens\TokenFactory;
 use Carbon\Carbon;
 
 class StatisticController extends ApiController
 {
+    /**
+     * @return mixed
+     * @throws \App\Exceptions\TokenException
+     */
     public function index()
     {
         $todayOrder = Order::whereDate('created_at', Carbon::today()->toDateString())->count();
@@ -27,13 +32,27 @@ class StatisticController extends ApiController
         $newUserCount = User::where('is_admin', 0)
             ->whereDate('created_at', Carbon::today()->toDateString())->count();
 
-        return $this->success([
-            'today_order' => $todayOrder,
-            'undelivered_order' => $undeliveredOrder,
-            'audited_order' => $auditedOrder,
-            'receipt' => $receiptCount,
-            'user' => $userCount,
-            'new_user' => $newUserCount
-        ]);
+        $arr = [];
+        $permissions = TokenFactory::getCurrentPermissions();
+        if (in_array('订单管理', $permissions)) {
+            $arr = array_merge($arr, [
+                'today_order' => $todayOrder,
+                'undelivered_order' => $undeliveredOrder,
+                'audited_order' => $auditedOrder,
+            ]);
+        }
+        if (in_array('财务管理', $permissions)) {
+            $arr = array_merge($arr, [
+                'receipt' => $receiptCount
+            ]);
+        }
+        if (in_array('用户管理', $permissions)) {
+            $arr = array_merge($arr, [
+                'user' => $userCount,
+                'new_user' => $newUserCount
+            ]);
+        }
+
+        return $this->success($arr);
     }
 }

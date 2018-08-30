@@ -52,6 +52,7 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('types', 'TypeController')
         ->only(['index', 'show']);
 
+    Route::get('/entities/recommend', 'Entity@recommend');
     Route::apiResource('entities', 'EntityController')
         ->only(['index', 'show']);
 
@@ -59,7 +60,7 @@ Route::namespace('Api')->group(function () {
         ->only(['index', 'show']);
 
     Route::get('/news/recommend', 'NewsController@recommend');
-    
+    Route::get('/news/other', 'NewsController@other');
     Route::apiResource('news', 'NewsController')
         ->only(['index', 'show']);
 

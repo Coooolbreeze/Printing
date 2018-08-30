@@ -44,6 +44,15 @@ class NewsController extends ApiController
         ]);
     }
 
+    public function other(Request $request)
+    {
+        return $this->success(
+            NewsResource::collection(
+                News::whereNotIn('id', [$request->id])
+                    ->latest()->limit(5)->get()
+            )->hide(['body'])
+        );
+    }
 
     public function show(News $news)
     {
