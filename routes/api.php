@@ -52,7 +52,7 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('types', 'TypeController')
         ->only(['index', 'show']);
 
-    Route::get('/entities/recommend', 'Entity@recommend');
+    Route::get('/entities/recommend', 'EntityController@recommend');
     Route::apiResource('entities', 'EntityController')
         ->only(['index', 'show']);
 
