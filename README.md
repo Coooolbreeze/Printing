@@ -539,43 +539,6 @@
                     county: 区/县,
                     detail: 详细地址
                 },
-                content: 
-                [
-                    {
-                        key: 该订单内商品唯一标识,
-                        id: 商品ID,
-                        name: 商品名称,
-                        image: {
-                            id: 商品图片ID,
-                            src: 商品图片链接
-                        },
-                        combination: {
-                            id: 商品组合ID,
-                            name: 商品组合
-                        },
-                        specs: {
-                            商品属性(如工艺): 属性值(如烫金),
-                            ...
-                        },
-                        custom_specs: {
-                            自定义属性(如尺寸): {
-                                单位属性(如宽): 属性值(如1),
-                                ...
-                            },
-                            ...
-                        },
-                        weight: 重量,
-                        count: 数量,
-                        price: 价格,
-                        remark: 备注,
-                        file: {
-                            id: 文件ID,
-                            name: 文件名称,
-                            src: 文件链接
-                        }
-                    },
-                    ...
-                ]
                 goods_price: 商品总金额,
                 goods_count: 商品总数量,
                 total_weight: 商品总重量,
@@ -1099,6 +1062,7 @@
                 summary: 商品描述,
                 status: 商品状态(销售中|已下架),
                 sales: 销量,
+                price: 起价,
                 comment_count: 评价数量
             },
             ...
@@ -1135,6 +1099,7 @@
             1 支持单人数量,
             2 支持多人数量
         ),
+        price: 起价,
         title: 页面标题,
         keywords: 页面关键词,
         describe: 页面描述,
@@ -1506,6 +1471,7 @@
             summary: 商品描述,
             status: 商品状态(销售中|已下架),
             sales: 销量,
+            price: 起价,
             comment_count: 评价数量
         },
         ...
