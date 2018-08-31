@@ -16,7 +16,7 @@ class EntityCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => EntityResource::collection($this->collection)->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'comment_count']),
+            'data' => EntityResource::collection($this->collection)->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'price', 'comment_count']),
             'count' => $this->count(),
             'total' => $this->total(),
             'current_page' => $this->currentPage(),

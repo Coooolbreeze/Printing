@@ -10,6 +10,7 @@ namespace App\Http\Resources;
 
 
 use App\Models\CategoryItem;
+use App\Models\Combination;
 use App\Models\Comment;
 
 class EntityResource extends Resource
@@ -42,6 +43,7 @@ class EntityResource extends Resource
             'title' => $this->title,
             'keywords' => $this->keywords,
             'describe' => $this->describe,
+            'price' => $this->getPrice(),
             'specs' => AttributeResource::collection($this->attributes),
             'custom_specs' => CustomAttributeResource::collection($this->customAttributes),
             'combinations' => CombinationResource::collection($this->combinations()->active()->get()),
@@ -70,5 +72,18 @@ class EntityResource extends Resource
             ->first();
         if ($categoryItem) return (new CategoryItemResource($categoryItem))->show(['category', 'is_hot', 'is_new']);
         else return false;
+    }
+
+    public function getPrice()
+    {
+        $combination = $this->combinations()->active()->orderBy('price')->first();
+        if ($this->custom_number > 0) {
+            return $combination->price;
+        }
+
+        $number = end(explode('|', $combination->combination));
+        preg_match_all('/\d+/', end($number), $num);
+        preg_match_all('/\D+/', end($number), $str);
+        return (ceil($combination->price / $num[0][0] * 100) / 100) . '/' . end($str[0]);
     }
 }

@@ -60,7 +60,7 @@ class LargeCategoryController extends ApiController
 
             return $this->success([
                 'large_categories' => LargeCategoryResource::collection(LargeCategory::all())->show(['id', 'name']),
-                'data' => EntityResource::collection($entities)->show(['id', 'image', 'name', 'summary', 'status', 'sales', 'comment_count']),
+                'data' => EntityResource::collection($entities)->show(['id', 'image', 'name', 'summary', 'status', 'sales', 'price', 'comment_count']),
                 'count' => $count,
                 'total' => $total,
                 'current_page' => $currentPage,

@@ -55,7 +55,7 @@ class EntityController extends ApiController
         return $this->success(
             EntityResource::collection(
                 Entity::inRandomOrder()->limit(4)->get()
-            )->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'comment_count'])
+            )->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'price', 'comment_count'])
         );
     }
 
