@@ -22,6 +22,7 @@ class CreateEntitiesTable extends Migration
             $table->longText('body');
             $table->tinyInteger('lead_time');
             $table->tinyInteger('custom_number')->default(0)->comment('0不允许自定义 1单人数量 2多人数量');
+            $table->string('unit')->nullable();
             $table->string('title');
             $table->string('keywords');
             $table->string('describe')->nullable();

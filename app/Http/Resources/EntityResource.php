@@ -40,6 +40,7 @@ class EntityResource extends Resource
             'body' => $this->body,
             'lead_time' => $this->lead_time,
             'custom_number' => $this->custom_number,
+            'unit' => $this->when($this->custom_number > 0, $this->unit),
             'title' => $this->title,
             'keywords' => $this->keywords,
             'describe' => $this->describe,
@@ -78,12 +79,12 @@ class EntityResource extends Resource
     {
         $combination = $this->combinations()->active()->orderBy('price')->first();
         if ($this->custom_number > 0) {
-            return $combination->price;
+            return $combination->price . '/' . $this->unit . '起';
         }
 
-        $number = end(explode('|', $combination->combination));
+        $number = explode('|', $combination->combination);
         preg_match_all('/\d+/', end($number), $num);
         preg_match_all('/\D+/', end($number), $str);
-        return (ceil($combination->price / $num[0][0] * 100) / 100) . '/' . end($str[0]);
+        return (number_format(ceil($combination->price / $num[0][0] * 100) / 100, 2)) . '/' . end($str[0]) . '起';
     }
 }
