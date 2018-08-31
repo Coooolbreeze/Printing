@@ -1493,6 +1493,7 @@
     ]
     
 ### 59. 商品推荐
+    GET /entities/recommend
     response:
     [
         {
