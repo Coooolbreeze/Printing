@@ -60,8 +60,8 @@ class EntityResource extends Resource
     public function convertStatus($value)
     {
         $status = [
-            1 => '销售中',
-            2 => '已下架'
+            0 => '未上架',
+            1 => '销售中'
         ];
         return $status[$value];
     }
@@ -78,6 +78,10 @@ class EntityResource extends Resource
     public function getPrice()
     {
         $combination = $this->combinations()->active()->orderBy('price')->first();
+
+        if (!$combination) {
+            return '暂无';
+        }
         if ($this->custom_number > 0) {
             return $combination->price . '/' . $this->unit . '起';
         }

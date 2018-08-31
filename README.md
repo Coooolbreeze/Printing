@@ -1060,7 +1060,7 @@
                 },
                 name: 商品名称,
                 summary: 商品描述,
-                status: 商品状态(销售中|已下架),
+                status: 商品状态(未上架|销售中),
                 sales: 销量,
                 price: 起价,
                 comment_count: 评价数量
@@ -1176,7 +1176,7 @@
             ]
         },
         comment_count: 评价数量,
-        status: 状态（销售中|已下架）,
+        status: 状态（未上架|销售中）,
         sales: 销量,
         created_at: 创建日期
     }
@@ -1469,7 +1469,7 @@
             },
             name: 商品名称,
             summary: 商品描述,
-            status: 商品状态(销售中|已下架),
+            status: 商品状态(未上架|销售中),
             sales: 销量,
             price: 起价,
             comment_count: 评价数量

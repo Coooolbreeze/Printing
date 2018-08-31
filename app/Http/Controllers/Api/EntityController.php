@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Exceptions\BaseException;
 use App\Http\Resources\EntityCollection;
 use App\Http\Resources\EntityResource;
 use App\Models\Attribute;
@@ -73,6 +74,9 @@ class EntityController extends ApiController
      */
     public function store(Request $request)
     {
+        if (!$request->specs)
+            throw new BaseException('请添加至少一个属性');
+
         $entity = null;
         \DB::transaction(function () use ($request, &$entity) {
             // 创建商品
@@ -84,6 +88,7 @@ class EntityController extends ApiController
                 'body' => $request->body,
                 'lead_time' => $request->lead_time,
                 'custom_number' => $request->custom_number ?: 0,
+                'unit' => $request->unit,
                 'title' => $request->title,
                 'keywords' => $request->keywords,
                 'describe' => $request->describe
@@ -103,7 +108,7 @@ class EntityController extends ApiController
             $entity->images()->sync($request->images);
 
             // 同步用户自定义属性
-            isset($request->custom_specs) && self::customSpecs($entity, $request->custom_specs);
+            count($request->custom_specs) > 0 && self::customSpecs($entity, $request->custom_specs);
 
             // 同步商品属性
             self::syncSpecs($entity, $request->specs);

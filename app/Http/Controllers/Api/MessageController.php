@@ -46,6 +46,11 @@ class MessageController extends ApiController
         return $this->success(new MessageResource($message));
     }
 
+    /**
+     * @param StoreMessage $request
+     * @return mixed
+     * @throws TokenException
+     */
     public function store(StoreMessage $request)
     {
         $ids = [];
@@ -64,7 +69,7 @@ class MessageController extends ApiController
             $ids = array_unique($ids);
         }
 
-        Message::send($ids, $request->title, $request->body);
+        Message::send($ids, $request->title, $request->body, TokenFactory::getCurrentUser()->nickname);
 
         return $this->created();
     }
