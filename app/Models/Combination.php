@@ -69,6 +69,8 @@ class Combination extends Model
             foreach ($customSpec as $value)
                 $specPrice *= $value;
 
+        $specPrice = ceil($specPrice * 100) / 100;
+
         if ($count != 0) $specPrice *= $count;
 
         return $specPrice == $price;

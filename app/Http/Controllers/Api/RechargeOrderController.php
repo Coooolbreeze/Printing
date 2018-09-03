@@ -11,12 +11,27 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\RechargeOrderCollection;
 use App\Models\RechargeOrder;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class RechargeOrderController extends ApiController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $rechargeOrder = RechargeOrder::latest()->paginate(RechargeOrder::getLimit());
+        $rechargeOrder = (new RechargeOrder())
+            ->when($request->nickname, function ($query) use ($request) {
+                $query->whereHas('user', function ($query) use ($request) {
+                    $query->Where('nickname', 'like', '%' . $request->nickname . '%');
+                });
+            })
+            ->when($request->begin_time, function ($query) use ($request) {
+                $query->whereBetween('created_at', [
+                    Carbon::parse(date('Y-m-d H:i:s', $request->begin_time)),
+                    Carbon::parse(date('Y-m-d H:i:s', $request->end_time))
+                ]);
+            })
+            ->latest()
+            ->paginate(RechargeOrder::getLimit());
 
         return $this->success(new RechargeOrderCollection($rechargeOrder));
     }
