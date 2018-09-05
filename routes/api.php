@@ -322,9 +322,6 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:订单管理')->group(function () {
-        Route::apiResource('gift_orders', 'GiftOrderController')
-            ->only(['index', 'update']);
-
         Route::put('/back_pay', 'OrderController@backPay');
 
         Route::apiResource('orders', 'OrderController')
@@ -347,8 +344,13 @@ Route::namespace('Api')->group(function () {
 
         Route::put('/accumulate_points_money', 'AccumulatePointsMoneyController@update');
 
+        Route::apiResource('gift_orders', 'GiftOrderController')
+            ->only(['index', 'update']);
+
         Route::apiResource('gifts', 'GiftController')
             ->only(['store', 'update', 'destroy']);
+
+        Route::delete('/batch/gifts', 'GiftController@batchDestroy');
     });
 
     Route::middleware('permission:用户管理')->group(function () {

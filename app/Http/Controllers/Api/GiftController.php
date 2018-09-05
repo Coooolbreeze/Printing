@@ -61,4 +61,11 @@ class GiftController extends ApiController
         $gift->delete();
         return $this->message('删除成功');
     }
+
+    public function batchDestroy(Request $request)
+    {
+        Gift::whereIn('id', $request->ids)
+            ->delete();
+        return $this->message('删除成功');
+    }
 }
