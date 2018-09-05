@@ -10,6 +10,8 @@ namespace App\Services;
 
 
 use App\Enum\OrderPayTypeEnum;
+use App\Models\BalanceRecord;
+use App\Models\Order;
 use App\Models\RechargeOrder;
 use Yansongda\LaravelPay\Facades\Pay as LaravelPay;
 
@@ -53,12 +55,22 @@ class AliPay extends Pay
             $data = $aliPay->verify();
 
             if ($data->trade_status == 'TRADE_SUCCESS') {
-                $this->setPayType(OrderPayTypeEnum::ALI_PAY)->successful($data->out_trade_no);
+                $this->setPayType(OrderPayTypeEnum::ALI_PAY)->successful($data->out_trade_no, $data->trade_no);
             }
 
             \Log::debug('Alipay notify', $data->all());
         });
 
         return $aliPay->success();
+    }
+
+    public function refund()
+    {
+        parent::refund();
+
+        return LaravelPay::alipay()->refund([
+            'out_trade_no' => $this->getOrder()->order_no,
+            'refund_amount' => $this->getTotalPrice()
+        ]);
     }
 }

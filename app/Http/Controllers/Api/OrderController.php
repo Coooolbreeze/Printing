@@ -106,7 +106,7 @@ class OrderController extends ApiController
      */
     public function store(StoreOrder $request)
     {
-        \DB::transaction(function () use ($request, &$order) {
+        \DB::transaction(function () use ($request) {
             $goodsInfo = $request->ids
                 ? self::cartOrder($request->ids)
                 : self::entityOrder($request->entity);
@@ -152,7 +152,7 @@ class OrderController extends ApiController
                 $order['receipt_id'] = $receipt->id;
             }
 
-            $order = Order::create($order);
+            Order::create($order);
         });
 
         return $this->created();
@@ -240,46 +240,17 @@ class OrderController extends ApiController
                 'creator' => TokenFactory::getCurrentUser()->nickname
             ];
 
-            $order = Order::create($order);
+            Order::create($order);
 
-            $order->update([
-                'status' => OrderStatusEnum::PAID,
-                'pay_type' => OrderPayTypeEnum::BACK_PAY
-            ]);
-
-            event(new OrderPaid($order));
+//            $order->update([
+//                'status' => OrderStatusEnum::PAID,
+//                'pay_type' => OrderPayTypeEnum::BACK_PAY
+//            ]);
+//
+//            event(new OrderPaid($order));
         });
 
         return $this->created();
-    }
-
-    /**
-     * @param Request $request
-     * @return mixed
-     * @throws \Throwable
-     */
-    public function backPay(Request $request)
-    {
-        \DB::transaction(function () use ($request) {
-            $order = Order::lockForUpdate()->findOrFail($request->id);
-
-            if ($order->status == OrderStatusEnum::EXPIRE) {
-                throw new BaseException('该订单已过期，无法支付');
-            }
-            if ($order->status >= OrderStatusEnum::PAID) {
-                throw new BaseException('该订单已支付，请不要重复支付');
-            }
-
-            $order->update([
-                'balance_deducted' => 0,
-                'status' => OrderStatusEnum::PAID,
-                'pay_type' => OrderPayTypeEnum::BACK_PAY
-            ]);
-
-            event(new OrderPaid($order));
-        });
-
-        return $this->message('支付状态更新成功');
     }
 
     /**

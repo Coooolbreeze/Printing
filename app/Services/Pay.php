@@ -21,6 +21,7 @@ class Pay
 {
     private $payType = null;
     private $orderNo = null;
+    private $tradeNo = null;
     private $order = null;
     private $totalPrice = null;
 
@@ -62,6 +63,24 @@ class Pay
     }
 
     /**
+     * @throws BaseException
+     */
+    public function refund()
+    {
+        $this->refundValidate();
+
+        $totalPrice = $this->order->total_price;
+
+        $totalPrice -= $this->refundBalance();
+
+        $this->totalPrice = $totalPrice;
+
+        $this->order->update([
+            'status' => OrderStatusEnum::REFUNDED
+        ]);
+    }
+
+    /**
      * @return array|\Illuminate\Http\Request|int|string
      * @throws BaseException
      * @throws \App\Exceptions\TokenException
@@ -86,22 +105,31 @@ class Pay
         }
     }
 
+    protected function refundBalance()
+    {
+        if ($this->order->balance_deducted > 0) {
+            BalanceRecord::income($this->order->balance_deducted, '订单退款', $this->order->user);
+        }
+
+        return $this->order->balance_deducted;
+    }
+
     /**
      * @param $orderNo
      * @throws BaseException
      * @throws \App\Exceptions\TokenException
      * @throws \Throwable
      */
-    protected function successful($orderNo)
+    protected function successful($orderNo, $tradeNo)
     {
         $this->orderNo = $orderNo;
+        $this->tradeNo = $tradeNo;
 
         $preCode = substr($orderNo, 0, 1);
 
         if ($preCode == 'E') {
             $this->entityOrderNotify();
-        }
-        elseif ($preCode == 'R') {
+        } elseif ($preCode == 'R') {
             $this->rechargeOrderNotify();
         }
     }
@@ -126,6 +154,7 @@ class Pay
             }
 
             $order->update([
+                'trade_no' => $this->tradeNo,
                 'status' => OrderStatusEnum::PAID,
                 'pay_type' => $this->payType
             ]);
@@ -146,6 +175,7 @@ class Pay
 
         if ($order->is_paid == 0) {
             $order->update([
+                'trade_no' => $this->tradeNo,
                 'is_paid' => 1,
                 'pay_type' => $this->payType
             ]);
@@ -168,6 +198,22 @@ class Pay
         }
         if ($this->order->status >= OrderStatusEnum::PAID) {
             throw new BaseException('该订单已支付，请不要重复支付');
+        }
+    }
+
+    /**
+     * @throws BaseException
+     */
+    protected function refundValidate()
+    {
+        if ($this->order->status == OrderStatusEnum::REFUNDED) {
+            throw new BaseException('该订单已退款，请不要重复提交');
+        }
+        if ($this->order->status == OrderStatusEnum::UNPAID) {
+            throw new BaseException('该订单未支付，不能退款');
+        }
+        if ($this->order->status != OrderStatusEnum::PAID) {
+            throw new BaseException('只有未审核订单才能退款');
         }
     }
 }

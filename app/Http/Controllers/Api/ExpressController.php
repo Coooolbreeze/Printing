@@ -18,15 +18,24 @@ use Illuminate\Http\Request;
 
 class ExpressController extends ApiController
 {
-    public function index()
+    public function index(Request $request)
     {
+        $expresses = ExpressResource::collection(
+            (new Express())
+                ->when($request->province, function ($query) use ($request) {
+                    $query->whereIn('id', ExpressRegion::where('name', $request->province)
+                        ->pluck('express_id')
+                    );
+                })
+                ->get()
+        );
+
         if (TokenFactory::isAdmin()) {
             $expresses = [
-                'data' => ExpressResource::collection(Express::all())
+                'data' => $expresses
             ];
-        } else {
-            $expresses = ExpressResource::collection(Express::all());
         }
+
         return $this->success($expresses);
     }
 

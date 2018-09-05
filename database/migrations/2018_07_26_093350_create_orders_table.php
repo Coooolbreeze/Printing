@@ -16,6 +16,7 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('order_no');
+            $table->string('trade_no')->nullable();
             $table->integer('user_id');
             $table->integer('express_id');
             $table->integer('receipt_id')->nullable();
@@ -40,6 +41,7 @@ class CreateOrdersTable extends Migration
             $table->timestamp('audited_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
             $table->timestamp('received_at')->nullable();
+            $table->timestamp('refunded_at')->nullable();
             $table->timestamps();
         });
     }

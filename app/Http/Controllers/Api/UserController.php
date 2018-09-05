@@ -65,6 +65,19 @@ class UserController extends ApiController
         return $this->success(new UserCollection($user));
     }
 
+    public function all(Request $request)
+    {
+        $user = (new User())
+            ->where('is_admin', 0)
+            ->when($request->value, function ($query) use ($request) {
+                $query->where('nickname', 'like', '%' . $request->value . '%')
+                    ->orWhere('phone', 'like', '%' . $request->value . '%');
+            })
+            ->get();
+
+        return $this->success(UserResource::collection($user)->show(['id', 'nickname', 'phone']));
+    }
+
     public function show($id)
     {
         return $this->success(new UserResource(
@@ -91,8 +104,7 @@ class UserController extends ApiController
                 '管理员' . TokenFactory::getCurrentUser()->nickname . '添加',
                 $user
             );
-        }
-        // 扣除积分
+        } // 扣除积分
         elseif ($request->accumulate_points && $request->accumulate_points < $user->accumulate_points) {
             AccumulatePointsRecord::expend(
                 $user->accumulate_points - $request->accumulate_points,
@@ -107,8 +119,7 @@ class UserController extends ApiController
                 '管理员' . TokenFactory::getCurrentUser()->nickname . '添加',
                 $user
             );
-        }
-        // 扣除余额
+        } // 扣除余额
         elseif ($request->balance && $request->balance < $user->balance) {
             BalanceRecord::expend(
                 $user->balance - $request->balance,

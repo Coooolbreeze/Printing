@@ -67,16 +67,20 @@ class OrderResource extends Resource
             ),
             'audited_at' => $this->when(
                 $this->audited_at,
-                $this->audited_at
+                (string)$this->audited_at
             ),
             'delivered_at' => $this->when(
                 $this->delivered_at,
-                $this->delivered_at
+                (string)$this->delivered_at
             ),
             'received_at' => $this->when(
                 $this->received_at,
-                $this->received_at
+                (string)$this->received_at
             ),
+            'refunded_at' => $this->when(
+                $this->refunded_at,
+                (string)$this->refunded_at
+            )
         ]);
     }
 

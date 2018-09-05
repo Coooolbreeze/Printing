@@ -17,6 +17,7 @@ class CreateRechargeOrdersTable extends Migration
             $table->increments('id');
             $table->integer('user_id');
             $table->string('order_no');
+            $table->string('trade_no');
             $table->decimal('price');
             $table->string('prepay_id')->nullable();
             $table->tinyInteger('is_paid')->default(0);

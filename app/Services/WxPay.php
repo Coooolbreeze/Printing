@@ -69,12 +69,25 @@ class WxPay extends Pay
             $data = $wxPay->verify();
 
             if ($data->result_code == 'SUCCESS') {
-                $this->setPayType(OrderPayTypeEnum::WX_PAY)->successful($data->out_trade_no);
+                $this->setPayType(OrderPayTypeEnum::WX_PAY)->successful($data->out_trade_no, $data->transaction_id);
             }
 
             \Log::debug('Wxpay notify', $data->all());
         });
 
         return $wxPay->success();
+    }
+
+    public function refund()
+    {
+        parent::refund();
+
+        return LaravelPay::wechat()->refund([
+            'out_trade_no' => $this->getOrder()->order_no,
+            'out_refund_no' => time(),
+            'total_fee' => $this->getTotalPrice(),
+            'refund_fee' => $this->getTotalPrice(),
+            'refund_desc' => '订单退款'
+        ]);
     }
 }

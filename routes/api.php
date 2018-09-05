@@ -334,6 +334,11 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('order_expresses', 'OrderExpressController')
             ->only(['index', 'store']);
+
+        Route::apiResource('order_applies', 'OrderApplyController')
+            ->only(['store']);
+
+        Route::get('/all/users', 'UserController@all');
     });
 
     Route::middleware('permission:积分管理')->group(function () {
@@ -371,6 +376,9 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('recharge_orders', 'RechargeOrderController')
             ->only(['index']);
+
+        Route::apiResource('order_applies', 'OrderApplyController')
+            ->only(['index', 'update']);
     });
 
     Route::middleware('permission:配送管理')->group(function () {
@@ -404,7 +412,7 @@ Route::namespace('Api')->group(function () {
         $order = [
             'out_trade_no' => time(),
             'body' => 'subject-测试',
-            'total_fee'      => '1',
+            'total_fee' => '1',
             'openid' => 'onkVf1FjWS5SBIixxxxxxxxx',
         ];
         $result = \Yansongda\LaravelPay\Facades\Pay::wechat()->scan($order);

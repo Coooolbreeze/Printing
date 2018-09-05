@@ -51,6 +51,7 @@ class EntityResource extends Resource
             'disabled_combinations' => $this->combinations()->disabled()->pluck('combination'),
             'comments' => new CommentCollection($this->comments()->paginate(Comment::getLimit())),
             'comment_count' => $this->comments()->count(),
+            'free_express' => config('setting.free_express'),
             'status' => $this->convertStatus($this->status),
             'sales' => $this->sales,
             'created_at' => (string)$this->created_at

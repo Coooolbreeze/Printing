@@ -76,6 +76,11 @@ class Message extends Model
         self::send($id, '订单审核未通过', request('body', '您的订单审核未通过，请前往订单列表重新上传文件！'), '订单消息');
     }
 
+    public static function orderRefunded($id)
+    {
+        self::send($id, '订单退款通知', '您的订单款项已按原支付路径退回，请注意查收', '订单消息');
+    }
+
     /**
      * @param $ids
      * @param $title

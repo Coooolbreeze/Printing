@@ -23,7 +23,8 @@ class OrderEventSubscriber
      * @param $event
      * @throws \Throwable
      */
-    public function onOrderPaid($event) {
+    public function onOrderPaid($event)
+    {
         $order = $event->order;
 
         $order->update(['paid_at' => Carbon::now()]);
@@ -45,7 +46,8 @@ class OrderEventSubscriber
      *
      * @param $event
      */
-    public function onOrderAudited($event) {
+    public function onOrderAudited($event)
+    {
         $order = $event->order;
 
         $order->update(['audited_at' => Carbon::now()]);
@@ -60,7 +62,8 @@ class OrderEventSubscriber
      *
      * @param $event
      */
-    public function onOrderFailed($event) {
+    public function onOrderFailed($event)
+    {
         $order = $event->order;
 
         $order->update(['audited_at' => Carbon::now()]);
@@ -75,7 +78,8 @@ class OrderEventSubscriber
      *
      * @param $event
      */
-    public function onOrderDelivered($event) {
+    public function onOrderDelivered($event)
+    {
         $order = $event->order;
 
         $order->update(['delivered_at' => Carbon::now()]);
@@ -90,12 +94,29 @@ class OrderEventSubscriber
      *
      * @param $event
      */
-    public function onOrderReceived($event) {
+    public function onOrderReceived($event)
+    {
         $order = $event->order;
 
         $order->update(['received_at' => Carbon::now()]);
 
         Message::orderReceived($order->user_id);
+    }
+
+    /**
+     * 订单退款
+     *
+     * @param $event
+     */
+    public function onOrderRefunded($event)
+    {
+        $order = $event->order;
+
+        $order->update(['refunded_at' => Carbon::now()]);
+
+        OrderLog::write($order->id, '退款');
+
+        Message::orderRefunded($order->user_id);
     }
 
     /**
@@ -126,6 +147,11 @@ class OrderEventSubscriber
         $events->listen(
             'App\Events\OrderFailed',
             'App\Listeners\OrderEventSubscriber@onOrderFailed'
+        );
+
+        $events->listen(
+            'App\Events\OrderRefunded',
+            'App\Listeners\OrderEventSubscriber@onOrderRefunded'
         );
     }
 }
