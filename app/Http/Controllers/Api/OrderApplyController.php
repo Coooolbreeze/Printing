@@ -60,12 +60,32 @@ class OrderApplyController extends ApiController
     {
         $order = Order::where('order_no', $request->order_no)->first();
 
-        if ($request->type == 1 && $order->status != OrderStatusEnum::PAID) {
-            throw new BaseException('该订单不能退款');
+        if ($request->type == 1) {
+            if ($order->status != OrderStatusEnum::PAID) {
+                throw new BaseException('该订单不能退款');
+            }
+
+            $count = $order->applies()
+                ->where('status', '0')
+                ->where('type', 1)
+                ->count();
+            if ($count > 0) {
+                throw new BaseException('已提交退款申请，请不要重复提交');
+            }
         }
 
-        if ($request->type == 2 && $order->status != OrderStatusEnum::UNPAID) {
-            throw new BaseException('该订单不能申请后台支付');
+        if ($request->type == 2) {
+            if ($order->status != OrderStatusEnum::UNPAID) {
+                throw new BaseException('该订单不能申请后台支付');
+            }
+
+            $count = $order->applies()
+                ->where('status', '0')
+                ->where('type', 2)
+                ->count();
+            if ($count > 0) {
+                throw new BaseException('已提交后台支付申请，请不要重复提交');
+            }
         }
 
         OrderApply::create([

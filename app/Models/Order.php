@@ -101,6 +101,11 @@ class Order extends Model
         return $this->belongsTo('App\Models\Receipt');
     }
 
+    public function applies()
+    {
+        return $this->hasMany('App\Models\OrderApply', 'order_no', 'order_no');
+    }
+
     public function scopeUnpaid($query)
     {
         return $query->where('status', OrderStatusEnum::UNPAID);

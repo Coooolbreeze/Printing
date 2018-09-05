@@ -362,7 +362,7 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:客服工具管理')->group(function () {
-        Route::post('/back_order', 'OrderController@backOrder');
+        Route::post('/back_orders', 'OrderController@backOrder');
     });
 
     Route::middleware('permission:优惠券管理')->group(function () {
