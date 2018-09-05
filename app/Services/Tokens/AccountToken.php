@@ -86,7 +86,7 @@ class AccountToken extends BaseToken
             // 创建用户信息
             $user = User::create([
                 'nickname' => $this->account,
-                'avatar' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg',
+                'avatar' => config('setting.default_avatar_url'),
                 'account' => $this->account,
                 'is_bind_account' => 1
             ]);

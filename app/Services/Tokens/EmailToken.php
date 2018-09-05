@@ -84,7 +84,7 @@ class EmailToken extends BaseToken
             // 创建用户信息
             $user = User::create([
                 'nickname' => '小萌新',
-                'avatar' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg',
+                'avatar' => config('setting.default_avatar_url'),
                 'email' => $this->email,
                 'is_bind_email' => 1
             ]);

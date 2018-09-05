@@ -8,6 +8,11 @@
 
 return [
     /**
+     * 新注册用户默认头像
+     */
+    'default_avatar_url' => env('DEFAULT_AVATAR_URL'),
+
+    /**
      * 访问令牌过期时间
      */
     'access_token_expire_in' => env('ACCESS_TOKEN_EXPIRE_IN'),

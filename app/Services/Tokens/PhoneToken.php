@@ -89,7 +89,7 @@ class PhoneToken extends BaseToken
             // 创建用户信息
             $user = User::create([
                 'nickname' => '小萌新',
-                'avatar' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg',
+                'avatar' => config('setting.default_avatar_url'),
                 'phone' => $this->phone,
                 'is_bind_phone' => 1
             ]);

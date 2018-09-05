@@ -71,7 +71,7 @@ class WeChatMiniProgramToken extends BaseToken
             // 添加用户信息
             $user = User::create([
                 'nickname' => '小萌新',
-                'avatar' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg',
+                'avatar' => config('setting.default_avatar_url'),
                 'sex' => 0
             ]);
             $uid = $user->id;

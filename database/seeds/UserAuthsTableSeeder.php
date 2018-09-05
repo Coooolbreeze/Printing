@@ -17,7 +17,7 @@ class UserAuthsTableSeeder extends Seeder
             'platform' => 'local',
             'identity_type' => 'account',
             'identifier' => 'administrator',
-            'credential' => Hash::make('adminSecret'),
+            'credential' => Hash::make('admin123'),
             'verified' => 1
         ]);
     }

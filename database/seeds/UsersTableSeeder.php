@@ -14,7 +14,7 @@ class UsersTableSeeder extends Seeder
         $user = \App\Models\User::create([
             'id' => 1,
             'nickname' => '超级管理员',
-            'avatar' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg',
+            'avatar' => config('setting.default_avatar_url'),
             'sex' => 0,
             'account' => 'administrator',
             'accumulate_points' => 100000,

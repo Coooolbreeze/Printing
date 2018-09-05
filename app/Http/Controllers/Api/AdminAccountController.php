@@ -72,7 +72,7 @@ class AdminAccountController extends ApiController
             // 创建用户信息
             $user = User::create([
                 'nickname' => $request->username,
-                'avatar' => 'https://lwx-images.oss-cn-beijing.aliyuncs.com/avatar.jpg',
+                'avatar' => config('setting.default_avatar_url'),
                 'account' => $request->username,
                 'is_bind_account' => 1,
                 'is_admin' => 1
