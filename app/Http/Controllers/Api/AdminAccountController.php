@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Exceptions\AccountIsExistException;
+use App\Exceptions\BaseException;
 use App\Exceptions\RegisterException;
 use App\Http\Requests\StoreAdminAccount;
 use App\Http\Resources\AdminAccountResource;
@@ -22,11 +23,13 @@ class AdminAccountController extends ApiController
 {
     public function index()
     {
-        return $this->success(AdminAccountResource::collection(
-            User::where('is_admin', 1)
-                ->where('id', '>', 1)
-                ->get()
-        ));
+        return $this->success([
+            'data' => AdminAccountResource::collection(
+                User::where('is_admin', 1)
+                    ->where('id', '>', 1)
+                    ->get()
+            )
+        ]);
     }
 
     public function show($id)
@@ -96,18 +99,34 @@ class AdminAccountController extends ApiController
      * @param Request $request
      * @param $id
      * @return mixed
+     * @throws BaseException
      * @throws \Throwable
      */
     public function update(Request $request, $id)
     {
-        DB::transaction(function () use ($request, $id) {
-            UserAuth::where('user_id', $id)
-                ->update([
-                    'credential' => \Hash::make($request->password),
+        $user = User::findOrFail($id);
+
+        if (!$user->is_admin)
+            throw new BaseException('该账号不存在');
+
+        DB::transaction(function () use ($request, $user) {
+            $userAuth = UserAuth::where('user_id', $user->id)->first();
+
+            $userAuth->update([
+                'credential' => \Hash::make($request->password),
+            ]);
+
+            if ($request->username) {
+                $user->update([
+                    'nickname' => $request->username
                 ]);
+                $userAuth->update([
+                    'identifier' => $request->username
+                ]);
+            }
 
             if ($request->roles)
-                User::findOrFail($id)->syncRoles($request->roles);
+                $user->syncRoles($request->roles);
         });
 
         return $this->message('修改成功');

@@ -126,6 +126,8 @@ Route::namespace('Api')->group(function () {
         Route::post('/login_modes', 'TokenController@bindLoginMode');
         // 解绑登录方式
         Route::delete('/login_modes', 'TokenController@unbindLoginMode');
+        // 获取拥有的组
+        Route::get('/users/self/roles', 'UserController@roles');
         // 获取拥有的权限
         Route::get('/users/self/permissions', 'UserController@permissions');
         // 我的消息
@@ -201,6 +203,9 @@ Route::namespace('Api')->group(function () {
     Route::middleware('role:super')->group(function () {
         // 角色
         Route::apiResource('roles', 'RoleController')
+            ->only(['index']);
+
+        Route::apiResource('permissions', 'PermissionController')
             ->only(['index']);
         // 管理员账号
         Route::apiResource('admins', 'AdminAccountController');

@@ -169,6 +169,15 @@ class UserController extends ApiController
     }
 
     /**
+     * @return string
+     * @throws \App\Exceptions\TokenException
+     */
+    public function roles()
+    {
+        return $this->success(TokenFactory::getCurrentRoles());
+    }
+
+    /**
      * 获取拥有的权限
      *
      * @return array
