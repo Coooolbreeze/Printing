@@ -17,6 +17,7 @@ use App\Events\OrderFailed;
 use App\Events\OrderPaid;
 use App\Events\OrderReceived;
 use App\Exceptions\BaseException;
+use App\Http\Requests\StoreBackOrder;
 use App\Http\Requests\StoreOrder;
 use App\Http\Requests\UpdateOrder;
 use App\Http\Resources\FileResource;
@@ -204,11 +205,11 @@ class OrderController extends ApiController
     }
 
     /**
-     * @param Request $request
+     * @param StoreBackOrder $request
      * @return mixed
      * @throws \Throwable
      */
-    public function backOrder(Request $request)
+    public function backOrder(StoreBackOrder $request)
     {
         \DB::transaction(function () use ($request, &$goodsInfo) {
             CartController::checkCartsInfo($request->entity);

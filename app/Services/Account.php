@@ -51,6 +51,7 @@ class Account
      * @return array
      * @throws AccountErrorException
      * @throws PasswordErrorException
+     * @throws RegisterException
      * @throws UserNotFoundException
      * @throws \App\Exceptions\ServerException
      * @throws \App\Exceptions\VerificationCodeException
@@ -90,12 +91,8 @@ class Account
         $verificationToken = request()->post('verification_token');
         $code = request()->post('code');
 
-        if (\request('is_admin')) {
-            if (!preg_match('/^[a-zA-Z](?=.*\d)[_0-9a-zA-Z]{7,17}$/', $password)) {
-                throw new RegisterException('密码为8~18位字母、数字或下划线，以字母开头，必须包含字母和数字');
-            }
-            return 'accountPassword';
-        }
+        if (\request('is_admin') && !preg_match('/^[a-zA-Z](?=.*\d)[_0-9a-zA-Z]{7,17}$/', $password))
+            throw new RegisterException('密码为8~18位字母、数字或下划线，以字母开头，必须包含字母和数字');
 
         if ($password && !preg_match('/^\w{6,18}$/', $password))
             throw new PasswordErrorException('密码为6~18位字母、数字或下划线');
