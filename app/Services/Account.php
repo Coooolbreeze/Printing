@@ -79,6 +79,7 @@ class Account
      * @return string
      * @throws AccountErrorException
      * @throws PasswordErrorException
+     * @throws RegisterException
      * @throws UserNotFoundException
      */
     public static function judgeRequest()
@@ -88,6 +89,13 @@ class Account
         $verificationCode = request()->post('verification_code');
         $verificationToken = request()->post('verification_token');
         $code = request()->post('code');
+
+        if (\request('is_admin')) {
+            if (!preg_match('/^[a-zA-Z](?=.*\d)[_0-9a-zA-Z]{7,17}$/', $password)) {
+                throw new RegisterException('密码为8~18位字母、数字或下划线，以字母开头，必须包含字母和数字');
+            }
+            return 'accountPassword';
+        }
 
         if ($password && !preg_match('/^\w{6,18}$/', $password))
             throw new PasswordErrorException('密码为6~18位字母、数字或下划线');
@@ -116,7 +124,6 @@ class Account
         if (filter_var($username, FILTER_VALIDATE_EMAIL)) return 'email';
         if (preg_match('/^1[3-9]\d{9}$/', $username)) return 'phone';
         if (preg_match('/^[a-zA-Z][-_a-zA-Z0-9]{5,19}$/', $username)) return 'account';
-//        throw new AccountErrorException();
-        return 'account';
+        throw new AccountErrorException();
     }
 }

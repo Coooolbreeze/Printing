@@ -61,6 +61,12 @@ class AdminAccountController extends ApiController
             throw new AccountIsExistException('该账号已存在');
         }
 
+        if (!preg_match('/^[a-zA-Z][-_a-zA-Z0-9]{5,19}$/', $request->username))
+            throw new RegisterException('账号为6~20个字母、数字、下划线或减号，以字母开头');
+
+        if (!preg_match('/^[a-zA-Z](?=.*\d)[_0-9a-zA-Z]{7,17}$/', $request->password))
+            throw new RegisterException('密码为8~18位字母、数字或下划线，以字母开头，必须包含字母和数字');
+
         DB::beginTransaction();
         try {
             // 创建用户信息

@@ -16,7 +16,7 @@ class StoreAdminAccount extends Request
         return [
             'username' => 'required',
             'password' => 'required',
-            'roles' => 'required'
+            'roles' => ''
         ];
     }
 }
