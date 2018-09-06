@@ -13,12 +13,21 @@ use App\Http\Requests\StoreMemberLevel;
 use App\Http\Requests\UpdateMemberLevel;
 use App\Http\Resources\MemberLevelResource;
 use App\Models\MemberLevel;
+use App\Services\Tokens\TokenFactory;
 
 class MemberLevelController extends ApiController
 {
     public function index()
     {
-        return $this->success(MemberLevelResource::collection(MemberLevel::all()));
+        $memberLevel = MemberLevelResource::collection(MemberLevel::all());
+
+        if (TokenFactory::isAdmin()) {
+            $memberLevel = [
+                'data' => $memberLevel
+            ];
+        }
+
+        return $this->success($memberLevel);
     }
 
     public function store(StoreMemberLevel $request)
