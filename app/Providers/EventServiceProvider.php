@@ -19,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\UserCreated' => [
             'App\Listeners\UserCreatedListener'
         ],
+        'App\Events\OrderCreated' => [
+            'App\Listeners\OrderCreatedListener'
+        ],
         'App\Events\UserAccumulatePointsIncome' => [
             'App\Listeners\UserAccumulatePointsIncomeListener'
         ],

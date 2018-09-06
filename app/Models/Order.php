@@ -10,6 +10,7 @@ namespace App\Models;
 
 
 use App\Enum\OrderStatusEnum;
+use App\Events\OrderCreated;
 use App\Events\OrderUpdated;
 
 /**
@@ -71,6 +72,10 @@ use App\Events\OrderUpdated;
  */
 class Order extends Model
 {
+    protected $dispatchesEvents = [
+        'created' => OrderCreated::class
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');

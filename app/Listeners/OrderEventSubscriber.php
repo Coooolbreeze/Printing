@@ -10,6 +10,8 @@ namespace App\Listeners;
 
 
 use App\Enum\OrderPayTypeEnum;
+use App\Jobs\SendOrderPaidEmail;
+use App\Jobs\SendOrderStatusSMS;
 use App\Mail\OrderPaid;
 use App\Models\AccumulatePointsRecord;
 use App\Models\Message;
@@ -41,7 +43,7 @@ class OrderEventSubscriber
         if ($order->pay_type == OrderPayTypeEnum::BACK_PAY) {
             OrderLog::write($order->id, '后台支付');
         } elseif (config('setting.payment_notify_email')) {
-            \Mail::send(new OrderPaid($order));
+            SendOrderPaidEmail::dispatch($order);
         }
     }
 
@@ -61,7 +63,7 @@ class OrderEventSubscriber
         Message::orderAudited($order->user_id);
 
         if (config('setting.sms_notify') && $order->user->phone) {
-            SMS::sendOrderStatus($order->user->phone, $order->user->nickname, $order->title, '审核已通过');
+            SendOrderStatusSMS::dispatch($order, '审核已通过');
         }
     }
 
@@ -81,7 +83,7 @@ class OrderEventSubscriber
         Message::orderFailed($order->user_id);
 
         if (config('setting.sms_notify') && $order->user->phone) {
-            SMS::sendOrderStatus($order->user->phone, $order->user->nickname, $order->title, '审核未通过');
+            SendOrderStatusSMS::dispatch($order, '审核未通过');
         }
     }
 
@@ -101,7 +103,7 @@ class OrderEventSubscriber
         Message::orderDelivered($order->user_id);
 
         if (config('setting.sms_notify') && $order->user->phone) {
-            SMS::sendOrderStatus($order->user->phone, $order->user->nickname, $order->title, '已发货');
+            SendOrderStatusSMS::dispatch($order, '已发货');
         }
     }
 

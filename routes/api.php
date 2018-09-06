@@ -412,6 +412,13 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::get('/test', function () {
+
+        \App\Jobs\OrderExpire::dispatch(\App\Models\Order::find(1));
+
+        return '';
+
+        return \Carbon\Carbon::now()->addSeconds(5)->diffForHumans();
+
         return request()->getClientIp();
         return Mail::send(new \App\Mail\OrderPaid(\App\Models\Order::find(1)));
         return \Carbon\Carbon::parse(date('Y-m-d H:i:s', '1537654321'));
