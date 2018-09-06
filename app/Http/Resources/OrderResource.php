@@ -29,6 +29,7 @@ class OrderResource extends Resource
             'express' => (new ExpressResource($this->express))->show(['id', 'name']),
             'receipt_id' => $this->receipt_id,
             'order_no' => $this->order_no,
+            'trade_no' => $this->when($this->trade_no, $this->trade_no),
             'user' => (new UserResource($this->user))->show(['id', 'nickname']),
             'title' => $this->title,
             'address' => json_decode($this->snap_address, true),
