@@ -736,7 +736,7 @@
             ...
         },
         ^file_id: 文件ID,
-        ^count: 总数量，商品数量为用户自定义时需传
+        ^count: 总数量，custom_number不为0时需传
         remark: 备注 (多人数量信息，如 张三:10盒;李四:20盒;)
     }
     
@@ -761,6 +761,8 @@
                       },
                       ...
                   },
+                  ^file_id: 文件ID,
+                  ^count: 总数量，custom_number不为0时需传
                   remark: 备注 (多人数量信息，如 张三:10盒;李四:20盒;)
             },
             ...
@@ -797,17 +799,20 @@
                 },
                 ...
             },
+            ^file_id: 文件ID,
+            ^count: 总数量，custom_number不为0时需传
             remark: 备注 (多人数量信息，如 张三:10盒;李四:20盒;)
         },
-        express_id: 快递公司ID,
-        remark: 订单备注,
         ^receipt_info: 开票信息 {
             company: 公司,
             tax_no: 纳税号,
             contact: 联系人,
             contact_way: 联系方式,
             address: 地址
-        }
+        },
+        ^address_id: 收货地址ID,不传时使用用户默认地址 (如果有),
+        express_id: 快递公司ID,
+        remark: 订单备注
     }
     
 ### 38. 获取商品订单列表 (需订单管理权限)

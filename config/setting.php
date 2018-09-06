@@ -51,4 +51,21 @@ return [
      * 开票最小金额
      */
     'receipted_money' => env('RECEIPTED_MONEY'),
+
+    /**
+     * 是否短信通知用户订单状态
+     */
+    'sms_notify' => env('SMS_NOTIFY'),
+
+    /**
+     * 收款提醒邮箱
+     */
+    'payment_notify_email' => env('PAYMENT_NOTIFY_EMAIL'),
+
+    /**
+     * 客服QQ设置
+     */
+    'custom_service_qq' => env('CUSTOM_SERVICE_QQ'),
+    'custom_service_email' => env('CUSTOM_SERVICE_EMAIL'),
+    'custom_service_address' => env('CUSTOM_SERVICE_ADDRESS')
 ];

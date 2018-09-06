@@ -49,7 +49,7 @@ class OrderResource extends Resource
             'creator' => $this->when($this->creator, $this->creator),
             'pay_type' => $this->when(
                 $this->pay_type,
-                $this->convertPayType($this->pay_type)
+                self::convertPayType($this->pay_type)
             ),
             'expresses' => $this->when(
                 $this->status == OrderStatusEnum::DELIVERED,
@@ -100,7 +100,7 @@ class OrderResource extends Resource
         return $status[$value];
     }
 
-    public function convertPayType($value)
+    public static function convertPayType($value)
     {
         $payType = [
             OrderPayTypeEnum::ALI_PAY => '支付宝支付',

@@ -40,6 +40,8 @@ Route::namespace('Api')->group(function () {
     Route::post('/alipay/notify', 'AliPayController@notify');
     Route::post('/wxpay/notify', 'WxPayController@notify');
 
+    Route::get('/custom_service', 'SystemSettingController@customService');
+
     Route::apiResource('users', 'UserController')
         ->only(['show']);
 
@@ -201,6 +203,14 @@ Route::namespace('Api')->group(function () {
      * 需超级管理员权限
      */
     Route::middleware('role:super')->group(function () {
+        Route::apiResource('systems', 'SystemSettingController')
+            ->only(['index', 'store']);
+
+        Route::apiResource('logs', 'LogController')
+            ->only(['index', 'destroy']);
+
+        Route::get('/export/logs', 'LogController@export');
+
         // 角色
         Route::apiResource('roles', 'RoleController')
             ->only(['index']);
@@ -214,6 +224,8 @@ Route::namespace('Api')->group(function () {
         Route::prefix('batch')->group(function () {
             // 批量删除管理员账号
             Route::delete('/admins', 'AdminAccountController@batchDestroy');
+            // 批量删除日志
+            Route::delete('/logs', 'LogController@batchDestroy');
         });
     });
 
@@ -321,9 +333,9 @@ Route::namespace('Api')->group(function () {
             ->only(['update']);
 
         // 导出组合
-        Route::get('combinations/export', 'CombinationController@export');
+        Route::get('/export/combinations', 'CombinationController@export');
         // 导入组合
-        Route::post('combinations/import', 'CombinationController@import');
+        Route::post('/import/combinations', 'CombinationController@import');
     });
 
     Route::middleware('permission:订单管理')->group(function () {
@@ -400,6 +412,8 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::get('/test', function () {
+        return request()->getClientIp();
+        return Mail::send(new \App\Mail\OrderPaid(\App\Models\Order::find(1)));
         return \Carbon\Carbon::parse(date('Y-m-d H:i:s', '1537654321'));
 
         return \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(500)->generate('111');

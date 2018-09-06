@@ -24,6 +24,7 @@ class TokenController extends ApiController
      * 用户登录
      *
      * @return mixed
+     * @throws RegisterException
      * @throws UserNotFoundException
      * @throws \App\Exceptions\AccountErrorException
      * @throws \App\Exceptions\PasswordErrorException

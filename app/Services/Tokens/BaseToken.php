@@ -8,9 +8,13 @@
 
 namespace App\Services\Tokens;
 
+use App\Events\UserLogin;
+use App\Exceptions\BaseException;
 use App\Exceptions\ServerException;
 use App\Exceptions\UserNotFoundException;
+use App\Models\Log;
 use App\Models\Token as TokenModel;
+use App\Models\User;
 use App\Models\UserAuth;
 use Cache;
 
@@ -128,6 +132,8 @@ abstract class BaseToken
             ['user_id' => $cacheValues['uid']],
             ['access_token' => $access_token, 'refresh_token' => $refresh_token]
         );
+
+        event(new UserLogin(User::find($cacheValues['uid'])));
 
         return [
             'access_token' => $access_token,

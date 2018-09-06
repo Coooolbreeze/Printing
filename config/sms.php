@@ -25,5 +25,10 @@ return [
     /**
      * 短信模板code
      */
-    'template_code' => env('ALI_TEMPLATE_CODE')
+    'template_code' => env('ALI_TEMPLATE_CODE'),
+
+    /**
+     * 通知订单状态模板
+     */
+    'order_status_template_code' => env('ALI_ORDER_STATUS_TEMPLATE_CODE')
 ];

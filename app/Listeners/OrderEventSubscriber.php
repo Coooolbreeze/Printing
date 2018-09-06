@@ -10,9 +10,11 @@ namespace App\Listeners;
 
 
 use App\Enum\OrderPayTypeEnum;
+use App\Mail\OrderPaid;
 use App\Models\AccumulatePointsRecord;
 use App\Models\Message;
 use App\Models\OrderLog;
+use App\Services\SMS;
 use Carbon\Carbon;
 
 class OrderEventSubscriber
@@ -29,16 +31,18 @@ class OrderEventSubscriber
 
         $order->update(['paid_at' => Carbon::now()]);
 
-        if ($order->pay_type == OrderPayTypeEnum::BACK_PAY) {
-            OrderLog::write($order->id, '后台支付');
-        }
-
         Message::orderPaid($order->user_id);
 
         $points = floor($order->total_price / config('setting.accumulate_points_money'));
         AccumulatePointsRecord::income($points, '购买商品', $order->user);
 
         $order->user()->increment('consume', $order->total_price);
+
+        if ($order->pay_type == OrderPayTypeEnum::BACK_PAY) {
+            OrderLog::write($order->id, '后台支付');
+        } elseif (config('setting.payment_notify_email')) {
+            \Mail::send(new OrderPaid($order));
+        }
     }
 
     /**
@@ -55,6 +59,10 @@ class OrderEventSubscriber
         OrderLog::write($order->id, '审核通过');
 
         Message::orderAudited($order->user_id);
+
+        if (config('setting.sms_notify') && $order->user->phone) {
+            SMS::sendOrderStatus($order->user->phone, $order->user->nickname, $order->title, '审核已通过');
+        }
     }
 
     /**
@@ -71,6 +79,10 @@ class OrderEventSubscriber
         OrderLog::write($order->id, '审核未通过');
 
         Message::orderFailed($order->user_id);
+
+        if (config('setting.sms_notify') && $order->user->phone) {
+            SMS::sendOrderStatus($order->user->phone, $order->user->nickname, $order->title, '审核未通过');
+        }
     }
 
     /**
@@ -87,6 +99,10 @@ class OrderEventSubscriber
         OrderLog::write($order->id, '发货');
 
         Message::orderDelivered($order->user_id);
+
+        if (config('setting.sms_notify') && $order->user->phone) {
+            SMS::sendOrderStatus($order->user->phone, $order->user->nickname, $order->title, '已发货');
+        }
     }
 
     /**
