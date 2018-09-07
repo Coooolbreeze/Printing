@@ -147,6 +147,18 @@ class TokenFactory
     }
 
     /**
+     * @param $code
+     * @throws BindingLoginModeException
+     * @throws TokenException
+     * @throws \App\Exceptions\AccountIsExistException
+     * @throws \App\Exceptions\WeChatException
+     */
+    public static function bindWeChatOpen($code)
+    {
+        return (new WeChatOpenToken($code))->bind();
+    }
+
+    /**
      * 解绑登录方式
      *
      * @param $type
@@ -159,7 +171,7 @@ class TokenFactory
         $user = TokenFactory::getCurrentUser();
 
         $identity = UserAuth::where('user_id', $user->id)
-            ->where('identity_type', $type)
+            ->where('identity_type', $type == 'wx' ? 'open' : $type)
             ->first();
 
         if (!$identity) {
@@ -174,10 +186,16 @@ class TokenFactory
             if ($identityCount == 1) {
                 $user->delete();
             } else {
-                $user->update([
-                    $type => null,
-                    'is_bind_' . $type => 0
-                ]);
+                if ($type == 'wx') {
+                    $user->update([
+                        'is_bind_wx' => 0
+                    ]);
+                } else {
+                    $user->update([
+                        $type => null,
+                        'is_bind_' . $type => 0
+                    ]);
+                }
             }
             $identity->delete();
 

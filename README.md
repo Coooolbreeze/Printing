@@ -146,7 +146,21 @@
         access_token_expire:令牌有效期 单位秒
     }
     
-### 8. 刷新令牌
+### 8. 微信登录
+    POST /login
+    request:
+    {
+        code: 用户授权重定向后微信授予的code参数,
+        type: 'open'
+    }
+    response:
+    {
+        access_token: 令牌,
+        refresh_token: 刷新令牌,可在令牌过期后进行刷新,过期时间为access_token_expire * 10
+        access_token_expire:令牌有效期 单位秒
+    }
+    
+### 9. 刷新令牌
     POST /refresh
     header:
     {
@@ -159,7 +173,7 @@
         access_token_expire:令牌有效期 单位秒
     }
     
-### 9. 修改密码
+### 10. 修改密码
     PUT /repassword
     request:
     {
@@ -167,11 +181,8 @@
         verification_token: 获取验证码接口返回的verification_token,
         password: 密码
     }
-    
-### 10. 微信登录（暂未实现）
-    POST /wechat/login
 
-### 11. 绑定登录方式
+### 11. 绑定手机或邮箱
     POST /login_modes
     request:
     {
@@ -179,11 +190,18 @@
         verification_token: 短信或邮箱验证码接口返回的verification_token
     }
     
+### 12. 绑定微信登录
+    POST /login_modes
+    request:
+    {
+        code: 用户授权重定向后微信授予的code参数
+    }
+    
 ### 13. 解绑登录方式
     DELETE /login_modes
     request:
     {
-        type: 需解绑的登录方式(phone|email)
+        type: 需解绑的登录方式(phone|email|wx)
     }
     
 ### 14. 获取自己的资料

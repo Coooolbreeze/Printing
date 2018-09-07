@@ -112,14 +112,20 @@ class TokenController extends ApiController
      *
      * @param Request $request
      * @return mixed
+     * @throws BindingLoginModeException
      * @throws \App\Exceptions\AccountErrorException
      * @throws \App\Exceptions\AccountIsExistException
-     * @throws \App\Exceptions\BindingLoginModeException
      * @throws \App\Exceptions\TokenException
      * @throws \App\Exceptions\VerificationCodeException
+     * @throws \App\Exceptions\WeChatException
      */
     public function bindLoginMode(Request $request)
     {
+        if ($request->code) {
+            TokenFactory::bindWeChatOpen($request->code);
+            return $this->message('微信绑定成功');
+        }
+
         $contact = VerificationCode::getContact($request->verification_code, $request->verification_token);
 
         $type = Account::judgeAccountType($contact);
