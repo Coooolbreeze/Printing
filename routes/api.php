@@ -45,6 +45,8 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('users', 'UserController')
         ->only(['show']);
 
+    Route::get('/all/entities', 'EntityController@all');
+
     Route::apiResource('large_categories', 'LargeCategoryController')
         ->only(['index', 'show']);
 
@@ -326,7 +328,6 @@ Route::namespace('Api')->group(function () {
         // 商品
         Route::apiResource('entities', 'EntityController')
             ->only(['store', 'update', 'destroy']);
-        Route::get('/all/entities', 'EntityController@all');
 
         // 修改组合价格
         Route::apiResource('combinations', 'CombinationController')
