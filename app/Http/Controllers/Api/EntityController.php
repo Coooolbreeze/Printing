@@ -19,6 +19,7 @@ use App\Models\CustomAttribute;
 use App\Models\CustomValue;
 use App\Models\Entity;
 use App\Models\LargeCategoryItem;
+use App\Models\RecommendOther;
 use App\Models\Type;
 use App\Models\Value;
 use App\Services\Tokens\TokenFactory;
@@ -26,9 +27,17 @@ use Illuminate\Http\Request;
 
 class EntityController extends ApiController
 {
-    public function all()
+    public function all(Request $request)
     {
-        return $this->success(Type::with('entities')->get(['id', 'name']));
+        if ($request->value) {
+            $entities = EntityResource::collection(
+                Entity::where('name', $request->value)->get()
+            )->show(['id', 'name']);
+        } else {
+            $entities = Type::with('entities')->get(['id', 'name']);
+        }
+
+        return $this->success($entities);
     }
 
     public function index(Request $request)
@@ -53,10 +62,15 @@ class EntityController extends ApiController
 
     public function recommend()
     {
+        if (config('setting.auto_recommend')) {
+            $entities = Entity::inRandomOrder()->limit(4)->get();
+        } else {
+            $entities = Entity::whereIn('id', RecommendOther::all()->pluck('entity_id'))->get();
+        }
+
         return $this->success(
-            EntityResource::collection(
-                Entity::inRandomOrder()->limit(4)->get()
-            )->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'price', 'comment_count'])
+            EntityResource::collection($entities)
+                ->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'price', 'comment_count'])
         );
     }
 

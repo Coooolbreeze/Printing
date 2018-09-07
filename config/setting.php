@@ -8,6 +8,11 @@
 
 return [
     /**
+     * 是否自动推荐商品
+     */
+    'auto_recommend' => env('AUTO_RECOMMEND'),
+
+    /**
      * 新注册用户默认头像
      */
     'default_avatar_url' => env('DEFAULT_AVATAR_URL'),

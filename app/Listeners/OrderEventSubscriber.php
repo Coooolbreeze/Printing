@@ -14,6 +14,7 @@ use App\Jobs\SendOrderPaidEmail;
 use App\Jobs\SendOrderStatusSMS;
 use App\Mail\OrderPaid;
 use App\Models\AccumulatePointsRecord;
+use App\Models\FinanceStatistic;
 use App\Models\Message;
 use App\Models\OrderLog;
 use App\Services\SMS;
@@ -43,6 +44,11 @@ class OrderEventSubscriber
         if ($order->pay_type == OrderPayTypeEnum::BACK_PAY) {
             OrderLog::write($order->id, '后台支付');
         } elseif (config('setting.payment_notify_email')) {
+
+            if ($order->pay_type != OrderPayTypeEnum::BALANCE) {
+                FinanceStatistic::write($order->order_no, $order->total_price);
+            }
+
             SendOrderPaidEmail::dispatch($order);
         }
     }
@@ -133,6 +139,8 @@ class OrderEventSubscriber
         $order->update(['refunded_at' => Carbon::now()]);
 
         OrderLog::write($order->id, '退款');
+
+        FinanceStatistic::write($order - order_no, $order->total_price, 2);
 
         Message::orderRefunded($order->user_id);
     }

@@ -390,6 +390,10 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:财务管理')->group(function () {
+        Route::get('/statistic/finances', 'FinanceStatisticController@statistic');
+        Route::apiResource('finances', 'FinanceStatisticController')
+            ->only(['index']);
+
         Route::apiResource('receipts', 'ReceiptController')
             ->only(['index', 'update']);
 

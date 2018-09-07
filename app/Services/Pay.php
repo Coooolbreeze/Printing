@@ -13,6 +13,7 @@ use App\Enum\OrderStatusEnum;
 use App\Events\OrderPaid;
 use App\Exceptions\BaseException;
 use App\Models\BalanceRecord;
+use App\Models\FinanceStatistic;
 use App\Models\Order;
 use App\Models\RechargeOrder;
 use App\Services\Tokens\TokenFactory;

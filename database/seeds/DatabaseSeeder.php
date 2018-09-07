@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             RecommendNewsTableSeeder::class,
             RecommendNewEntitiesTableSeeder::class,
             RecommendEntitiesTableSeeder::class,
+            RecommendOthersTableSeeder::class,
             CacheFlushSeeder::class,
         ]);
     }

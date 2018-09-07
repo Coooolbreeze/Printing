@@ -30,7 +30,10 @@ class StatisticController extends ApiController
         $receiptCount = Receipt::where('is_receipted', 0)->count();
         $userCount = User::where('is_admin', 0)->count();
         $newUserCount = User::where('is_admin', 0)
-            ->whereDate('created_at', Carbon::today()->toDateString())->count();
+            ->whereBetween('created_at', [
+                Carbon::today(),
+                Carbon::now()
+            ])->count();
 
         $arr = [];
         $permissions = TokenFactory::getCurrentPermissions();
