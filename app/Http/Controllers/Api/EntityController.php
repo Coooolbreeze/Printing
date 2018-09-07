@@ -31,7 +31,7 @@ class EntityController extends ApiController
     {
         if ($request->value) {
             $entities = EntityResource::collection(
-                Entity::where('name', $request->value)->get()
+                Entity::where('name', '%' . $request->value . '%')->get()
             )->show(['id', 'name']);
         } else {
             $entities = Type::with('entities')->get(['id', 'name']);
