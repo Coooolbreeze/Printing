@@ -31,6 +31,6 @@ class OrderCreatedListener
         $order = $event->order;
 
         OrderExpire::dispatch($order)
-            ->delay(now()->addMinute(30));
+            ->delay(now()->addMinute(config('setting.order_expire_in')));
     }
 }

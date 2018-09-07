@@ -49,6 +49,7 @@ Route::namespace('Api')->group(function () {
 
     Route::apiResource('large_categories', 'LargeCategoryController')
         ->only(['index', 'show']);
+    Route::get('/all/large_categories', 'LargeCategoryController@all');
 
     Route::apiResource('categories', 'CategoryController')
         ->only(['show']);
@@ -311,7 +312,8 @@ Route::namespace('Api')->group(function () {
             ->only(['update']);
 
         Route::apiResource('large_category_items', 'LargeCategoryItemController')
-            ->only(['index', 'store', 'update', 'destroy']);
+            ->only(['index', 'store', 'update']);
+        Route::delete('large_category_items', 'LargeCategoryItemController@delete');
 
         Route::apiResource('categories', 'CategoryController')
             ->only(['index', 'store', 'update', 'destroy']);

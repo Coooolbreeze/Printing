@@ -28,6 +28,11 @@ return [
     'refresh_token_expire_in' => env('REFRESH_TOKEN_EXPIRE_IN'),
 
     /**
+     * 订单失效时间
+     */
+    'order_expire_in' => env('ORDER_EXPIRE_IN'),
+
+    /**
      * sku组合分隔符
      */
     'sku_separator' => '|',

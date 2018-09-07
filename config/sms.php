@@ -28,7 +28,12 @@ return [
     'template_code' => env('ALI_TEMPLATE_CODE'),
 
     /**
-     * 通知订单状态模板
+     * 订单审核通过模板
      */
-    'order_status_template_code' => env('ALI_ORDER_STATUS_TEMPLATE_CODE')
+    'order_audited_template_code' => env('ORDER_AUDITED_TEMPLATE_CODE'),
+
+    /**
+     * 订单发货通知模板
+     */
+    'order_delivered_template_code' => env('ORDER_DELIVERED_TEMPLATE_CODE')
 ];

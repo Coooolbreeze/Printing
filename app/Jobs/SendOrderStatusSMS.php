@@ -40,6 +40,11 @@ class SendOrderStatusSMS implements ShouldQueue
     {
         $order = $this->order;
 
-        SMS::sendOrderStatus($order->user->phone, $order->user->nickname, $order->title, $this->status);
+        if ($this->status == 'audited') {
+            SMS::orderAudited($order->user->phone, $order->user->nickname, $order->order_no);
+        }
+        if ($this->status == 'delivered') {
+            SMS::orderDelivered($order->user->phone, $order->user->nickname, $order->order_no);
+        }
     }
 }

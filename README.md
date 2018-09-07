@@ -1,3 +1,123 @@
+# 安装文档
+
+### 下载源码
+    git clone https://code.aliyun.com/yyml-pro/yty.git
+### 进入根目录
+    cd yty
+### 安装依赖
+    composer install
+### 目录权限配置
+    chmod 777 -R storage
+### 上传文件目录映射
+    php artisan storage:link
+### 生成应用密钥
+    php artisan key:generate
+### 修改配置文件
+    cp .env.example .env
+    vim .env
+##### 主要配置项说明
+    APP_NAME=Laravel            // 应用名称
+    APP_ENV=local               // 当前环境 local|production
+    APP_KEY=                    // 应用密钥 php artisan key:generate自动生成
+    APP_DEBUG=true              // 是否开启debug
+    APP_URL=http://localhost    // 网站域名
+    
+    AUTO_RECOMMEND=true         // 是否开启自动推荐
+    
+    DEFAULT_AVATAR_URL=         // 新注册用户默认头像链接
+    
+    ACCUMULATE_POINTS_MONEY=100 // 每积分需消费多少金额
+    
+    RECEIPTED_MONEY=200         // 开票最小金额
+
+    ORDER_EXPIRE_IN=30          // 订单失效时间
+    
+    FREE_EXPRESS=68             // 包邮价
+    FIRST_WEIGHT=500            // 首重重量(g)
+    ADDITIONAL_WEIGHT=500       // 续重重量(g)
+    
+    SMS_NOTIFY=false            // 是否开启短信通知用户订单状态
+    
+    PAYMENT_NOTIFY_EMAIL=       // 订单支付通知邮箱
+    
+    CUSTOM_SERVICE_QQ=          // 客服QQ
+    CUSTOM_SERVICE_EMAIL=       // 客服邮箱
+    CUSTOM_SERVICE_ADDRESS=     // 办公地址
+    
+    DB_CONNECTION=mysql         // 数据库类型
+    DB_HOST=127.0.0.1           // 数据库地址
+    DB_PORT=3306                // 数据库端口
+    DB_DATABASE=homestead       // 数据库名称
+    DB_USERNAME=homestead       // 用户名
+    DB_PASSWORD=secret          // 密码
+    
+    CACHE_DRIVER=redis          // 使用redis作为缓存驱动
+    QUEUE_DRIVER=redis          // 使用redis作为队列驱动
+    
+    REDIS_HOST=127.0.0.1        // redis地址
+    REDIS_PASSWORD=null         // 密码
+    REDIS_PORT=6379             // 端口
+    
+    ALI_ACCESS_KEY_ID=          // 阿里云access_key
+    ALI_ACCESS_KEY_SECRET=      // 阿里云access_key_secret
+    ALI_SIGN_NAME=              // 阿里云短信平台签名
+    ALI_TEMPLATE_CODE=          // 验证码模板CODE 
+    ORDER_AUDITED_TEMPLATE_CODE=    // 订单审核通过模板
+    ORDER_DELIVERED_TEMPLATE_CODE=  // 订单发货通知模板
+    
+    MAIL_DRIVER=smtp            // 邮件服务器驱动
+    MAIL_HOST=smtp.mailtrap.io  // 邮件服务器地址
+    MAIL_PORT=2525              // 端口
+    MAIL_USERNAME=null          // 用户名
+    MAIL_PASSWORD=null          // 密码
+    MAIL_ENCRYPTION=null        // 加密方式
+    MAIL_FROM_ADDRESS=          // 发件人邮箱地址
+    MAIL_FROM_NAME=             // 发件人姓名
+    
+    ACCESS_TOKEN_EXPIRE_IN=86400    // 访问令牌有效期（秒）
+    REFRESH_TOKEN_EXPIRE_IN=604800  // 刷新令牌有效期（秒）
+    
+    WX_OPEN_APP_ID=         // 微信开放平台APPID
+    WX_OPEN_APP_SECRET=     // 微信开放平台APPSECRET
+    
+    WECHAT_APP_ID=          // 微信支付APPID
+    WECHAT_MCH_ID=          // 微信支付商户号
+    WECHAT_KEY=             // 微信支付商户密钥
+    WECHAT_CERT_CLIENT=     // 微信支付客户端证书路径(绝对路径，注意权限问题)
+    WECHAT_CERT_KEY=        // 微信支付证书密钥路径(绝对路径，注意权限问题)
+    
+    ALI_APP_ID=             // 支付宝支付APPID
+    ALI_PUBLIC_KEY=         // 支付宝支付公钥
+    ALI_PRIVATE_KEY=        // 支付宝支付私钥
+    
+### 运行数据库迁移
+    php artisan migrate --seed
+### 安装Supervisor
+    yum install supervisor
+### 启动Supervisor
+    /usr/bin/supervisord -c /etc/supervisord.conf
+### 添加应用队列监控配置
+    cd /etc/supervisord.d/
+    vim laravel-worker.ini
+    
+    [program:laravel-worker]
+    process_name=%(program_name)s_%(process_num)02d
+    command= php 网站根目录 artisan queue:work --sleep=3 --tries=3 --daemon
+    autostart=true
+    autorestart=true
+    user=root
+    numprocs=4
+    redirect_stderr=true
+    stdout_logfile=//日志文件路径
+### 重新加载配置文件
+    supervisorctl reread
+    supervisorctl update
+### 启动队列进程
+    supervisorctl start laravel-worker:*
+    
+---
+---
+
 # 易特印API文档
 
 ### 说明
@@ -755,7 +875,7 @@
         },
         ^file_id: 文件ID,
         ^count: 总数量，custom_number不为0时需传
-        remark: 备注 (多人数量信息，如 张三:10盒;李四:20盒;)
+        ^remark: 备注 (多人数量信息，如 张三:10盒;李四:20盒;)
     }
     
 ### 34. 批量添加商品到购物车,用于用户登录后上传本地缓存中的购物车数据

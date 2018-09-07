@@ -104,34 +104,57 @@ class SMS
         return $acsResponse;
     }
 
-    public static function sendOrderStatus($phoneNum, $user, $goods, $status)
+    /**
+     * 订单审核通过短信
+     *
+     * @param $phoneNum
+     * @param $name
+     * @param $orderNo
+     * @return mixed|\SimpleXMLElement
+     */
+    public static function orderAudited($phoneNum, $name, $orderNo)
     {
-        // 初始化SendSmsRequest实例用于设置发送短信的参数
         $request = new SendSmsRequest();
 
-        //可选-启用https协议
-        // $request->setProtocol("https");
-
-        // 必填，设置短信接收号码
         $request->setPhoneNumbers($phoneNum);
 
-        // 必填，设置签名名称，应严格按"签名名称"填写，请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/sign
         $request->setSignName(\config('sms.sign_name'));
 
-        // 必填，设置模板CODE，应严格按"模板CODE"填写, 请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/template
-        $request->setTemplateCode(\config('sms.order_status_template_code'));
+        $request->setTemplateCode(\config('sms.order_audited_template_code'));
 
-        // 可选，设置模板参数, 假如模板中存在变量需要替换则为必填项
-        $request->setTemplateParam(json_encode(array(  // 短信模板中字段的值
-            "user" => $user,
-            "goods" => $goods,
-            "status" => $status
+        $request->setTemplateParam(json_encode(array(
+            "name" => $name,
+            "order_no" => $orderNo
         ), JSON_UNESCAPED_UNICODE));
 
-        // 可选，设置流水号
-        // $request->setOutId("yourOutId");
+        $acsResponse = static::getAcsClient()->getAcsResponse($request);
 
-        // 发起访问请求
+        return $acsResponse;
+    }
+
+    /**
+     * 订单发货短信
+     *
+     * @param $phoneNum
+     * @param $name
+     * @param $orderNo
+     * @return mixed|\SimpleXMLElement
+     */
+    public static function orderDelivered($phoneNum, $name, $orderNo)
+    {
+        $request = new SendSmsRequest();
+
+        $request->setPhoneNumbers($phoneNum);
+
+        $request->setSignName(\config('sms.sign_name'));
+
+        $request->setTemplateCode(\config('sms.order_delivered_template_code'));
+
+        $request->setTemplateParam(json_encode(array(
+            "name" => $name,
+            "order_no" => $orderNo
+        ), JSON_UNESCAPED_UNICODE));
+
         $acsResponse = static::getAcsClient()->getAcsResponse($request);
 
         return $acsResponse;

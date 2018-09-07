@@ -19,6 +19,11 @@ use Illuminate\Http\Request;
 
 class LargeCategoryController extends ApiController
 {
+    public function all()
+    {
+        return $this->success(LargeCategoryResource::collection(LargeCategory::all()));
+    }
+
     public function index()
     {
         if (TokenFactory::isAdmin()) {

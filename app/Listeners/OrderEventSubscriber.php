@@ -69,7 +69,7 @@ class OrderEventSubscriber
         Message::orderAudited($order->user_id);
 
         if (config('setting.sms_notify') && $order->user->phone) {
-            SendOrderStatusSMS::dispatch($order, '审核已通过');
+            SendOrderStatusSMS::dispatch($order, 'audited');
         }
     }
 
@@ -87,10 +87,6 @@ class OrderEventSubscriber
         OrderLog::write($order->id, '审核未通过');
 
         Message::orderFailed($order->user_id);
-
-        if (config('setting.sms_notify') && $order->user->phone) {
-            SendOrderStatusSMS::dispatch($order, '审核未通过');
-        }
     }
 
     /**
@@ -109,7 +105,7 @@ class OrderEventSubscriber
         Message::orderDelivered($order->user_id);
 
         if (config('setting.sms_notify') && $order->user->phone) {
-            SendOrderStatusSMS::dispatch($order, '已发货');
+            SendOrderStatusSMS::dispatch($order, 'delivered');
         }
     }
 

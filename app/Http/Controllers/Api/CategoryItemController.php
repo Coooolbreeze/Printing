@@ -28,6 +28,16 @@ class CategoryItemController extends ApiController
     {
         CategoryItem::updateField($request, $categoryItem, ['is_hot', 'is_new']);
 
+        if ($request->is_hot || $request->is_hot == 1) {
+            $categoryItem->update([
+                'is_new' => false
+            ]);
+        } elseif ($request->is_new || $request->is_new == 1) {
+            $categoryItem->update([
+                'is_hot' => false
+            ]);
+        }
+
         return $this->message('更新成功');
     }
 

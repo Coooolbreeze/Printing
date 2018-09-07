@@ -40,9 +40,11 @@ class LargeCategoryItemController extends ApiController
         return $this->message('更新成功');
     }
 
-    public function destroy(LargeCategoryItem $largeCategoryItem)
+    public function delete(Request $request)
     {
-        $largeCategoryItem->delete();
+        LargeCategoryItem::where('item_id', $request->item_id)
+            ->where('item_type', $request->item_type)
+            ->delete();
 
         return $this->message('删除成功');
     }

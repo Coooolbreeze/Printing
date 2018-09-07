@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             CommonAttributesTableSeeder::class,
             CommonValuesTableSeeder::class,
             ImagesTableSeeder::class,
-            FilesTableSeeder::class,
+//            FilesTableSeeder::class,
             HelpCategoriesTableSeeder::class,
             NewsCategoriesTableSeeder::class,
             SceneTablesSeeder::class,
