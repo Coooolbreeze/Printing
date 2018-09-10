@@ -17,6 +17,7 @@ use App\Events\OrderFailed;
 use App\Events\OrderPaid;
 use App\Events\OrderReceived;
 use App\Exceptions\BaseException;
+use App\Exports\OrderExport;
 use App\Http\Requests\StoreBackOrder;
 use App\Http\Requests\StoreOrder;
 use App\Http\Requests\UpdateOrder;
@@ -37,6 +38,7 @@ use App\Models\UserCoupon;
 use App\Services\Tokens\TokenFactory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends ApiController
 {
@@ -63,6 +65,11 @@ class OrderController extends ApiController
             ->paginate(Order::getLimit());
 
         return $this->success(new OrderCollection($orders));
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new OrderExport($request), 'orders.xlsx');
     }
 
     public function statusList()
@@ -298,6 +305,7 @@ class OrderController extends ApiController
                 'key' => $key + 1,
                 'id' => $entityModel->id,
                 'name' => $entityModel->name,
+                'type' => $entityModel->type->name,
                 'image' => new ImageResource($entityModel->images()->first()),
                 'combination' => [
                     'id' => $combination->id,

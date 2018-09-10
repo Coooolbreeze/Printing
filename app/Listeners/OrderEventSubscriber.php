@@ -10,6 +10,7 @@ namespace App\Listeners;
 
 
 use App\Enum\OrderPayTypeEnum;
+use App\Exceptions\BaseException;
 use App\Jobs\SendOrderPaidEmail;
 use App\Jobs\SendOrderStatusSMS;
 use App\Mail\OrderPaid;
@@ -17,6 +18,7 @@ use App\Models\AccumulatePointsRecord;
 use App\Models\FinanceStatistic;
 use App\Models\Message;
 use App\Models\OrderLog;
+use App\Models\TypeSale;
 use App\Services\SMS;
 use Carbon\Carbon;
 
@@ -40,6 +42,10 @@ class OrderEventSubscriber
         AccumulatePointsRecord::income($points, '购买商品', $order->user);
 
         $order->user()->increment('consume', $order->total_price);
+
+        foreach (json_decode($order->snap_content) as $goods) {
+            TypeSale::write($goods->type, $goods->price);
+        }
 
         if ($order->pay_type == OrderPayTypeEnum::BACK_PAY) {
             OrderLog::write($order->id, '后台支付');

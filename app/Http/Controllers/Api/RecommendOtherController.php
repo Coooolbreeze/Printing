@@ -9,11 +9,20 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Resources\RecommendOtherResource;
+use App\Models\Entity;
 use App\Models\RecommendOther;
 use Illuminate\Http\Request;
 
 class RecommendOtherController extends ApiController
 {
+    public function getAutoRecommend()
+    {
+        return $this->success([
+            'is_open' => config('setting.auto_recommend')
+        ]);
+    }
+
     public function autoRecommend(Request $request)
     {
         setEnv(['AUTO_RECOMMEND' => $request->is_open]);
@@ -23,15 +32,13 @@ class RecommendOtherController extends ApiController
 
     public function index()
     {
-        return $this->success([
-            'data' => RecommendOther::all()
-        ]);
+        return $this->success(RecommendOtherResource::collection(RecommendOther::all()));
     }
 
     public function update(Request $request, RecommendOther $recommendOther)
     {
         $recommendOther->update([
-            'entity_id' => $request->entity_id
+            'entity_id' => Entity::where('name', $request->name)->firstOrFail()->id
         ]);
 
         return $this->message('更新成功');

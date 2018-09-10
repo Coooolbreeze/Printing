@@ -95,7 +95,9 @@ class ExceptionReport
         }
 
         if ($this->exception instanceof ValidationException) {
-            return $this->failed($this->exception->errors());
+            foreach ($this->exception->errors() as $error) {
+                return $this->failed($error[0]);
+            }
         }
 
         $message = $this->doReport()[$this->report];

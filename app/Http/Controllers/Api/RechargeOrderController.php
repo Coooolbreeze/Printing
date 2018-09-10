@@ -9,10 +9,12 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Exports\RechargeOrderExport;
 use App\Http\Resources\RechargeOrderCollection;
 use App\Models\RechargeOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RechargeOrderController extends ApiController
 {
@@ -34,5 +36,10 @@ class RechargeOrderController extends ApiController
             ->paginate(RechargeOrder::getLimit());
 
         return $this->success(new RechargeOrderCollection($rechargeOrder));
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new RechargeOrderExport($request), 'recharge_orders.xlsx');
     }
 }

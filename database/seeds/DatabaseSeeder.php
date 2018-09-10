@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             RecommendNewEntitiesTableSeeder::class,
             RecommendEntitiesTableSeeder::class,
             RecommendOthersTableSeeder::class,
+            StatisticSamplesTableSeeder::class,
             CacheFlushSeeder::class,
         ]);
     }

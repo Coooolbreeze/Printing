@@ -46,7 +46,7 @@ class OrderResource extends Resource
             ),
             'total_price' => $this->total_price,
             'pay_price' => $this->when($this->pay_type, $this->total_price - $this->balance_deducted),
-            'status' => $this->convertStatus($this->status),
+            'status' => self::convertStatus($this->status),
             'creator' => $this->when($this->creator, $this->creator),
             'pay_type' => $this->when(
                 $this->pay_type,
@@ -85,7 +85,7 @@ class OrderResource extends Resource
         ]);
     }
 
-    public function convertStatus($value)
+    public static function convertStatus($value)
     {
         $status = [
             OrderStatusEnum::EXPIRE => '已失效',

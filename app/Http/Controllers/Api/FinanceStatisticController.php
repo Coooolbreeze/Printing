@@ -9,10 +9,12 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Exports\FinanceExport;
 use App\Http\Resources\FinanceStatisticCollection;
 use App\Models\FinanceStatistic;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceStatisticController extends ApiController
 {
@@ -46,5 +48,10 @@ class FinanceStatisticController extends ApiController
             'income_count' => $totalIncome - $totalRefund,
             'total_refund' => $totalRefund,
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new FinanceExport($request), 'finances.xlsx');
     }
 }

@@ -71,7 +71,7 @@ class SceneController extends ApiController
     {
         \DB::transaction(function () use ($id) {
             Scene::destroy($id);
-            $categoryId = SceneCategory::where('scene_id', $id)->pluck('id');
+            $categoryId = SceneCategory::where('scene_id', $id)->pluck('id')->toArray();
             SceneCategory::where('scene_id', $id)->delete();
             SceneGood::whereIn('scene_category_id', $categoryId)->delete();
         });

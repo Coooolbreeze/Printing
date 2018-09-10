@@ -45,8 +45,6 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('users', 'UserController')
         ->only(['show']);
 
-    Route::get('/all/entities', 'EntityController@all');
-
     Route::apiResource('large_categories', 'LargeCategoryController')
         ->only(['index', 'show']);
     Route::get('/all/large_categories', 'LargeCategoryController@all');
@@ -60,6 +58,8 @@ Route::namespace('Api')->group(function () {
     Route::get('/entities/recommend', 'EntityController@recommend');
     Route::apiResource('entities', 'EntityController')
         ->only(['index', 'show']);
+
+    Route::get('/all/entities', 'EntityController@all');
 
     Route::apiResource('news_categories', 'NewsCategoryController')
         ->only(['index', 'show']);
@@ -164,7 +164,7 @@ Route::namespace('Api')->group(function () {
             ->only(['store']);
 
         Route::apiResource('carts', 'CartController')
-            ->only(['store', 'delete']);
+            ->only(['store', 'destroy']);
         Route::post('/batch/carts', 'CartController@batchStore');
         Route::delete('/batch/carts', 'CartController@batchDestroy');
 
@@ -260,6 +260,12 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('recommend_news', 'RecommendNewsController')
             ->only(['update']);
 
+        Route::apiResource('recommend_others', 'RecommendOtherController')
+            ->only(['index', 'update']);
+
+        Route::get('/auto_recommend', 'RecommendOtherController@getAutoRecommend');
+        Route::put('/auto_recommend', 'RecommendOtherController@autoRecommend');
+
         Route::prefix('batch')->group(function () {
             Route::delete('/links', 'LinkController@batchDestroy');
             Route::delete('/partners', 'PartnerController@batchDestroy');
@@ -347,6 +353,8 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('orders', 'OrderController')
             ->only(['index']);
 
+        Route::get('/export/orders', 'OrderController@export');
+
         Route::get('order_status', 'OrderController@statusList');
 
         Route::apiResource('order_expresses', 'OrderExpressController')
@@ -397,6 +405,9 @@ Route::namespace('Api')->group(function () {
         Route::apiResource('finances', 'FinanceStatisticController')
             ->only(['index']);
 
+        Route::get('/export/finances', 'FinanceStatisticController@export');
+        Route::get('/export/recharge_orders', 'RechargeOrderController@export');
+
         Route::apiResource('receipts', 'ReceiptController')
             ->only(['index', 'update']);
 
@@ -415,7 +426,8 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:数据中心')->group(function () {
-
+        Route::get('/type_percent', 'OperateStatisticController@typePercent');
+        Route::get('/operate/statistics', 'OperateStatisticController@statistics');
     });
 
     Route::get('/test', function () {

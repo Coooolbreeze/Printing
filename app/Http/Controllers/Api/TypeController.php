@@ -91,7 +91,11 @@ class TypeController extends ApiController
                 );
 
                 CategoryItem::where('item_type', 2)
-                    ->whereIn('item_id', $type->entities()->pluck('id'))
+                    ->whereIn('item_id', $type->entities()->pluck('id')->toArray())
+                    ->delete();
+
+                LargeCategoryItem::where('item_type', 2)
+                    ->whereIn('item_id', $type->entities()->pluck('id')->toArray())
                     ->delete();
             } else {
                 $categoryItem = CategoryItem::where('item_type', 1)
@@ -100,7 +104,7 @@ class TypeController extends ApiController
 
                 if ($categoryItem) {
                     $items = [];
-                    $entities = $type->entities()->pluck('id');
+                    $entities = $type->entities()->pluck('id')->toArray();
                     foreach ($entities as $id) {
                         array_push($items, [
                             'category_id' => $categoryItem->category_id,
@@ -111,6 +115,10 @@ class TypeController extends ApiController
                     $categoryItem->delete();
                     CategoryItem::saveAll($items);
                 }
+
+                LargeCategoryItem::where('item_type', 1)
+                    ->where('item_id', $type->id)
+                    ->delete();
             }
         });
 

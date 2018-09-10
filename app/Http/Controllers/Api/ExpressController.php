@@ -24,7 +24,7 @@ class ExpressController extends ApiController
             (new Express())
                 ->when($request->province, function ($query) use ($request) {
                     $query->whereIn('id', ExpressRegion::where('name', $request->province)
-                        ->pluck('express_id')
+                        ->pluck('express_id')->toArray()
                     );
                 })
                 ->get()

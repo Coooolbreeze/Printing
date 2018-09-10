@@ -15,7 +15,7 @@ class RecommendOtherResource extends Resource
     {
         return [
             'id' => $this->id,
-            'entity' => (new EntityResource($this->entity))->show(['id', 'name'])
+            'entity' => $this->entity ? $this->entity->name : ''
         ];
     }
 }

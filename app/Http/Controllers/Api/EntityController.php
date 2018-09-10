@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Exceptions\BaseException;
+use App\Http\Requests\StoreEntity;
 use App\Http\Resources\EntityCollection;
 use App\Http\Resources\EntityResource;
 use App\Models\Attribute;
@@ -65,7 +66,11 @@ class EntityController extends ApiController
         if (config('setting.auto_recommend')) {
             $entities = Entity::inRandomOrder()->limit(4)->get();
         } else {
-            $entities = Entity::whereIn('id', RecommendOther::all()->pluck('entity_id'))->get();
+            $entities = Entity::whereIn('id',
+                RecommendOther::where('entity_id', '>=', 100000)
+                    ->pluck('entity_id')
+                    ->toArray()
+            )->get();
         }
 
         return $this->success(
@@ -82,11 +87,12 @@ class EntityController extends ApiController
     /**
      * 添加商品
      *
-     * @param Request $request
+     * @param StoreEntity $request
      * @return mixed
+     * @throws BaseException
      * @throws \Throwable
      */
-    public function store(Request $request)
+    public function store(StoreEntity $request)
     {
         if (!$request->specs)
             throw new BaseException('请添加至少一个属性');

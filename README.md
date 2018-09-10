@@ -5,7 +5,7 @@
 ### 进入根目录
     cd yty
 ### 安装依赖
-    composer install
+    composer install --no-dev
 ### 目录权限配置
     chmod 777 -R storage
 ### 上传文件目录映射
@@ -30,7 +30,7 @@
     
     RECEIPTED_MONEY=200         // 开票最小金额
 
-    ORDER_EXPIRE_IN=30          // 订单失效时间
+    ORDER_EXPIRE_IN=30          // 订单失效时间(分)
     
     FREE_EXPRESS=68             // 包邮价
     FIRST_WEIGHT=500            // 首重重量(g)

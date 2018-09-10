@@ -17,7 +17,7 @@ class CreateEntitiesTable extends Migration
             $table->increments('id');
             $table->integer('type_id')->nullable();
             $table->integer('secondary_type_id')->nullable();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('summary');
             $table->longText('body');
             $table->tinyInteger('lead_time');
