@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exports\RechargeOrderExport;
 use App\Http\Resources\RechargeOrderCollection;
+use App\Http\Resources\RechargeOrderResource;
 use App\Models\RechargeOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -36,6 +37,19 @@ class RechargeOrderController extends ApiController
             ->paginate(RechargeOrder::getLimit());
 
         return $this->success(new RechargeOrderCollection($rechargeOrder));
+    }
+
+    public function show(RechargeOrder $rechargeOrder)
+    {
+        if ($rechargeOrder && $rechargeOrder->is_paid == 1) {
+            $result = true;
+        } else {
+            $result = false;
+        }
+
+        return $this->success([
+            'is_paid' => $result
+        ]);
     }
 
     public function export(Request $request)

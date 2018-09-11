@@ -25,8 +25,10 @@ Route::namespace('Api')->group(function () {
     // 更新自己的资料
     Route::put('/users/self', 'UserController@selfUpdate')->name('users.selfUpdate');
 
-    // 发送短信
+    // 发送短信验证码
     Route::post('/sms', 'SmsController@sendSms');
+    // 发送邮箱验证码
+    Route::post('/email', 'EmailController@sendEmail');
     // 验证验证码
     Route::post('/code/validate', 'TokenController@validateVerificationCode');
 
@@ -169,7 +171,7 @@ Route::namespace('Api')->group(function () {
         Route::delete('/batch/carts', 'CartController@batchDestroy');
 
         Route::apiResource('addresses', 'AddressController')
-            ->only(['index', 'show', 'store', 'update', 'delete']);
+            ->only(['index', 'show', 'store', 'update', 'destroy']);
 
         Route::apiResource('gift_orders', 'GiftOrderController')
             ->only(['show', 'store']);
@@ -185,6 +187,9 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('messages', 'MessageController')
             ->only(['show', 'update', 'destroy']);
+
+        Route::apiResource('recharge_orders', 'RechargeOrderController')
+            ->only(['show']);
 
         Route::prefix('batch')->group(function () {
             Route::delete('/messages', 'MessageController@batchDestroy');

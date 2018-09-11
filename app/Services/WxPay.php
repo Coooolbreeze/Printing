@@ -53,6 +53,7 @@ class WxPay extends Pay
         ]);
 
         return [
+            'id' => $rechargeOrder->id,
             'code_url' => $res->code_url
         ];
     }

@@ -56,6 +56,11 @@ class EntityController extends ApiController
                         });
                     });
             })
+            ->when($request->sort, function ($query) use ($request) {
+                if ($request->sort == 1) {
+                    $query->orderBy('sales', 'desc');
+                }
+            })
             ->paginate(Entity::getLimit());
 
         return $this->success(new EntityCollection($entities));

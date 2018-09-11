@@ -199,7 +199,7 @@
     ]
 
 ### 3. 获取短信验证码
-    POST /sms (同个IP每分钟只能请求一次)
+    POST /sms
     request:
     {
         phone: 手机号,
@@ -210,8 +210,8 @@
         verification_token: 验证令牌
     }
     
-### 4. 获取邮箱验证码（暂未实现）
-    POST /mail
+### 4. 获取邮箱验证码
+    POST /email
     request:
     {
         email: 邮箱地址,
@@ -374,28 +374,7 @@
         ^avatar: 头像地址
     }
     
-### 16. 获取拥有的权限列表
-    GET /users/self/permissions
-    response:
-    [
-        "搜索管理",
-        "首页推荐管理",
-        "新闻管理",
-        "帮助中心管理",
-        "活动管理",
-        "场景用途管理",
-        "商品管理",
-        "订单管理",
-        "积分管理",
-        "用户管理",
-        "客服工具管理",
-        "优惠券管理",
-        "财务管理",
-        "配送管理",
-        "数据中心"
-    ]
-    
-### 17. 获取我的站内信列表
+### 16. 获取我的站内信列表
     GET /users/self/messages
     request:
     {
@@ -424,14 +403,14 @@
         ]
     }
     
-### 18. 获取我的未读消息数
+### 17. 获取我的未读消息数
     GET /users/self/messages/unread_count
     response:
     {
         count: 未读消息数量
     }
     
-### 19. 获取我的评价列表
+### 18. 获取我的评价列表
     GET /users/self/comments
     response:
     {
@@ -468,7 +447,7 @@
         ]
     }
     
-### 20. 获取我的优惠券列表
+### 19. 获取我的优惠券列表
     GET /users/self/coupons
     request:
     {
@@ -497,7 +476,7 @@
         ]
     }
     
-### 21. 获取我的积分记录
+### 20. 获取我的积分记录
     GET /users/self/accumulate_points_records
     request:
     {
@@ -522,7 +501,7 @@
         ]
     }
     
-### 22. 获取我的资产记录
+### 21. 获取我的资产记录
     GET /users/self/balance_records
     request:
     {
@@ -548,7 +527,7 @@
         ]
     }
     
-### 23. 获取我的收货地址
+### 22. 获取我的收货地址
     GET /users/self/addresses
     request:
     {
@@ -569,7 +548,7 @@
         ...
     ]
     
-### 24. 获取我的余额充值订单
+### 23. 获取我的余额充值订单
     GET /users/self/recharge_orders
     response:
     {
@@ -590,7 +569,7 @@
         ]
     }
     
-### 25. 获取我的礼品订单
+### 24. 获取我的礼品订单
     GET /users/self/gift_orders
     request:
     {
@@ -636,7 +615,7 @@
         ]
     }
     
-### 26. 获取我的商品订单
+### 25. 获取我的商品订单
     GET /users/self/orders
     request:
     {
@@ -703,7 +682,7 @@
         ]
     }
     
-### 27. 获取我的购物车商品信息
+### 26. 获取我的购物车商品信息
     GET /users/self/carts
     reponse:
     {
@@ -745,7 +724,7 @@
         ]
     }
     
-### 28. 获取我的发票信息
+### 27. 获取我的发票信息
     GET /users/self/receipts
     response:
     {
@@ -777,47 +756,8 @@
             ...
         ]
     }
-
-### 29. 获取用户列表 (需用户管理权限)
-    GET /users
-    request:
-    {
-        ^member_level_id: 按会员等级ID筛选,
-        ^nickname: 用户昵称模糊搜索,
-        ^phone: 手机号模糊搜索
-    }
-    reponse:
-    {
-        data:
-        [
-            {
-                id: 用户ID,
-                nickname: 昵称,
-                avatar: 头像地址,
-                sex: 性别,
-                account: 账号,
-                phone: 手机号,
-                email: 邮箱,
-                member_level: {
-                    id: 会员等级ID，
-                    name: 会员等级名称,
-                    accumulate_points: 当前等级所需积分,
-                    discount: 当前等级折扣
-                },
-                accumulate_points: 当前剩余积分,
-                history_accumulate_points: 历史总积分,
-                balance: 账户余额,
-                is_bind_account: 是否已绑定账号,
-                is_bind_phone: 是否已绑定手机号,
-                is_bind_email: 是否已绑定邮箱,
-                is_bind_wx: 是否已绑定微信,
-                created_at: 注册日期
-            },
-            ...
-        ]
-    }
     
-### 30. 查看用户信息
+### 28. 查看用户信息
     GET /users/{id}
     response:
     {
@@ -844,18 +784,7 @@
         created_at: 注册日期
     }
     
-### 31. 更新用户信息 (需用户管理权限)
-    PUT /users/{id}
-    request:
-    {
-        ^accumulate_points: 更新用户积分,
-        ^balance: 更新用户余额
-    }
-    
-### 32. 删除用户 (需用户管理权限)
-    DELETE /users/{id}
-    
-### 33. 添加商品到购物车
+### 29. 添加商品到购物车
     POST /carts
     request:
     {
@@ -878,7 +807,7 @@
         ^remark: 备注 (多人数量信息，如 张三:10盒;李四:20盒;)
     }
     
-### 34. 批量添加商品到购物车,用于用户登录后上传本地缓存中的购物车数据
+### 30. 批量添加商品到购物车,用于用户登录后上传本地缓存中的购物车数据
     POST /batch/carts
     request:
     {
@@ -907,17 +836,17 @@
         ]
     }
     
-### 35. 删除购物车商品
+### 31. 删除购物车商品
     DELETE /carts/{id}
     
-### 36. 批量删除购物车商品
+### 32. 批量删除购物车商品
     DELETE /batch/carts
     request:
     {
         ids: 购物车商品ID数组，如[1,2,3]
     }
     
-### 37. 创建商品订单
+### 33. 创建商品订单
     POST /orders
     request:
     {
@@ -952,69 +881,8 @@
         express_id: 快递公司ID,
         remark: 订单备注
     }
-    
-### 38. 获取商品订单列表 (需订单管理权限)
-    GET /orders
-    request:
-    {
-        ^status: 筛选订单状态(
-            0 已失效
-            1 未支付
-            2 已支付
-            3 待发货
-            4 已发货
-            5 已收货
-            6 已评论
-        )
-    }
-    response:
-    {
-        data:
-        [
-            {
-                id: 订单ID,
-                receipt_id: 发票ID,
-                order_no: 订单编号,
-                user: {
-                    id: 用户ID,
-                    nickname: 用户昵称
-                },
-                title: 订单标题,
-                address: {
-                    name: 收货人姓名,
-                    phone: 收货人手机号,
-                    province: 省份,
-                    city: 市,
-                    county: 区/县,
-                    detail: 详细地址
-                },
-                goods_price: 商品总金额,
-                goods_count: 商品总数量,
-                total_weight: 商品总重量,
-                freight: 运费,
-                status: 订单状态 (已失效|待支付|已支付|待发货|已发货|已收货|已评论),
-                discount_amount: 优惠券、活动等抵扣金额,
-                member_discount: 会员折扣金额,
-                total_price: 订单总金额,
-                remark: 订单备注,
-                created_at: 订单创建日期,
-                ^expresses: 物流信息 (订单发货后显示) {
-                    id: 物流ID,
-                    company: 物流公司,
-                    track_no: 物流单号
-                },
-                ^balance_deducted: 账户余额抵扣 (订单支付后显示),
-                ^pay_type: 支付方式 (订单支付后显示),
-                ^paid_at: 订单支付日期 (订单支付后显示),
-                ^audited_at: 订单审核日期 (订单审核通过后显示),
-                ^delivered_at: 订单发货日期 (订单发货后显示),
-                ^received_at: 订单收货日期 (订单收货后显示)
-            },
-            ...
-        ]
-    }
 
-### 39. 查看商品订单详情 (需订单管理权限或者自己)
+### 34. 查看商品订单详情
     GET /orders/{id}
     response:
     {
@@ -1089,18 +957,14 @@
         ^received_at: 订单收货日期 (订单收货后显示)
     }
     
-### 40. 更新订单状态
+### 35. 确认收货
     PUT /orders/{id}
     request:
     {
-        status: 订单状态 (
-            3 审核通过 (需订单管理权限),
-            4 发货 (需订单管理权限),
-            5 确认收货 (只能自己操作)
-        )
+        status: 5
     }
     
-### 41. 获取首页分类信息
+### 36. 获取首页分类信息
     GET /large_categories
     response:
     {
@@ -1153,7 +1017,7 @@
         ...
     }
     
-### 42. 获取优惠券列表
+### 37. 获取优惠券列表
     GET /coupons
     response:
     {
@@ -1176,14 +1040,14 @@
         ]
     }
     
-### 43. 领取优惠券
+### 38. 领取优惠券
     POST /user_coupons
     request:
     {
         coupon_no: 优惠券编号
     }
     
-### 44. 全部商品
+### 39. 全部商品
     GET /large_categories/{id}
     response:
     {
@@ -1214,7 +1078,7 @@
         ]
     }
     
-### 45. 查看商品详情
+### 40. 查看商品详情
     GET /entities/{id}
     response:
     {
@@ -1327,7 +1191,7 @@
         created_at: 创建日期
     }
     
-### 46. 验证验证码
+### 41. 验证验证码
     POST /code/validate
     request:
     {
@@ -1339,7 +1203,7 @@
         result: true
     }
     
-### 47. 获取会员等级信息
+### 42. 获取会员等级信息
     GET /member_levels
     response:
     [
@@ -1356,7 +1220,7 @@
         ...
     ]
     
-### 48. 首页Banner
+### 43. 首页Banner
     GET /banners
     response:
     [
@@ -1371,7 +1235,7 @@
         ...
     ]
     
-### 49. 新品推荐
+### 44. 新品推荐
     GET /recommend_new_entities
     response:
     [
@@ -1386,7 +1250,7 @@
         ...
     ]
     
-### 50. 推荐商品
+### 45. 推荐商品
     GET /recommend_entities
     response:
     {
@@ -1406,7 +1270,7 @@
         '数码速印': 同上
     }
     
-### 51. 合作伙伴
+### 46. 合作伙伴
     GET /partners
     response:
     [
@@ -1421,7 +1285,7 @@
         ...
     ]
     
-### 52. 友情链接
+### 47. 友情链接
     GET /links
     response:
     [
@@ -1432,7 +1296,7 @@
         },
         ...
     ]
-### 53. 推荐新闻
+### 48. 推荐新闻
     GET /recommend_news
     response:
     {
@@ -1447,7 +1311,7 @@
         '印刷知识': 同上
     }
     
-### 54. 获取新闻分类
+### 49. 获取新闻分类
     GET /news_categories
     response:
     [
@@ -1480,7 +1344,7 @@
         ...
     ]
     
-### 55. 获取新闻列表
+### 50. 获取新闻列表
     GET /news_categories/{id}
     response:
     {
@@ -1510,7 +1374,7 @@
         }
     }
     
-### 56. 查看新闻详情
+### 51. 查看新闻详情
     GET /news/{id}
     response:
     {
@@ -1531,7 +1395,7 @@
         updated_at: 更新日期
     }
     
-### 57. 新闻相关阅读及最新发布
+### 52. 新闻相关阅读及最新发布
     GET /news/recommend
     response:
     {
@@ -1577,7 +1441,7 @@
         ]
     }
     
-### 58. 其他印刷新闻
+### 53. 其他印刷新闻
     GET /news/other
     request: {
         id: 当前正在浏览的新闻ID
@@ -1603,7 +1467,7 @@
         ...
     ]
     
-### 59. 商品推荐
+### 54. 商品推荐
     GET /entities/recommend
     response:
     [
@@ -1623,3 +1487,168 @@
         ...
     ]
     
+### 55. 客服信息
+    GET /custom_service
+    response:
+    {
+        qq: QQ号,
+        email: 邮箱,
+        address: 办公地址
+    }
+    
+### 56. 热门搜索关键词
+    GET /hot_keywords
+    response:
+    {
+        id: ID,
+        name: 关键词,
+        url: 点击跳转链接
+    }
+    
+### 57. 搜索商品
+    GET /entities
+    request:
+    {
+        keyword: 关键词,
+        sort: 排序 (
+            1 销量排序
+        )
+    }
+    response:
+    {
+        data:
+        [
+            {
+                id: 商品ID,
+                image: {
+                    id: 商品图片ID,
+                    src: 商品图片链接
+                },
+                name: 商品名称,
+                summary: 商品描述,
+                status: 商品状态(未上架|销售中),
+                sales: 销量,
+                price: 起价,
+                comment_count: 评价数量
+            },
+            ...
+        ]
+    }
+    
+### 58. 添加收货地址
+    POST /addresses
+    request:
+    {
+        name: 收货人姓名,
+        phone: 收货人手机号,
+        province: 省,
+        city: 市,
+        county: 区,
+        detail: 详细地址,
+        is_default: 是否设为默认地址(0否|1是)
+    }
+    
+### 59. 查看收获地址详情
+    GET /addresses/${id}
+    response:
+    {
+        name: 收货人姓名,
+        phone: 收货人手机号,
+        province: 省,
+        city: 市,
+        county: 区,
+        detail: 详细地址,
+        is_default: 是否是默认地址
+    }
+    
+### 60. 更新收货地址
+    PUT /addresses/{id}
+    request:
+    {
+        name: 收货人姓名,
+        phone: 收货人手机号,
+        province: 省,
+        city: 市,
+        county: 区,
+        detail: 详细地址,
+        is_default: 是否是默认地址
+    }
+    
+### 61. 删除收货地址
+    DELETE /addresses/{id}
+    
+### 62. 获取配送公司
+    GET /expresses
+    request:
+    {
+        ^province: 省份 (获取支持该省份的配送公司)
+    }
+    response:
+    {
+        id: 配送ID,
+        name: 配送公司名称,
+        first_unity: 首重重量(g),
+        additional_unity: 续重重量(g),
+        first_weight: 首重价格,
+        additional_weight: 续重价格,
+        capped: 封顶价,
+        regions: 支持的配送区域(省)
+    }
+    运费计算公式：Math.ceil((订单商品总重量 - 首重重量) / 续重重量) * 续重价格 + 首重价格。超过封顶价则使用封顶价
+    
+### 63. 支付宝支付订单 (将URL和请求参数拼接好后，直接使用window.open打开)
+    GET /alipay/pay
+    request:
+    {
+        token: 访问令牌,
+        order_id: 订单ID,
+        ^balance: 使用余额抵扣金额
+    }
+    
+### 64. 微信支付订单
+    POST /wxpay/pay
+    request:
+    {
+        order_id: 订单ID,
+        balance: 使用余额抵扣金额
+    }
+    response:
+    {
+        code_url: 支付二维码参数 (使用该参数生成二维码让用户扫码支付)
+    }
+    当用户打开扫描二维码页面时，轮询获取订单详情接口，当订单状态为已支付时，自动跳转到支付成功页面
+    
+### 65. 使用账户余额支付订单
+    POST /balance/pay
+    request:
+    {
+        order_id: 订单ID
+    }
+    
+### 65. 支付宝充值余额 (将URL和请求参数拼接好后，直接使用window.open打开)
+    GET /alipay/recharge
+    request:
+    {
+        token: 访问令牌,
+        price: 充值金额(元)
+    }
+    
+### 66. 微信充值余额
+    POST /wxpay/recharge
+    request:
+    {
+        price: 充值金额(元)
+    }
+    response:
+    {
+        id: 该充值订单ID,
+        code_url: 支付二维码参数 (使用该参数生成二维码让用户扫码支付)
+    }
+    当用户打开扫描二维码页面时，轮询获取充值订单详情接口，当is_paid为true时，自动跳转到支付成功页面
+    
+### 67. 获取充值订单详情
+    GET  /recharge_orders/{id}
+    response:
+    {
+        is_paid: 是否已支付
+    }

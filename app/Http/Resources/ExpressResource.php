@@ -16,6 +16,8 @@ class ExpressResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'name' => $this->name,
+            'first_unity' => config('setting.first_weight'),
+            'additional_unity' => config('setting.additional_weight'),
             'first_weight' => $this->first_weight,
             'additional_weight' => $this->additional_weight,
             'capped' => $this->capped,
