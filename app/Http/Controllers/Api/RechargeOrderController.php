@@ -39,8 +39,10 @@ class RechargeOrderController extends ApiController
         return $this->success(new RechargeOrderCollection($rechargeOrder));
     }
 
-    public function show(RechargeOrder $rechargeOrder)
+    public function show($id)
     {
+        $rechargeOrder = RechargeOrder::find($id);
+
         if ($rechargeOrder && $rechargeOrder->is_paid == 1) {
             $result = true;
         } else {
