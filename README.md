@@ -1604,6 +1604,12 @@
         order_id: 订单ID,
         ^balance: 使用余额抵扣金额
     }
+    支付宝支付目前是沙箱环境，需使用沙箱钱包支付
+    下载地址：https://sandbox.alipaydev.com/user/downloadApp.htm
+    登录账号：qufmah5452@sandbox.com
+    登录密码：111111
+    支付密码：111111
+    具体说明查看：https://openhome.alipay.com/platform/appDaily.htm?tab=info
     
 ### 64. 微信支付订单
     POST /wxpay/pay
