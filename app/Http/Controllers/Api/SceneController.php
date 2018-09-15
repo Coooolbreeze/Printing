@@ -14,6 +14,7 @@ use App\Http\Resources\SceneResource;
 use App\Models\Scene;
 use App\Models\SceneCategory;
 use App\Models\SceneGood;
+use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
@@ -21,9 +22,15 @@ class SceneController extends ApiController
 {
     public function index()
     {
-        return $this->success([
-            'data' => SceneResource::collection(Scene::all())->show(['id', 'name', 'is_open'])
-        ]);
+        if (TokenFactory::isAdmin()) {
+            $scenes = [
+                'data' => SceneResource::collection(Scene::all())->show(['id', 'name', 'is_open'])
+            ];
+        } else {
+            $scenes = SceneResource::collection(Scene::all())->show(['id', 'name', 'is_open']);
+        }
+
+        return $this->success($scenes);
     }
 
     public function show(Scene $scene)

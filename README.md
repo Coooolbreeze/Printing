@@ -1499,11 +1499,14 @@
 ### 56. 热门搜索关键词
     GET /hot_keywords
     response:
-    {
-        id: ID,
-        name: 关键词,
-        url: 点击跳转链接
-    }
+    [
+        {
+            id: ID,
+            name: 关键词,
+            url: 点击跳转链接
+        },
+        ...
+    ]
     
 ### 57. 搜索商品
     GET /entities
@@ -1549,7 +1552,7 @@
     }
     
 ### 59. 查看收获地址详情
-    GET /addresses/${id}
+    GET /addresses/{id}
     response:
     {
         name: 收货人姓名,
@@ -1584,16 +1587,19 @@
         ^province: 省份 (获取支持该省份的配送公司)
     }
     response:
-    {
-        id: 配送ID,
-        name: 配送公司名称,
-        first_unity: 首重重量(g),
-        additional_unity: 续重重量(g),
-        first_weight: 首重价格,
-        additional_weight: 续重价格,
-        capped: 封顶价,
-        regions: 支持的配送区域(省)
-    }
+    [
+        {
+            id: 配送ID,
+            name: 配送公司名称,
+            first_unity: 首重重量(g),
+            additional_unity: 续重重量(g),
+            first_weight: 首重价格,
+            additional_weight: 续重价格,
+            capped: 封顶价,
+            regions: 支持的配送区域(省)
+        },
+        ...
+    ]
     运费计算公式：Math.ceil((订单商品总重量 - 首重重量) / 续重重量) * 续重价格 + 首重价格。超过封顶价则使用封顶价
     
 ### 63. 支付宝支付订单 (将URL和请求参数拼接好后，直接使用window.open打开)
@@ -1657,4 +1663,125 @@
     response:
     {
         is_paid: 是否已支付
+    }
+    
+### 68. 最新活动列表
+    GET /activities
+    response:
+    {
+        data:
+        [
+            {
+                id: 活动ID,
+                image: {
+                    id: 图片ID,
+                    src: 图片链接
+                },
+                name: 活动名称,
+                describe: 活动描述,
+                status: 活动状态 (进行中|已结束),
+                finished_at: 结束时间,
+                created_at: 创建时间
+            },
+            ...
+        ]
+    }
+    
+### 69. 查看活动详情
+    GET /activities/{id}
+    response:
+    {
+        同上，增加entities参数
+        entities: {
+            data: 活动商品列表
+            [
+                {
+                    id: 商品ID,
+                    type: 商品类型,
+                    image: 商品图片,
+                    name: 商品名称,
+                    summary: 商品描述,
+                    price: 商品价格,
+                    comment_count: 商品评价数,
+                    sales: 商品销量
+                },
+                ...
+            ]
+        }
+    }
+    
+### 70. 场景列表
+    GET /scenes
+    response:
+    [
+        {
+            id: 场景ID,
+            name: 场景名称
+        },
+        ...
+    ]
+    
+### 71. 场景详情
+    GET /scenes/{id}
+    response:
+    {
+        同上，增加categories参数
+        categories: 场景下分类及商品
+        [
+            {
+                id: 场景分类ID,
+                name: 场景分类名称,
+                goods: 商品列表
+                [
+                    {
+                        image: {
+                            id: 图片ID,
+                            src: 图片链接
+                        },
+                        name: 商品名称,
+                        describe: 商品描述,
+                        url: 商品链接
+                    },
+                    ...
+                ]
+            },
+            ...
+        ]
+    }
+    
+### 72. 申请发票
+    POST /receipts
+    request:
+    {
+        order_ids: 需要申请发票的订单ID数组，如[1,2,3],
+        receipt_info: {
+            company: 公司名称,
+            tax_no: 纳税号,
+            contact: 联系人,
+            contact_way: 联系方式,
+            address: 地址
+        }
+    }
+    
+    
+### 73. 评价订单
+    POST /comments
+    request:
+    {
+        order_id: 订单ID,
+        comments: 订单内所有商品的评价
+        [
+            {
+                commentable_id: 商品ID,
+                target: 商品组合,
+                goods_comment: 商品评价,
+                service_comment: 服务评价,
+                describe_grade: 描述相符分数 (0.5-5),
+                seller_grade: 卖家服务分数 (0.5-5),
+                logistics_grade: 物流服务分数 (0.5-5),
+                is_anonymous: 是否匿名,
+                images: 评价图片数组，如[1,2,3]
+            },
+            ...
+        ]
     }
