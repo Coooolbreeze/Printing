@@ -118,7 +118,7 @@ class OrderResource extends Resource
         $content = json_decode($this->snap_content, true);
 
         foreach ($content as &$entity) {
-            $comments = Entity::find($entity)->comments;
+            $comments = Entity::find($entity['id'])->comments;
             $grade = $comments->sum('describe_grade') / $comments->count();
 
             $arr = explode($grade, '.');
