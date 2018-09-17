@@ -52,6 +52,9 @@ class OrderController extends ApiController
     public function index(Request $request)
     {
         $orders = (new Order())
+            ->when(isset($request->unreceipt), function ($query) {
+                $query->whereNull('receipt_id');
+            })
             ->when(isset($request->status) && $request->status != null, function ($query) use ($request) {
                 $query->where('status', $request->status);
             })

@@ -11,6 +11,7 @@ namespace App\Http\Resources;
 
 use App\Enum\OrderPayTypeEnum;
 use App\Enum\OrderStatusEnum;
+use App\Models\Entity;
 use App\Services\Tokens\TokenFactory;
 
 class OrderResource extends Resource
@@ -27,13 +28,13 @@ class OrderResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'express' => (new ExpressResource($this->express))->show(['id', 'name']),
-            'receipt_id' => $this->receipt_id,
+            'receipt' => $this->when($this->receipt_id, new ReceiptResource($this->receipt)),
             'order_no' => $this->order_no,
             'trade_no' => $this->when($this->trade_no, $this->trade_no),
             'user' => (new UserResource($this->user))->show(['id', 'nickname']),
             'title' => $this->title,
             'address' => json_decode($this->snap_address, true),
-            'content' => json_decode($this->snap_content, true),
+            'content' => $this->getContent(),
             'goods_price' => $this->goods_price,
             'goods_count' => $this->goods_count,
             'total_weight' => $this->total_weight,
@@ -110,5 +111,24 @@ class OrderResource extends Resource
             OrderPayTypeEnum::BACK_PAY => '后台支付'
         ];
         return $value ? $payType[$value] : null;
+    }
+
+    public function getContent()
+    {
+        $content = json_decode($this->snap_content, true);
+
+        foreach ($content as &$entity) {
+            $comments = Entity::find($entity)->comments;
+            $grade = $comments->sum('describe_grade') / $comments->count();
+
+            $arr = explode($grade, '.');
+            if ($arr[1] >= 5) {
+                $arr[1] = 5;
+            } else {
+                $arr[1] = 0;
+            }
+
+            $entity['grade'] = implode('.', $arr);
+        }
     }
 }

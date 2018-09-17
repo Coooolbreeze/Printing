@@ -14,6 +14,11 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class OrderCollection extends ResourceCollection
 {
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     * @throws \App\Exceptions\TokenException
+     */
     public function toArray($request)
     {
         $orders = TokenFactory::getCurrentUser()->orders();

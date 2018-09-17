@@ -641,7 +641,7 @@
         [
             {
                 id: 订单ID,
-                receipt_id: 发票ID,
+                receipt: ,
                 order_no: 订单编号,
                 user: {
                     id: 用户ID,
@@ -887,7 +887,7 @@
     response:
     {
         id: 订单ID,
-        receipt_id: 发票ID,
+        receipt: 同我的发票列表,
         order_no: 订单编号,
         user: {
             id: 用户ID,
@@ -1785,3 +1785,86 @@
             ...
         ]
     }
+    
+### 74. 积分礼品列表
+    GET /gifts
+    response:
+    {
+        data:
+        [
+            id: 商品ID,
+            name: 商品名称,
+            image: {
+                id: 图片ID,
+                src: 图片链接
+            },
+            accumulate_points: 兑换所需积分,
+            stock: 剩余库存
+        ]
+    }
+    
+### 75. 兑换礼品
+    POST /gift_orders
+    request:
+    {
+        gift_id: 礼品ID,
+        ^address_id: 收货地址ID (不传使用用户默认地址，如果有)
+    }
+    
+### 76. 帮助中心文章列表
+    GET /helps
+    response:
+    {
+        data:
+        [
+            id: 文章ID,
+            category: {
+                id: 所属分类ID,
+                name: 所属分类名称
+            },
+            title: 文章标题,
+            body: 文章内容,
+            updated_at: 最近修改时间
+        ]
+    }
+    
+### 77. 帮助中心文章详情
+    GET /helps/{id}
+    response:
+    {
+        同上
+    }
+    
+
+### 78. 获取我的关注列表
+    GET /users/self/follows
+    response: 同商品列表
+    
+### 79. 关注商品
+    POST /follows
+    request:
+    {
+        entity_id: 商品ID
+    }
+    
+### 80. 取消关注商品
+    DELETE /follows
+    request:
+    {
+        entity_id: 商品ID
+    }
+    
+### 81. 取消订单
+    PUT /orders/{id}
+    request:
+    {
+        status: 0
+    }
+    
+### 82. 获取未开票订单列表
+    get /orders
+    request:
+    {
+        unreceipt: true
+    },
+    response: 同我的订单列表

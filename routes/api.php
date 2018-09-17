@@ -157,6 +157,8 @@ Route::namespace('Api')->group(function () {
         Route::get('/users/self/carts', 'UserController@carts');
         // 商品订单
         Route::get('/users/self/orders', 'UserController@orders');
+        // 我的关注
+        Route::get('/users/self/follows', 'UserController@follows');
         // 我的发票
         Route::get('/users/self/receipts', 'UserController@receipts');
         // 获取我的优惠券
@@ -164,6 +166,10 @@ Route::namespace('Api')->group(function () {
         // 领取优惠券
         Route::apiResource('user_coupons', 'UserCouponController')
             ->only(['store']);
+
+        Route::apiResource('follows', 'FollowController')
+            ->only(['store']);
+        Route::delete('/follows', 'FollowController@destroy');
 
         Route::apiResource('carts', 'CartController')
             ->only(['store', 'destroy']);

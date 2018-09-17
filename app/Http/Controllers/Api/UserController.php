@@ -11,6 +11,7 @@ use App\Http\Resources\BalanceRecordCollection;
 use App\Http\Resources\CartCollection;
 use App\Http\Resources\CommentCollection;
 use App\Http\Resources\CouponCollection;
+use App\Http\Resources\EntityCollection;
 use App\Http\Resources\GiftOrderCollection;
 use App\Http\Resources\MessageCollection;
 use App\Http\Resources\OrderCollection;
@@ -24,6 +25,7 @@ use App\Models\BalanceRecord;
 use App\Models\Cart;
 use App\Models\Comment;
 use App\Models\Coupon;
+use App\Models\Entity;
 use App\Models\GiftOrder;
 use App\Models\Message;
 use App\Models\Order;
@@ -369,6 +371,15 @@ class UserController extends ApiController
             ->comments()
             ->latest()
             ->paginate(Comment::getLimit())
+        ));
+    }
+
+    public function follows()
+    {
+        return $this->success(new EntityCollection(TokenFactory::getCurrentUser()
+            ->entities()
+            ->latest()
+            ->paginate(Entity::getLimit())
         ));
     }
 
