@@ -135,5 +135,7 @@ class OrderResource extends Resource
                 $entity['grade'] = implode('.', $arr);
             }
         }
+
+        return $content;
     }
 }
