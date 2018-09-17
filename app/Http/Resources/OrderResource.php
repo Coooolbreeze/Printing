@@ -125,14 +125,16 @@ class OrderResource extends Resource
             } else {
                 $grade = $comments->sum('describe_grade') / $comments->count();
 
-                $arr = explode($grade, '.');
-                if ($arr[1] >= 5) {
-                    $arr[1] = 5;
-                } else {
-                    $arr[1] = 0;
-                }
+//                $arr = explode($grade, '.');
+//                if ($arr[1] >= 5) {
+//                    $arr[1] = 5;
+//                } else {
+//                    $arr[1] = 0;
+//                }
 
-                $entity['grade'] = implode('.', $arr);
+//                $entity['grade'] = implode('.', $arr);
+
+                $entity['grade'] = $grade;
             }
         }
 
