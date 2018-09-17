@@ -119,16 +119,21 @@ class OrderResource extends Resource
 
         foreach ($content as &$entity) {
             $comments = Entity::find($entity['id'])->comments;
-            $grade = $comments->sum('describe_grade') / $comments->count();
 
-            $arr = explode($grade, '.');
-            if ($arr[1] >= 5) {
-                $arr[1] = 5;
+            if ($comments->count() == 0) {
+                $entity['grade'] = 0;
             } else {
-                $arr[1] = 0;
-            }
+                $grade = $comments->sum('describe_grade') / $comments->count();
 
-            $entity['grade'] = implode('.', $arr);
+                $arr = explode($grade, '.');
+                if ($arr[1] >= 5) {
+                    $arr[1] = 5;
+                } else {
+                    $arr[1] = 0;
+                }
+
+                $entity['grade'] = implode('.', $arr);
+            }
         }
     }
 }
