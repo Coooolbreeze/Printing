@@ -944,11 +944,21 @@
         total_price: 订单总金额,
         remark: 订单备注,
         created_at: 订单创建日期,
-        ^expresses: 物流信息 (订单发货后显示) {
-            id: 物流ID,
-            company: 物流公司,
-            track_no: 物流单号
-        },
+        ^expresses: 物流信息 (订单发货后显示) [
+            {
+                id: 物流ID,
+                company: 物流公司,
+                track_no: 物流单号，
+                logistics: [
+                    {
+                        time: 更新时间,
+                        message: 物流跟踪
+                    }，
+                    ...
+                ]
+            },
+            ...
+        ],
         ^balance_deducted: 账户余额抵扣 (订单支付后显示),
         ^pay_type: 支付方式 (订单支付后显示),
         ^paid_at: 订单支付日期 (订单支付后显示),
