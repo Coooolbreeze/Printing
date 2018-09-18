@@ -21,15 +21,13 @@ class OrderCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        $orders = TokenFactory::getCurrentUser()->orders;
-
         return [
             'data' => OrderResource::collection($this->collection)->hide(['logs']),
-            'unpaid_count' => $this->when(!TokenFactory::isAdmin(), $orders->unpaid()->count()),
-            'paid_count' => $this->when(!TokenFactory::isAdmin(), $orders->paid()->count()),
-            'undelivered_count' => $this->when(!TokenFactory::isAdmin(), $orders->undelivered()->count()),
-            'delivered_count' => $this->when(!TokenFactory::isAdmin(), $orders->delivered()->count()),
-            'received_count' => $this->when(!TokenFactory::isAdmin(), $orders->received()->count()),
+            'unpaid_count' => $this->when(!TokenFactory::isAdmin(), TokenFactory::getCurrentUser()->orders()->unpaid()->count()),
+            'paid_count' => $this->when(!TokenFactory::isAdmin(), TokenFactory::getCurrentUser()->orders()->paid()->count()),
+            'undelivered_count' => $this->when(!TokenFactory::isAdmin(), TokenFactory::getCurrentUser()->orders()->undelivered()->count()),
+            'delivered_count' => $this->when(!TokenFactory::isAdmin(), TokenFactory::getCurrentUser()->orders()->delivered()->count()),
+            'received_count' => $this->when(!TokenFactory::isAdmin(), TokenFactory::getCurrentUser()->orders()->received()->count()),
             'count' => $this->count(),
             'total' => $this->total(),
             'current_page' => $this->currentPage(),
