@@ -1844,14 +1844,14 @@
     POST /follows
     request:
     {
-        entity_id: 商品ID
+        entity_id: 商品ID，多个ID用数组
     }
     
 ### 80. 取消关注商品
     DELETE /follows
     request:
     {
-        entity_id: 商品ID
+        entity_id: 商品ID，多个ID用数组
     }
     
 ### 81. 取消订单

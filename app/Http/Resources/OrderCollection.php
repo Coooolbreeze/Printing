@@ -21,7 +21,7 @@ class OrderCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        $orders = TokenFactory::getCurrentUser()->orders();
+        $orders = TokenFactory::getCurrentUser()->orders;
 
         return [
             'data' => OrderResource::collection($this->collection)->hide(['logs']),
