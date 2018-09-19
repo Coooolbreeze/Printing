@@ -1914,3 +1914,22 @@
     {
         同上
     }
+    
+### 85. 获取最新交易订单 (返回最新的10条订单，前端定时轮询该接口)
+    GET /new_orders
+    response:
+    [
+        {
+            id: 订单ID,
+            order_no: 订单编号,
+            title: 订单标题,
+            user: {
+                id: 购买用户ID,
+                nickname: 购买用户昵称,
+                phone: 购买用户手机号 (如果已绑定手机)
+            },
+            created_at: 订单创建时间
+        },
+        ...
+    ]
+    

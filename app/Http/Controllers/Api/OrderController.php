@@ -70,6 +70,17 @@ class OrderController extends ApiController
         return $this->success(new OrderCollection($orders));
     }
 
+    public function newOrder()
+    {
+        $orders = (new Order())
+            ->whereNotNull('paid_at')
+            ->latest()
+            ->limit(10)
+            ->get();
+
+        return $this->success(OrderResource::collection($orders)->show(['id', 'order_no', 'user', 'title', 'created_at']));
+    }
+
     public function export(Request $request)
     {
         return Excel::download(new OrderExport($request), 'orders.xlsx');

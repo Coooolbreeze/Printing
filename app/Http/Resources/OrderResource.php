@@ -31,7 +31,7 @@ class OrderResource extends Resource
             'receipt' => $this->when($this->receipt_id, new ReceiptResource($this->receipt)),
             'order_no' => $this->order_no,
             'trade_no' => $this->when($this->trade_no, $this->trade_no),
-            'user' => (new UserResource($this->user))->show(['id', 'nickname']),
+            'user' => (new UserResource($this->user))->show(['id', 'nickname', 'phone']),
             'title' => $this->title,
             'address' => json_decode($this->snap_address, true),
             'content' => $this->getContent(),

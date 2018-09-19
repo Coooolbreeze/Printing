@@ -125,6 +125,8 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('recommend_news', 'RecommendNewsController')
         ->only(['index']);
 
+    Route::get('/new_orders', 'OrderController@newOrder');
+
     /**
      * 需登录后访问
      */
