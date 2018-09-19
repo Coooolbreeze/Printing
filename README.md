@@ -1818,6 +1818,7 @@
     request:
     {
         gift_id: 礼品ID,
+        number: 数量,
         ^address_id: 收货地址ID (不传使用用户默认地址，如果有)
     }
     
@@ -1827,14 +1828,17 @@
     {
         data:
         [
-            id: 文章ID,
-            category: {
-                id: 所属分类ID,
-                name: 所属分类名称
+            {
+                id: 文章ID,
+                category: {
+                    id: 所属分类ID,
+                    name: 所属分类名称
+                },
+                title: 文章标题,
+                body: 文章内容,
+                updated_at: 最近修改时间
             },
-            title: 文章标题,
-            body: 文章内容,
-            updated_at: 最近修改时间
+            ...
         ]
     }
     
@@ -1878,3 +1882,35 @@
         unreceipt: true
     },
     response: 同我的订单列表
+    
+### 83. 帮助中心分类列表
+    GET /help_categories
+    response:
+    [
+        {
+            id: 分类ID,
+            name: 分类名称,
+            helps: 分类下文章列表
+            [
+                {
+                    id: 文章ID,
+                    category: {
+                        id: 所属分类ID,
+                        name: 所属分类名称
+                    },
+                    title: 文章标题,
+                    body: 文章内容,
+                    updated_at: 最近修改时间
+                },
+                ...
+            ]
+        },
+        ...
+    ]
+    
+### 84. 获取分类下文章列表
+    GET /help_categories/{id}
+    response:
+    {
+        同上
+    }

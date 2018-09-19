@@ -60,18 +60,18 @@ class GiftOrderController extends ApiController
         \DB::transaction(function () use ($request) {
             $gift = Gift::lockForUpdate()->findOrFail($request->gift_id);
 
-            if ($gift->stock <= 0) throw new BaseException('库存不足');
+            if ($gift->stock < $request->number) throw new BaseException('库存不足');
 
             AccumulatePointsRecord::expend($gift->accumulate_points, '兑换礼品');
 
             GiftOrder::create([
                 'order_no' => 'G-' . makeOrderNo(),
                 'user_id' => TokenFactory::getCurrentUID(),
-                'snap_content' => self::giftSnap($gift),
+                'snap_content' => self::giftSnap($gift, $request->number),
                 'snap_address' => Address::addressSnap($request->address_id)
             ]);
 
-            $gift->decrement('stock', 1);
+            $gift->decrement('stock', $request->number);
         });
 
         return $this->created();
@@ -83,13 +83,14 @@ class GiftOrderController extends ApiController
         return $this->message('更新成功');
     }
 
-    private static function giftSnap($gift)
+    private static function giftSnap($gift, $number)
     {
         return json_encode([
             'id' => $gift->id,
             'name' => $gift->name,
             'image' => new ImageResource($gift->image),
-            'accumulate_points' => $gift->accumulate_points
+            'accumulate_points' => $gift->accumulate_points,
+            'number' => $number
         ]);
     }
 }
