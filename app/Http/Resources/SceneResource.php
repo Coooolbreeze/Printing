@@ -23,6 +23,7 @@ class SceneResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'name' => $this->name,
+            'describe' => $this->describe,
             'is_open' => (bool)$this->is_open,
             'categories' => SceneCategoryResource::collection($this->sceneCategories),
             'created_at' => (string)$this->created_at
