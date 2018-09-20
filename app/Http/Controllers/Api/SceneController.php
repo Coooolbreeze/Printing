@@ -24,10 +24,10 @@ class SceneController extends ApiController
     {
         if (TokenFactory::isAdmin()) {
             $scenes = [
-                'data' => SceneResource::collection(Scene::all())->show(['id', 'name', 'is_open'])
+                'data' => SceneResource::collection(Scene::all())->show(['id', 'name', 'describe', 'is_open'])
             ];
         } else {
-            $scenes = SceneResource::collection(Scene::all())->show(['id', 'name', 'is_open']);
+            $scenes = SceneResource::collection(Scene::all())->show(['id', 'name', 'describe', 'is_open']);
         }
 
         return $this->success($scenes);
