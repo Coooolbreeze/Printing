@@ -16,7 +16,7 @@ class SceneCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => SceneResource::collection($this->collection)->show(['id', 'name', 'is_open']),
+            'data' => SceneResource::collection($this->collection)->show(['id', 'name', 'describe', 'is_open']),
             'count' => $this->count(),
             'total' => $this->total(),
             'current_page' => $this->currentPage(),
