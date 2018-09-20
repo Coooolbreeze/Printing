@@ -10,6 +10,7 @@ namespace App\Services\Tokens;
 
 
 use App\Exceptions\AccountErrorException;
+use App\Exceptions\BaseException;
 use App\Exceptions\BindingLoginModeException;
 use App\Exceptions\ForbiddenException;
 use App\Exceptions\RePasswordException;
@@ -181,21 +182,21 @@ class TokenFactory
         $identityCount = UserAuth::where('user_id', $user->id)
             ->count();
 
+        if ($identityCount == 1) {
+            throw new BaseException('没有其余登录方式了，不能解绑哦！');
+        }
+
         DB::beginTransaction();
         try {
-            if ($identityCount == 1) {
-                $user->delete();
+            if ($type == 'wx') {
+                $user->update([
+                    'is_bind_wx' => 0
+                ]);
             } else {
-                if ($type == 'wx') {
-                    $user->update([
-                        'is_bind_wx' => 0
-                    ]);
-                } else {
-                    $user->update([
-                        $type => null,
-                        'is_bind_' . $type => 0
-                    ]);
-                }
+                $user->update([
+                    $type => null,
+                    'is_bind_' . $type => 0
+                ]);
             }
             $identity->delete();
 
