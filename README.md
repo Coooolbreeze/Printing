@@ -878,9 +878,14 @@
             contact_way: 联系方式,
             address: 地址
         },
+        ^coupon_no: 优惠券编号,
         ^address_id: 收货地址ID,不传时使用用户默认地址 (如果有),
         express_id: 快递公司ID,
         remark: 订单备注
+    }
+    response:
+    {
+        id: 订单ID
     }
 
 ### 34. 查看商品订单详情
