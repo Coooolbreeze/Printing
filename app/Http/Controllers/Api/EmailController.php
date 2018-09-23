@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Exceptions\AccountIsExistException;
+use App\Exceptions\BaseException;
 use App\Exceptions\UserNotFoundException;
 use App\Mail\SendVerificationCode;
 use App\Models\UserAuth;
@@ -18,9 +19,20 @@ use Illuminate\Http\Request;
 
 class EmailController extends ApiController
 {
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws AccountIsExistException
+     * @throws BaseException
+     * @throws UserNotFoundException
+     */
     public function sendEmail(Request $request)
     {
         $email = $request->email;
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+            throw new BaseException('请输入正确的邮箱地址');
+
         $auth = UserAuth::where('identifier', $email)->first();
 
         if ($request->is_register && $auth) throw new AccountIsExistException();

@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Exceptions\AccountIsExistException;
+use App\Exceptions\BaseException;
 use App\Exceptions\UserNotFoundException;
 use App\Models\UserAuth;
 use App\Services\SMS;
@@ -24,11 +25,16 @@ class SmsController extends ApiController
      * @param Request $request
      * @return mixed
      * @throws AccountIsExistException
+     * @throws BaseException
      * @throws UserNotFoundException
      */
     public function sendSms(Request $request)
     {
         $phone = $request->phone;
+
+        if (!preg_match('/^1[3-9]\d{9}$/', $phone))
+            throw new BaseException('请输入正确的手机号');
+
         $auth = UserAuth::where('identifier', $phone)->first();
 
         if ($request->is_register && $auth) throw new AccountIsExistException();
