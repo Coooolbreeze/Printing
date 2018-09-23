@@ -31,11 +31,11 @@ class TypeResource extends Resource
             'image' => new ImageResource($this->image),
             'detail' => $this->detail,
             'secondary_types' => $this->when(
-                !TokenFactory::isAdmin() && $this->secondaryTypes,
+                !TokenFactory::isAdmin() && count($this->secondaryTypes) >= 1,
                 SecondaryTypeResource::collection($this->secondaryTypes)
             ),
             'entities' => $this->when(
-                !TokenFactory::isAdmin() && !$this->secondaryTypes,
+                !TokenFactory::isAdmin() && count($this->secondaryTypes) == 0,
                 EntityResource::collection($this->entities)->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'price', 'comment_count'])
             )
         ]);
