@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Enum\OrderStatusEnum;
 use App\Exceptions\BaseException;
 use App\Http\Requests\UpdateUser;
 use App\Http\Resources\AccumulatePointsRecordCollection;
@@ -336,6 +337,13 @@ class UserController extends ApiController
     {
         return $this->success(new OrderCollection(TokenFactory::getCurrentUser()
             ->orders()
+            ->when($request->unreceipt, function ($query) {
+                $query->whereNull('receipt_id')
+                    ->whereIn('status', [
+                        OrderStatusEnum::RECEIVED,
+                        OrderStatusEnum::COMMENTED
+                    ]);
+            })
             ->when(isset($request->status), function ($query) use ($request) {
                 $query->where('status', $request->status);
             })

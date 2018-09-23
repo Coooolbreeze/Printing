@@ -52,9 +52,6 @@ class OrderController extends ApiController
     public function index(Request $request)
     {
         $orders = (new Order())
-            ->when(isset($request->unreceipt), function ($query) {
-                $query->whereNull('receipt_id');
-            })
             ->when(isset($request->status) && $request->status != null, function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
@@ -128,7 +125,9 @@ class OrderController extends ApiController
      */
     public function store(StoreOrder $request)
     {
-        \DB::transaction(function () use ($request) {
+        $order = null;
+
+        \DB::transaction(function () use ($request, &$order) {
             $goodsInfo = $request->ids
                 ? self::cartOrder($request->ids)
                 : self::entityOrder($request->entity);
@@ -174,10 +173,10 @@ class OrderController extends ApiController
                 $order['receipt_id'] = $receipt->id;
             }
 
-            Order::create($order);
+            $order = Order::create($order);
         });
 
-        return $this->created();
+        return $this->success(['id' => $order->id]);
     }
 
     /**

@@ -55,11 +55,13 @@ class AccountToken extends BaseToken
     {
         $identity = $this->getIdentity();
         if (!$identity) {
-            throw new UserNotFoundException();
+            throw new BaseException('账号或密码错误');
+//            throw new UserNotFoundException();
         }
 
         if (!Hash::check($this->password, $identity->credential)) {
-            throw new PasswordErrorException();
+            throw new BaseException('账号或密码错误');
+//            throw new PasswordErrorException();
         }
 
         return $identity;

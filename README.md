@@ -619,6 +619,7 @@
     GET /users/self/orders
     request:
     {
+        ^unreceipt: true (筛选未开票订单)
         ^status: 筛选订单状态(
             0 已失效
             1 待付款
@@ -1876,13 +1877,8 @@
         status: 0
     }
     
-### 82. 获取未开票订单列表
-    get /orders
-    request:
-    {
-        unreceipt: true
-    },
-    response: 同我的订单列表
+### 82. 获取我的未开票订单列表
+    见25
     
 ### 83. 帮助中心分类列表
     GET /help_categories
