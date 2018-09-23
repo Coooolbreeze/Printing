@@ -19,7 +19,15 @@ class SecondaryTypeResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'name' => $this->name,
-            'entities' => $this->when(!TokenFactory::isAdmin(), new EntityCollection($this->entities()->paginate(Entity::getLimit())))
+            'entities' => $this->when(!TokenFactory::isAdmin(),
+                EntityResource::collection(
+                    $this->entities()
+                        ->when($request->entity_id, function ($query) use ($request) {
+                            $query->where('id', '<>', $request->entity_id);
+                        })
+                        ->get()
+                )->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'price', 'comment_count'])
+            )
         ]);
     }
 }

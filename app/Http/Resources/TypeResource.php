@@ -36,7 +36,7 @@ class TypeResource extends Resource
             ),
             'entities' => $this->when(
                 !TokenFactory::isAdmin() && !$this->secondaryTypes,
-                new EntityCollection($this->entities()->paginate(Entity::getLimit()))
+                EntityResource::collection($this->entities)->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'price', 'comment_count'])
             )
         ]);
     }

@@ -127,6 +127,10 @@ Route::namespace('Api')->group(function () {
 
     Route::get('/new_orders', 'OrderController@newOrder');
 
+    Route::get('/navigation/entities', 'EntityController@navigation');
+
+    Route::get('/more/cards', 'EntityController@more');
+
     /**
      * 需登录后访问
      */

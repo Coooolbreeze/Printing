@@ -10,6 +10,7 @@ namespace App\Services\Tokens;
 
 
 use App\Exceptions\AccountIsExistException;
+use App\Exceptions\BaseException;
 use App\Exceptions\BindingLoginModeException;
 use App\Exceptions\PasswordErrorException;
 use App\Exceptions\RegisterException;

@@ -13,6 +13,7 @@ use App\Exceptions\BaseException;
 use App\Http\Requests\StoreEntity;
 use App\Http\Resources\EntityCollection;
 use App\Http\Resources\EntityResource;
+use App\Http\Resources\TypeResource;
 use App\Models\Attribute;
 use App\Models\CategoryItem;
 use App\Models\Combination;
@@ -39,6 +40,22 @@ class EntityController extends ApiController
         }
 
         return $this->success($entities);
+    }
+
+    public function navigation(Request $request)
+    {
+        $entities = (new Entity())
+            ->when($request->type_id, function ($query) use ($request) {
+                $query->where('type_id', $request->type_id);
+            })
+            ->get();
+
+        return $this->success(new EntityCollection($entities));
+    }
+
+    public function more()
+    {
+        return $this->success((new TypeResource(Type::find(1)))->show(['secondary_types']));
     }
 
     public function index(Request $request)

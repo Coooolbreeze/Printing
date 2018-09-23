@@ -1935,3 +1935,138 @@
         ...
     ]
     
+### 86. 全部类型列表
+    GET /types
+    response:
+    [
+        {
+            id: 类型ID,
+            name: 类型名称
+        },
+        ...
+    ]
+    
+#### 87. 类型详情
+    GET /types/{id}
+    response:
+    {
+        id: 类型ID,
+        name: 类型名称,
+        image: {
+            id: 图片ID,
+            src: 图片链接
+        },
+        detail: 说明,
+        ^secondary_types: 二级类型列表 (如果有二级类型)
+        [
+            {
+                id: 二级类型ID,
+                name: 二级类型名称,
+                entities: 商品列表
+                [
+                    {
+                        id: 商品ID,
+                        image: {
+                            id: 商品图片ID,
+                            src: 商品图片链接
+                        },
+                        name: 商品名称,
+                        summary: 商品描述,
+                        sales: 销量,
+                        price: 起价,
+                        comment_count: 评价数量
+                    },
+                    ...
+                ]
+            },
+            ...
+        ],
+        ^entities: 商品列表 (如果没有二级类型)
+        [
+            {
+                id: 二级类型ID,
+                name: 二级类型名称,
+                entities: 商品列表
+                [
+                    {
+                        id: 商品ID,
+                        image: {
+                            id: 商品图片ID,
+                            src: 商品图片链接
+                        },
+                        name: 商品名称,
+                        summary: 商品描述,
+                        sales: 销量,
+                        price: 起价,
+                        comment_count: 评价数量
+                    },
+                    ...
+                ]
+            },
+            ...
+        ]
+    }
+    
+### 88. 产品导航
+    GET /navigation/entities
+    request:
+    {
+        ^type_id: 类型ID
+    }
+    response:
+    {
+        data:
+        [
+            {
+                id: 商品ID,
+                image: {
+                    id: 商品图片ID,
+                    src: 商品图片链接
+                },
+                name: 商品名称,
+                summary: 商品描述,
+                status: 商品状态(未上架|销售中),
+                sales: 销量,
+                price: 起价,
+                comment_count: 评价数量
+            },
+            ...
+        ]
+    }
+    
+### 89. 更多纸张
+    GET /more/cards
+    request:
+    {
+        ^entity_id: 当前商品ID，用于过滤当前商品
+    }
+    response:
+    {
+        secondary_types:
+        [
+            {
+                id: 二级类型ID,
+                name: 二级类型名称,
+                entities: 商品列表
+                [
+                    {
+                        id: 商品ID,
+                        image: {
+                            id: 商品图片ID,
+                            src: 商品图片链接
+                        },
+                        name: 商品名称,
+                        summary: 商品描述,
+                        sales: 销量,
+                        price: 起价,
+                        comment_count: 评价数量
+                    },
+                    ...
+                ]
+            },
+            ...
+        ]
+    }
+    
+### 90. 网站导航
+    同76

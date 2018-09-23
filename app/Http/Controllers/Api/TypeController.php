@@ -16,13 +16,20 @@ use App\Models\CategoryItem;
 use App\Models\LargeCategoryItem;
 use App\Models\SecondaryType;
 use App\Models\Type;
+use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 
 class TypeController extends ApiController
 {
     public function index()
     {
-        return $this->success(new TypeCollection(Type::pagination()));
+        if(TokenFactory::isAdmin()) {
+            $types = new TypeCollection(Type::paginate());
+        } else {
+            $types = TypeResource::collection(Type::paginate())->show(['id', 'name']);
+        }
+
+        return $this->success($types);
     }
 
     public function show(Type $type)
