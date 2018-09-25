@@ -16,8 +16,8 @@ class FinanceStatisticResource extends Resource
         return [
             'id' => $this->id,
             'order_no' => $this->order_no,
-            'price' => $this->price,
-            'type' => $this->type == 1 ? '收入' : '支出',
+            'price' => ($this->type == 1 ? '' : '-') . $this->price,
+            'type' => $this->type == 1 ? '收入' : '退款',
             'created_at' => (string)$this->created_at
         ];
     }

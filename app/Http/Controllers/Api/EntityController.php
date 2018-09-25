@@ -48,9 +48,9 @@ class EntityController extends ApiController
             ->when($request->type_id, function ($query) use ($request) {
                 $query->where('type_id', $request->type_id);
             })
-            ->get();
+            ->paginate(Entity::getLimit());
 
-        return $this->success(EntityResource::collection($entities)->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'price', 'comment_count']));
+        return $this->success(new EntityCollection($entities));
     }
 
     public function more()
