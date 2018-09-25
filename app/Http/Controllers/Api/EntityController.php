@@ -50,7 +50,7 @@ class EntityController extends ApiController
             })
             ->get();
 
-        return $this->success(new EntityCollection($entities));
+        return $this->success(EntityResource::collection($entities)->show(['id', 'image', 'name', 'type', 'summary', 'status', 'sales', 'price', 'comment_count']));
     }
 
     public function more()
