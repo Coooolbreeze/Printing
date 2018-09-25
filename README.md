@@ -2069,4 +2069,14 @@
     }
     
 ### 90. 网站导航
-    同76
+    GET /maps
+    response:
+    [
+        {
+            type: 1新闻 2帮助,
+            id: 文章ID,
+            title: 文章标题,
+            created_at: 创建日期
+        },
+        ...
+    ]

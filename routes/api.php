@@ -131,6 +131,8 @@ Route::namespace('Api')->group(function () {
 
     Route::get('/more/cards', 'EntityController@more');
 
+    Route::get('/maps', 'MapController@index');
+
     /**
      * 需登录后访问
      */
