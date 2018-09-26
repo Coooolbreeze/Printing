@@ -21,7 +21,7 @@ class CategoryResource extends Resource
     public function toArray($request)
     {
         $this->items->filter(function ($item) {
-            return ($item->item_type == 1 || $item->entity->status == 1);
+            return ($item->item_type == 1 || $item->entity);
         });
 
         return $this->filterFields([
