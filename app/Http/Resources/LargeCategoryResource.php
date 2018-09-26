@@ -21,7 +21,7 @@ class LargeCategoryResource extends Resource
     public function toArray($request)
     {
         $this->items->filter(function ($item) {
-            return ($item->item_type == 1 || $item->entity);
+            return ($item->item_type == 1 || is_object($item->entity));
         });
 
         return $this->filterFields([
