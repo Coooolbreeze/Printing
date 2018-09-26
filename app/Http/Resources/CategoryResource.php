@@ -20,15 +20,15 @@ class CategoryResource extends Resource
 
     public function toArray($request)
     {
-        $this->items->filter(function ($item) {
-            return ($item->item_type == 1 || is_object($item->entity));
+        $items = $this->items->filter(function ($item) {
+            return ($item->item_type == 1 || $item->entity);
         });
 
         return $this->filterFields([
             'id' => $this->id,
             'name' => $this->name,
             'url' => $this->when($this->url, $this->url),
-            'items' => CategoryItemResource::collection($this->items)
+            'items' => CategoryItemResource::collection($items)
         ]);
     }
 }
