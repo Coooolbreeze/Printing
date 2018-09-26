@@ -48,7 +48,7 @@ class OrderExport implements FromQuery, WithHeadings, WithMapping
         return [
             $row->order_no,
             $row->title,
-            User::find($row->user_id)->toArray()['nickname'],
+            User::find($row->user_id)->nickname,
             $row->total_price . "\t",
             (string)$row->created_at,
             json_decode($row->snap_address, true)['name'],

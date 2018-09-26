@@ -118,7 +118,7 @@ class OrderResource extends Resource
         $content = json_decode($this->snap_content, true);
 
         foreach ($content as &$entity) {
-            $comments = Entity::find($entity['id'])->comments;
+            $comments = Entity::withoutGlobalScope('status')->find($entity['id'])->comments;
 
             if ($comments->count() == 0) {
                 $entity['grade'] = 0;

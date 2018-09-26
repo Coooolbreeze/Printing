@@ -15,17 +15,19 @@ class CategoryItemResource extends Resource
 {
     public function toArray($request)
     {
-        return $this->filterFields([
-            'id' => $this->id,
-            'category' => (new CategoryResource($this->category))->show(['id', 'name']),
-            'type' => $this->item_type,
-            'item' => $this->item_type == 1
-                ? (new TypeResource($this->type))->show(['id', 'name'])
-                : (new EntityResource($this->entity))->show(['id', 'name']),
-            'is_primary' => $this->isPrimary(),
-            'is_hot' => (bool)$this->is_hot,
-            'is_new' => (bool)$this->is_new
-        ]);
+        if ($this->item_type == 1 || $this->entity->status == 1) {
+            return $this->filterFields([
+                'id' => $this->id,
+                'category' => (new CategoryResource($this->category))->show(['id', 'name']),
+                'type' => $this->item_type,
+                'item' => $this->item_type == 1
+                    ? (new TypeResource($this->type))->show(['id', 'name'])
+                    : (new EntityResource($this->entity))->show(['id', 'name']),
+                'is_primary' => $this->isPrimary(),
+                'is_hot' => (bool)$this->is_hot,
+                'is_new' => (bool)$this->is_new
+            ]);
+        }
     }
 
     public function isPrimary(): bool

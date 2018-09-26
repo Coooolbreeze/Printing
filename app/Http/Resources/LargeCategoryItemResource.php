@@ -15,15 +15,17 @@ class LargeCategoryItemResource extends Resource
 {
     public function toArray($request)
     {
-        return $this->filterFields([
-            'id' => $this->id,
-            'type' => $this->item_type,
-            'item' => $this->item_type == 1
-                ? (new TypeResource($this->type))->show(['id', 'name'])
-                : (new EntityResource($this->entity))->show(['id', 'name']),
-            'is_hot' => (bool)$this->getItem()->is_hot,
-            'is_new' => (bool)$this->getItem()->is_new
-        ]);
+        if ($this->item_type == 1 || $this->entity->status == 1) {
+            return $this->filterFields([
+                'id' => $this->id,
+                'type' => $this->item_type,
+                'item' => $this->item_type == 1
+                    ? (new TypeResource($this->type))->show(['id', 'name'])
+                    : (new EntityResource($this->entity))->show(['id', 'name']),
+                'is_hot' => (bool)$this->getItem()->is_hot,
+                'is_new' => (bool)$this->getItem()->is_new
+            ]);
+        }
     }
 
     public function getItem()
