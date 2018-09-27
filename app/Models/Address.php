@@ -8,6 +8,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\BaseException;
 use App\Services\Tokens\TokenFactory;
 
 
@@ -60,16 +61,25 @@ class Address extends Model
         self::updateBatch($addresses->toArray());
     }
 
+    /**
+     * @param null $id
+     * @return false|string
+     * @throws BaseException
+     * @throws \App\Exceptions\TokenException
+     */
     public static function addressSnap($id = null)
     {
         if (!$id) {
             $address = TokenFactory::getCurrentUser()
                 ->addresses()
                 ->where('is_default', 1)
-                ->firstOrFail();
+                ->first();
         } else {
-            $address = self::findOrFail($id);
+            $address = self::find($id);
         }
+
+        if (!$address) throw new BaseException('请选择地址或设置默认地址');
+
         return json_encode([
             'name' => $address->name,
             'phone' => $address->phone,

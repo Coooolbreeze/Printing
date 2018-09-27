@@ -48,7 +48,10 @@ class Express extends Model
      */
     public static function getFreight($expressId, $province, $totalPrice, $totalWeight)
     {
-        $express = self::findOrFail($expressId);
+        $express = self::find($expressId);
+
+        if (!$express) throw new BaseException('请选择快递公司');
+
         $regions = $express->regions()->pluck('name')->toArray();
         if (!in_array($province, $regions)) throw new BaseException('该区域不支持' . $express->name);
 
