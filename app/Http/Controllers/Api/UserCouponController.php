@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Resources\CouponReceiveRecordResource;
 use App\Models\Coupon;
 use App\Models\UserCoupon;
 use Illuminate\Http\Request;
@@ -34,19 +35,6 @@ class UserCouponController extends ApiController
     {
         $record = UserCoupon::latest()->limit(4)->get();
 
-        return $this->success([
-            'user' => self::partialHidden($record->user->phone, 3, 4),
-            'coupon' => $record->name,
-            'created_at' => (string)$this->created_at
-        ]);
-    }
-
-    private static function partialHidden($value, $start, $length)
-    {
-        if (!$value) {
-            return $value;
-        }
-
-        return substr_replace($value, '****', $start, $length);
+        return $this->success(CouponReceiveRecordResource::collection($record));
     }
 }
