@@ -35,7 +35,7 @@ class UserCouponController extends ApiController
         $record = UserCoupon::latest()->limit(4)->get();
 
         return $this->success([
-            'user' => self::partialHidden($record->user->phone(), 3, 4),
+            'user' => self::partialHidden($record->user->phone, 3, 4),
             'coupon' => $record->name,
             'created_at' => (string)$this->created_at
         ]);

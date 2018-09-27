@@ -2082,4 +2082,15 @@
     ]
     
 ### 91. 领券记录
+    GET /receive_record
+    response:
+    [
+        {
+            user: 用户手机,
+            coupon: 优惠券名称,
+            created_at: 领取时间
+        }
+    ]
     
+### 92. 礼品订单详情
+    GET /
