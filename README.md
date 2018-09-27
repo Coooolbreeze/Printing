@@ -2093,4 +2093,34 @@
     ]
     
 ### 92. 礼品订单详情
-    GET /
+    GET /gift_orders/{id}
+    response:
+    {
+        id: 订单ID,
+        order_no: 订单编号,
+        user: {
+            id: 用户ID,
+            nickname: 用户昵称
+        },
+        address: {
+            name: 收货人姓名,
+            phone: 收货人手机号,
+            province: 省份,
+            city: 市,
+            county: 区/县,
+            detail: 详细地址
+        }，
+        content: {
+            id: 礼品ID,
+            name: 礼品名称
+            image: {
+                id: 礼品图片ID,
+                src: 礼品图片地址
+            },
+            accumulate_points: 消耗积分
+        },
+        express_company: 快递公司,
+        ^tracking_no: 快递单号，status为已发货时返回,
+        status: 发货状态 (未发货|已发货),
+        created_at: 下单日期
+    }
