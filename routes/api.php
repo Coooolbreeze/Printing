@@ -133,6 +133,8 @@ Route::namespace('Api')->group(function () {
 
     Route::get('/maps', 'MapController@index');
 
+    Route::get('/receive_record', 'UserCouponController@record');
+
     /**
      * 需登录后访问
      */

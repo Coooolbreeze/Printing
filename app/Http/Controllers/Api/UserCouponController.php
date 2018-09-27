@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Models\Coupon;
+use App\Models\UserCoupon;
 use Illuminate\Http\Request;
 
 class UserCouponController extends ApiController
@@ -27,5 +28,25 @@ class UserCouponController extends ApiController
         Coupon::receive($request->coupon_no);
 
         return $this->message('领取成功');
+    }
+
+    public function record()
+    {
+        $record = UserCoupon::latest()->limit(4)->get();
+
+        return $this->success([
+            'user' => self::partialHidden($record->user->phone(), 3, 4),
+            'coupon' => $record->name,
+            'created_at' => (string)$this->created_at
+        ]);
+    }
+
+    private static function partialHidden($value, $start, $length)
+    {
+        if (!$value) {
+            return $value;
+        }
+
+        return substr_replace($value, '****', $start, $length);
     }
 }
