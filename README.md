@@ -1118,6 +1118,7 @@
         name: 商品名称,
         summary: 商品描述,
         body: 商品介绍,
+        is_follow: 是否已关注该商品,
         lead_time: 商品出货周期,
         custom_number: 是否支持用户自定义数量(
             0 不支持,
