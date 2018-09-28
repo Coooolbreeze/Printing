@@ -12,6 +12,7 @@ namespace App\Http\Resources;
 use App\Models\CategoryItem;
 use App\Models\Combination;
 use App\Models\Comment;
+use App\Services\Tokens\TokenFactory;
 
 class EntityResource extends Resource
 {
@@ -38,6 +39,7 @@ class EntityResource extends Resource
             'name' => $this->name,
             'summary' => $this->summary,
             'body' => $this->body,
+            'is_follow' => $this->isFollow(),
             'lead_time' => $this->lead_time,
             'custom_number' => $this->custom_number,
             'unit' => $this->when($this->custom_number > 0, $this->unit),
@@ -91,5 +93,15 @@ class EntityResource extends Resource
         preg_match_all('/\d+/', end($number), $num);
         preg_match_all('/\D+/', end($number), $str);
         return (number_format(ceil($combination->price / $num[0][0] * 100) / 100, 2)) . '/' . end($str[0]) . '起';
+    }
+
+    public function isFollow()
+    {
+        try {
+            $ids = TokenFactory::getCurrentUser()->entities()->pluck('id')->toArray();
+            return in_array($this->id, $ids);
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 }
