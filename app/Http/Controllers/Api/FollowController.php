@@ -35,15 +35,18 @@ class FollowController  extends ApiController
 
         $followed = TokenFactory::getCurrentUser()->entities()->pluck('id')->toArray();
 
-        collect($entityIds)->filter(function ($id) use ($followed) {
-            return !in_array($id, $followed);
-        });
+        $ids = [];
+        foreach ($entityIds as $id) {
+            if(!in_array($id, $followed)) {
+                $ids[] = $id;
+            }
+        }
 
 //        if (array_intersect($entityIds, $followed)) {
 //            throw new BaseException('列表中有存在已关注的商品');
 //        }
 
-        TokenFactory::getCurrentUser()->entities()->attach($entityIds);
+        TokenFactory::getCurrentUser()->entities()->attach($ids);
 
         return $this->message('关注成功');
     }
