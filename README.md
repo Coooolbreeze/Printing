@@ -1290,17 +1290,20 @@
 ### 46. 合作伙伴
     GET /partners
     response:
-    [
-        {
-            id: 合作伙伴ID,
-            image: {
-                id: 图片ID,
-                src: 图片链接
+    {
+        data:
+        [
+            {
+                id: 合作伙伴ID,
+                image: {
+                    id: 图片ID,
+                    src: 图片链接
+                },
+                url: 跳转链接
             },
-            url: 跳转链接
-        },
-        ...
-    ]
+            ...
+        ]   
+    }
     
 ### 47. 友情链接
     GET /links

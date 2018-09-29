@@ -20,12 +20,7 @@ class PartnerController extends ApiController
 {
     public function index()
     {
-        if (TokenFactory::isAdmin()) {
-            $partners = new PartnerCollection(Partner::pagination());
-        } else {
-            $partners = PartnerResource::collection(Partner::all());
-        }
-        return $this->success($partners);
+        return $this->success(new PartnerCollection(Partner::pagination()));
     }
 
     public function show(Partner $partner)
