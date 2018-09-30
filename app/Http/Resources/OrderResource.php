@@ -34,7 +34,7 @@ class OrderResource extends Resource
             'user' => (new UserResource($this->user))->show(['id', 'nickname', 'phone']),
             'title' => $this->title,
             'address' => json_decode($this->snap_address, true),
-            'content' => $this->getContent(),
+            'content' => json_decode($this->snap_content, true),
             'goods_price' => $this->goods_price,
             'goods_count' => $this->goods_count,
             'total_weight' => $this->total_weight,
@@ -111,33 +111,5 @@ class OrderResource extends Resource
             OrderPayTypeEnum::BACK_PAY => '后台支付'
         ];
         return $value ? $payType[$value] : null;
-    }
-
-    public function getContent()
-    {
-        $content = json_decode($this->snap_content, true);
-
-        foreach ($content as &$entity) {
-            $comments = Entity::withoutGlobalScope('status')->find($entity['id'])->comments;
-
-            if ($comments->count() == 0) {
-                $entity['grade'] = 0;
-            } else {
-                $grade = $comments->sum('describe_grade') / $comments->count();
-
-//                $arr = explode($grade, '.');
-//                if ($arr[1] >= 5) {
-//                    $arr[1] = 5;
-//                } else {
-//                    $arr[1] = 0;
-//                }
-
-//                $entity['grade'] = implode('.', $arr);
-
-                $entity['grade'] = floor($grade * 100) / 100;
-            }
-        }
-
-        return $content;
     }
 }

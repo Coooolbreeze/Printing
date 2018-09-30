@@ -329,6 +329,7 @@ class OrderController extends ApiController
                 'weight' => $value->weight,
                 'count' => $value->count ?: substr($combination->combination, strripos($combination->combination, '|') + 1),
                 'price' => $value->price,
+                'grade' => self::getGrade($entityModel),
                 'remark' => self::joinSpecs(json_decode($value->custom_specs, true)) . $value->remark
             ];
 
@@ -368,6 +369,28 @@ class OrderController extends ApiController
             $str = rtrim($str, '*') . '；';
         }
         return $str;
+    }
+
+    private static function getGrade(Entity $entity)
+    {
+        $comments = $entity->comments;
+
+        if ($comments->count() == 0) {
+            return 0;
+        } else {
+            $grade = $comments->sum('describe_grade') / $comments->count();
+
+//                $arr = explode($grade, '.');
+//                if ($arr[1] >= 5) {
+//                    $arr[1] = 5;
+//                } else {
+//                    $arr[1] = 0;
+//                }
+
+//                $entity['grade'] = implode('.', $arr);
+
+            return floor($grade * 100) / 100;
+        }
     }
 
     private static function getCount($count)

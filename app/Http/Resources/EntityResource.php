@@ -42,7 +42,7 @@ class EntityResource extends Resource
             'is_follow' => $this->isFollow(),
             'lead_time' => $this->lead_time,
             'custom_number' => $this->custom_number,
-            'unit' => $this->when($this->custom_number > 0, $this->unit),
+            'unit' => $this->unit,
             'title' => $this->title,
             'keywords' => $this->keywords,
             'describe' => $this->describe,
