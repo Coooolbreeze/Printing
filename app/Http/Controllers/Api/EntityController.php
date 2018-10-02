@@ -235,7 +235,7 @@ class EntityController extends ApiController
         $values = [];
         foreach ($specs as $spec) {
             if (!array_key_exists('value', $spec)) {
-                throw new BaseException('请为属性添加值');
+                throw new BaseException('请为' . $spec['attribute'] . '属性添加值');
             }
 
             $attribute = Attribute::create([
