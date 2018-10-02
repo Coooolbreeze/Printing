@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Exceptions\BaseException;
 use App\Http\Resources\HotKeywordCollection;
 use App\Http\Resources\HotKeywordResource;
 use App\Models\HotKeyword;
@@ -30,6 +31,10 @@ class HotKeywordController extends ApiController
 
     public function store(Request $request)
     {
+        if (in_array($request->name, HotKeyword::all()->pluck('name')->toArray())) {
+            throw new BaseException('该关键词已存在');
+        }
+
         HotKeyword::create([
             'name' => $request->name,
             'url' => $request->url,
