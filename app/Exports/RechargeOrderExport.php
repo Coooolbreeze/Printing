@@ -51,7 +51,7 @@ class RechargeOrderExport implements FromQuery, WithHeadings, WithMapping
             (string)$row->created_at,
             $row->order_no,
             $row->price . "\t",
-            User::find($row->user_id)->nickname,
+            (User::find($row->user_id))->nickname,
             $row->pay_type == OrderPayTypeEnum::ALI_PAY ? '支付宝' : '微信支付',
         ];
     }
