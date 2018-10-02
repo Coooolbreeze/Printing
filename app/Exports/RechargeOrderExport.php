@@ -48,8 +48,6 @@ class RechargeOrderExport implements FromQuery, WithHeadings, WithMapping
 
     public function map($row): array
     {
-        throw new BaseException($row->user_id . '');
-
         return [
             (string)$row->created_at,
             $row->order_no,
