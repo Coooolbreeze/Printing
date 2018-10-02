@@ -43,6 +43,9 @@ class FinanceStatisticController extends ApiController
         $totalIncome = $financeStatistic->where('type', 1)->sum('price');
         $totalRefund = $financeStatistic->where('type', 2)->sum('price');
 
+        $totalIncome = ceil($totalIncome * 100) / 100;
+        $totalRefund = ceil($totalRefund * 100) / 100;
+
         return $this->success([
             'total_income' => $totalIncome,
             'income_count' => $totalIncome - $totalRefund,
