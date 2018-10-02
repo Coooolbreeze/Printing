@@ -49,9 +49,12 @@ class VerificationCode
      */
     public static function validate($code, $verificationToken)
     {
+        if (!Cache::has($verificationToken)) {
+            throw new VerificationCodeException('验证码已过期');
+        }
+
         $cacheValues = json_decode(Cache::get($verificationToken), true);
 
-        if (!$cacheValues) throw new VerificationCodeException('验证码已过期');
         if ($code != $cacheValues['code']) throw new VerificationCodeException();
 
         return $cacheValues;
