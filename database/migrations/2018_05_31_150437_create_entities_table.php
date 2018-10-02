@@ -27,7 +27,7 @@ class CreateEntitiesTable extends Migration
             $table->string('keywords');
             $table->string('describe')->nullable();
             $table->integer('sales')->default(0);
-            $table->tinyInteger('status')->default(0)->comment('0未上架 1销售中');
+            $table->tinyInteger('status')->default(1)->comment('1销售中 2已下架');
             $table->timestamps();
         });
 

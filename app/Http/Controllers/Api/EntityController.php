@@ -15,6 +15,7 @@ use App\Http\Resources\EntityCollection;
 use App\Http\Resources\EntityResource;
 use App\Http\Resources\TypeResource;
 use App\Models\Attribute;
+use App\Models\Cart;
 use App\Models\CategoryItem;
 use App\Models\Combination;
 use App\Models\CustomAttribute;
@@ -204,6 +205,8 @@ class EntityController extends ApiController
                 ->where('item_id', $entity->id)
                 ->delete();
 
+            Cart::where('entity_id', $entity->id)->delete();
+
             $entity->delete();
         });
 
@@ -231,6 +234,10 @@ class EntityController extends ApiController
         $valuesArr = [];
         $values = [];
         foreach ($specs as $spec) {
+            if (!array_key_exists('value', $spec)) {
+                throw new BaseException('请为属性添加值');
+            }
+
             $attribute = Attribute::create([
                 'entity_id' => $entity->id,
                 'name' => $spec['attribute']
