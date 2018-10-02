@@ -48,7 +48,7 @@ class FinanceStatisticController extends ApiController
 
         return $this->success([
             'total_income' => $totalIncome,
-            'income_count' => $totalIncome - $totalRefund,
+            'income_count' => ceil(($totalIncome - $totalRefund) * 100) / 100,
             'total_refund' => $totalRefund,
         ]);
     }
