@@ -10,6 +10,7 @@ namespace App\Exports;
 
 
 use App\Enum\OrderPayTypeEnum;
+use App\Exceptions\BaseException;
 use App\Models\RechargeOrder;
 use App\Models\User;
 use Carbon\Carbon;
@@ -47,11 +48,13 @@ class RechargeOrderExport implements FromQuery, WithHeadings, WithMapping
 
     public function map($row): array
     {
+        throw new BaseException($row->user_id . '');
+
         return [
             (string)$row->created_at,
             $row->order_no,
             $row->price . "\t",
-            User::findOrFail($row->user_id)->nickname,
+            User::find($row->user_id)->nickname,
             $row->pay_type == OrderPayTypeEnum::ALI_PAY ? '支付宝' : '微信支付',
         ];
     }
