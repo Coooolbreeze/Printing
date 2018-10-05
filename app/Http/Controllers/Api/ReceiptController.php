@@ -88,4 +88,14 @@ class ReceiptController extends ApiController
 
         return $this->message('更新成功');
     }
+
+    public function batchReceipted(Request $request)
+    {
+        $ids = $request->ids;
+
+        Receipt::whereIn('id', $ids)
+            ->update(['is_receipted', 1]);
+
+        return $this->message('更新成功');
+    }
 }

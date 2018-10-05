@@ -431,6 +431,7 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('receipts', 'ReceiptController')
             ->only(['index', 'update']);
+        Route::put('/batch/receipts', 'ReceiptController@batchReceipted');
 
         Route::apiResource('recharge_orders', 'RechargeOrderController')
             ->only(['index']);
