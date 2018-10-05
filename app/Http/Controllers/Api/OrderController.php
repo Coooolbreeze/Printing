@@ -207,7 +207,13 @@ class OrderController extends ApiController
 
             self::updateValidate($status, $order);
 
-            Order::updateField($request, $order, ['status', 'remark']);
+            Order::updateField($request, $order, ['status']);
+
+            if ($request->remark) {
+                $order->update([
+                    'remark' => $order->remark . '--' . $request->remark
+                ]);
+            }
 
             // 分发事件
             if ($status == OrderStatusEnum::UNDELIVERED) {
