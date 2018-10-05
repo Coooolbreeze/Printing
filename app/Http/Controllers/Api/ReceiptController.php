@@ -94,7 +94,7 @@ class ReceiptController extends ApiController
         $ids = $request->ids;
 
         Receipt::whereIn('id', $ids)
-            ->update(['is_receipted', 1]);
+            ->update(['is_receipted' => 1]);
 
         return $this->message('更新成功');
     }
