@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Exceptions\BaseException;
 use App\Exports\EntityCombinationsExport;
 use App\Http\Resources\CombinationCollection;
 use App\Http\Resources\CombinationResource;
@@ -54,10 +55,17 @@ class CombinationController extends ApiController
 
         $combinations = [];
         foreach ($data as $entity) {
+            $price = $entity[count($entity) - 2];
+            $weight = $entity[count($entity) - 1];
+
+            if ($price && !$weight) {
+                throw new BaseException('价格与重量必须同时填写');
+            }
+
             array_push($combinations, [
                 'id' => $entity[0],
-                'price' => $entity[count($entity) - 2],
-                'weight' => $entity[count($entity) - 1]
+                'price' => $price,
+                'weight' => $weight
             ]);
         }
         Combination::updateBatch($combinations);
