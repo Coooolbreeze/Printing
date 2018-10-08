@@ -18,7 +18,7 @@ class CommentResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'user' => $this->when(
-                TokenFactory::isAdmin() || $this->is_anonymous != 0,
+                TokenFactory::isAdmin() || $this->is_anonymous == 0,
                 (new UserResource($this->user))->show(['id', 'nickname', 'avatar'])
             ),
             'goods' => $this->getCommentEl($this->commentable),
