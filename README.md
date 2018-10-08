@@ -1616,6 +1616,7 @@
             first_weight: 首重价格,
             additional_weight: 续重价格,
             capped: 封顶价,
+            free_express: 包邮起步价,
             regions: 支持的配送区域(省)
         },
         ...

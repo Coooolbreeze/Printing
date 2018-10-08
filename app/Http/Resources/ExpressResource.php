@@ -20,6 +20,7 @@ class ExpressResource extends Resource
             'additional_unity' => config('setting.additional_weight'),
             'first_weight' => $this->first_weight,
             'additional_weight' => $this->additional_weight,
+            'free_express' => config('setting.free_express'),
             'capped' => $this->capped,
             'regions' => $this->regions()->pluck('name')
         ]);
