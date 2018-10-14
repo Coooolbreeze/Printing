@@ -100,6 +100,7 @@ class CartController extends ApiController
      * @param $cart
      * @param null $userId
      * @return array
+     * @throws BaseException
      * @throws \App\Exceptions\TokenException
      */
     public static function getSaveInfo($cart, $userId = null)
@@ -124,6 +125,8 @@ class CartController extends ApiController
     public static function getWeight($combinationId, $customSpecs, $count = 0)
     {
         $specWeight = Combination::find($combinationId)->weight;
+
+        if (!$specWeight) throw new BaseException('该商品组合暂不可选');
 
         foreach ($customSpecs as $customSpec)
             foreach ($customSpec as $value)
