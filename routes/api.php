@@ -453,6 +453,7 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::get('/test', function () {
+        return (new \App\Services\KDN())->generate();
 
         \App\Jobs\OrderExpire::dispatch(\App\Models\Order::find(1));
 

@@ -170,7 +170,7 @@ class EntityController extends ApiController
     {
         \DB::transaction(function () use ($request, $entity) {
             Entity::updateField($request, $entity, [
-                'type_id', 'secondary_type_id', 'name', 'summary', 'body', 'lead_time', 'title', 'keywords', 'describe', 'status'
+                'type_id', 'secondary_type_id', 'name', 'summary', 'body', 'lead_time', 'title', 'keywords', 'describe', 'status', 'custom_number', 'unit'
             ]);
             isset($request->images) && $entity->images()->sync($request->images);
 
@@ -183,6 +183,25 @@ class EntityController extends ApiController
                         'is_new' => $request->is_new
                     ]
                 );
+            }
+
+            if ($request->specs) {
+                $attrIds = [];
+                $cusAttrIds = [];
+                foreach ($entity->attributes as $attr) {
+                    array_push($attrIds, $attr['id']);
+                }
+                foreach ($entity->customAttributes as $attr) {
+                    array_push($cusAttrIds, $attr['id']);
+                }
+                Value::whereIn('attribute_id', $attrIds)->delete();
+                CustomValue::whereIn('custom_attribute_id', $cusAttrIds)->delete();
+                $entity->attributes()->delete();
+                $entity->customAttributes()->delete();
+                $entity->combinations()->delete();
+
+                self::syncSpecs($entity, $request->specs);
+                $request->custom_specs && count($request->custom_specs) > 0 && self::customSpecs($entity, $request->custom_specs);
             }
         });
 
@@ -221,7 +240,7 @@ class EntityController extends ApiController
                 'entity_id' => $entity->id,
                 'name' => $spec['attribute']
             ]);
-            foreach ($spec['value'] as $value) {
+            foreach ($spec['values'] as $value) {
                 $value['custom_attribute_id'] = $attribute->id;
                 array_push($valueArr, $value);
             }
@@ -234,7 +253,7 @@ class EntityController extends ApiController
         $valuesArr = [];
         $values = [];
         foreach ($specs as $spec) {
-            if (!array_key_exists('value', $spec)) {
+            if (!array_key_exists('values', $spec)) {
                 throw new BaseException('请为' . $spec['attribute'] . '属性添加值');
             }
 
@@ -242,14 +261,14 @@ class EntityController extends ApiController
                 'entity_id' => $entity->id,
                 'name' => $spec['attribute']
             ]);
-            foreach ($spec['value'] as $value) {
+            foreach ($spec['values'] as $value) {
                 array_push($values, [
                     'attribute_id' => $attribute->id,
                     'name' => $value
                 ]);
             }
 
-            array_push($valuesArr, $spec['value']);
+            array_push($valuesArr, $spec['values']);
         }
         Value::saveAll($values);
 
