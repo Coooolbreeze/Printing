@@ -22,11 +22,9 @@ class ShoppingBillController extends ApiController
         $goods = [];
         $content = json_decode($order->snap_content, true);
         foreach ($content as $good) {
-
-            return $good['combination'];
             array_push($goods, [
                 'image' => $good['image']['src'],
-                'describe' => $good['name'] . ',' . implode(',', explode('|', $good['combination'])),
+                'describe' => $good['name'] . ',' . implode(',', explode('|', $good['combination']['name'])),
                 'type' => $good['type'],
                 'count' => $good['count'],
                 'price' => $good['price']
