@@ -912,6 +912,7 @@
             {
                 id: 商品ID,
                 name: 商品名称,
+                type: 商品类型,
                 image: {
                     id: 商品图片ID,
                     src: 商品图片链接

@@ -385,6 +385,9 @@ Route::namespace('Api')->group(function () {
             ->only(['store']);
 
         Route::get('/all/users', 'UserController@all');
+
+        Route::apiResource('shopping_bill', 'ShoppingController')
+            ->only(['index']);
     });
 
     Route::middleware('permission:积分管理')->group(function () {
@@ -453,7 +456,7 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::get('/test', function () {
-        return (new \App\Services\KDN())->generate();
+        return (new \App\Services\KDN())->generate()['PrintTemplate'];
 
         \App\Jobs\OrderExpire::dispatch(\App\Models\Order::find(1));
 

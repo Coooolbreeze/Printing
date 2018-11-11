@@ -32,30 +32,34 @@ class KDN
         $eorder["OrderCode"] = "012657700387";
         $eorder["PayType"] = 1;
         $eorder["ExpType"] = 1;
+        $eorder["IsReturnPrintTemplate"] = 1;
 
         $sender = [];
         $sender["Name"] = "李先生";
         $sender["Mobile"] = "18888888888";
         $sender["ProvinceName"] = "李先生";
-        $sender["CityName"] = "深圳市";
-        $sender["ExpAreaName"] = "福田区";
-        $sender["Address"] = "赛格广场5401AB";
+        $sender["CityName"] = "上海市";
+        $sender["ExpAreaName"] = "徐汇区";
+        $sender["Address"] = "漕河泾";
 
         $receiver = [];
-        $receiver["Name"] = "李先生";
+        $receiver["Name"] = "王先生";
         $receiver["Mobile"] = "18888888888";
-        $receiver["ProvinceName"] = "李先生";
+        $receiver["ProvinceName"] = "王先生";
         $receiver["CityName"] = "深圳市";
         $receiver["ExpAreaName"] = "福田区";
         $receiver["Address"] = "赛格广场5401AB";
 
         $commodityOne = [];
         $commodityOne["GoodsName"] = "其他";
+        $commodityTwo = [];
+        $commodityTwo["GoodsName"] = "哈哈哈哈";
         $commodity = [];
         $commodity[] = $commodityOne;
+        $commodity[] = $commodityTwo;
 
-        $eorder["Sender"] = $sender;
-        $eorder["Receiver"] = $receiver;
+        $eorder["Sender"] = $receiver;
+        $eorder["Receiver"] = $sender;
         $eorder["Commodity"] = $commodity;
 
         $jsonParam = json_encode($eorder, JSON_UNESCAPED_UNICODE);
@@ -72,7 +76,7 @@ class KDN
             'DataType' => '2',
         );
         $datas['DataSign'] = $this->encrypt($requestData, $this->appKey);
-        $result = $this->sendPost($this->reqUrl, $datas);
+        $result = json_decode($this->sendPost($this->reqUrl, $datas), true);
 
         //根据公司业务处理返回的信息......
 
