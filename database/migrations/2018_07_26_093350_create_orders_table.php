@@ -33,6 +33,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('balance_deducted')->default(0);
             $table->decimal('total_price');
             $table->string('remark')->nullable();
+            $table->string('bill_remark')->nullable();
             $table->string('prepay_id')->nullable();
             $table->string('creator')->nullable();
             $table->tinyInteger('status')->default(1)->comment('0已失效 1未支付 2已支付 3待发货 4已发货 5已收货 6已评论 7未通过 8已退款');

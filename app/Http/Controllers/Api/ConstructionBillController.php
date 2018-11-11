@@ -13,7 +13,7 @@ use App\Models\Order;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 
-class ShoppingBillController extends ApiController
+class ConstructionBillController extends ApiController
 {
     public function index(Request $request)
     {
@@ -26,23 +26,15 @@ class ShoppingBillController extends ApiController
                 'image' => $good['image']['src'],
                 'describe' => $good['name'] . ',' . implode(',', explode('|', $good['combination']['name'])),
                 'type' => $good['type'],
-                'count' => $good['count'],
-                'price' => $good['price']
+                'count' => $good['count']
             ]);
         }
 
         return $this->success([
             'order_no' => $order->order_no,
             'created_at' => (string)$order->created_at,
-            'address' => json_decode($order->snap_address, true),
             'goods' => $goods,
-            'goods_price' => $order->goods_price,
-            'total_weight' => $order->total_weight,
-            'total_count' => $order->goods_count,
-            'freight' => $order->freight,
-            'discount_amount' => $order->discount_amount + $order->member_discount,
-            'total_price' => $order->total_price,
-            'remark' => $order->remark,
+            'bill_remark' => $order->bill_remark,
             'clerk' => TokenFactory::getCurrentUser()->nickname
         ]);
     }
