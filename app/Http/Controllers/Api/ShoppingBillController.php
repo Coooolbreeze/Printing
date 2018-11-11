@@ -20,7 +20,7 @@ class ShoppingBillController extends ApiController
         $order = Order::findOrFail($request->order_id);
 
         $goods = [];
-        $content = json_decode($this->snap_content, true);
+        $content = json_decode($order->snap_content, true);
         foreach ($content as $good) {
             array_push($goods, [
                 'image' => $good['image']['src'],
