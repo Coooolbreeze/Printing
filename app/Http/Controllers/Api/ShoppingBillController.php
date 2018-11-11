@@ -13,7 +13,7 @@ use App\Models\Order;
 use App\Services\Tokens\TokenFactory;
 use Illuminate\Http\Request;
 
-class ShoppingBill extends ApiController
+class ShoppingBillController extends ApiController
 {
     public function index(Request $request)
     {
