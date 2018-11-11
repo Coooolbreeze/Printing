@@ -189,7 +189,7 @@ class OrderController extends ApiController
      */
     public function update(UpdateOrder $request, Order $order)
     {
-        Order::updateField($request, $order, []);
+        Order::updateField($request, $order, ['bill_remark']);
 
         if ($request->key && $request->file_id) {
             $content = json_decode($order->snap_content, true);
