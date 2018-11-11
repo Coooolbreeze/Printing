@@ -24,7 +24,7 @@ class ShoppingBillController extends ApiController
         foreach ($content as $good) {
             array_push($goods, [
                 'image' => $good['image']['src'],
-                'describe' => $good['name'] . ',' . implode(',', explode('|', $good['name']['combination'])),
+                'describe' => $good['name'] . ',' . implode(',', explode('|', $good['combination'])),
                 'type' => $good['type'],
                 'count' => $good['count'],
                 'price' => $good['price']
