@@ -37,7 +37,7 @@ class ShoppingBillController extends ApiController
             'address' => json_decode($order->snap_address, true),
             'goods' => $goods,
             'goods_price' => $order->goods_price,
-            'total_weight' => $order->total_weight,
+            'total_weight' => $order->total_weight / 1000,
             'total_count' => $order->goods_count,
             'freight' => $order->freight,
             'discount_amount' => $order->discount_amount + $order->member_discount,
