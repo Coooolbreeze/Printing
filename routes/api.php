@@ -386,6 +386,9 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/all/users', 'UserController@all');
 
+        Route::apiResource('/bill/express', 'ExpressBillController')
+            ->only(['index']);
+
         Route::apiResource('bill/shopping', 'ShoppingBillController')
             ->only(['index']);
 
