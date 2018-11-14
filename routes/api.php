@@ -459,7 +459,7 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::get('/test', function () {
-        return (new \App\Services\KDN())->generate()['PrintTemplate'];
+        return (new \App\Services\KDN(73))->generate()['PrintTemplate'];
 
         \App\Jobs\OrderExpire::dispatch(\App\Models\Order::find(1));
 
