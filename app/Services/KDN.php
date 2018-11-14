@@ -59,12 +59,12 @@ class KDN
         $receiver["ExpAreaName"] = $address->county;
         $receiver["Address"] = $address->detail;
 
-        $content = json_decode($order->content);
+        $content = json_decode($order->content, true);
 
         $commodity = [];
         foreach ($content as $goods) {
             $commodity[] = [
-                "GoodsName" => $goods->name
+                "GoodsName" => $goods['name']
             ];
         }
 
