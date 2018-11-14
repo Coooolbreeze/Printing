@@ -19,6 +19,7 @@ use App\Models\FinanceStatistic;
 use App\Models\Message;
 use App\Models\OrderLog;
 use App\Models\TypeSale;
+use App\Services\KDN;
 use App\Services\SMS;
 use Carbon\Carbon;
 
@@ -109,6 +110,8 @@ class OrderEventSubscriber
         OrderLog::write($order->id, '发货');
 
         Message::orderDelivered($order->user_id);
+
+        (new KDN($order->id))->generate();
 
         if (config('setting.sms_notify') && $order->user->phone) {
             SendOrderStatusSMS::dispatch($order, 'delivered');

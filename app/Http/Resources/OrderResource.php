@@ -57,6 +57,10 @@ class OrderResource extends Resource
                 $this->status == OrderStatusEnum::DELIVERED,
                 OrderExpressResource::collection($this->expresses)
             ),
+            'express_bill_template' => $this->when(
+                $this->status == OrderStatusEnum::DELIVERED,
+                $this->express_bill_template
+            ),
             'logs' => $this->when(
                 $this->pay_type && TokenFactory::isAdmin(),
                 OrderLogResource::collection($this->logs()->latest()->get())
