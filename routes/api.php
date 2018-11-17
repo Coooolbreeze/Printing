@@ -457,8 +457,11 @@ Route::namespace('Api')->group(function () {
     });
 
     Route::middleware('permission:数据中心')->group(function () {
-        Route::get('/type_percent', 'OperateStatisticController@typePercent');
+        Route::get('/operate/today', 'OperateStatisticsController@today');
+        Route::get('/operate/rank/users', 'OperateStatisticsController@userRank');
+        Route::get('/operate/rank/goods', 'OperateStatisticsController@goodsRank');
         Route::get('/operate/statistics', 'OperateStatisticController@statistics');
+        Route::get('/type_percent', 'OperateStatisticController@typePercent');
     });
 
     Route::get('/test', function () {
