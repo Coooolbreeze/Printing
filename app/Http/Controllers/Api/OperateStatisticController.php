@@ -40,7 +40,7 @@ class OperateStatisticController extends ApiController
         $yesterdayRefund = $yesterday->where('type', 2)->sum('price');
         $yesterdayTotal = $yesterdayIncome - $yesterdayRefund;
 
-        $dayOnDayRatio = $todayTotal - $yesterdayTotal / abs($yesterdayTotal);
+        $dayOnDayRatio = $yesterdayTotal === 0 ? 0 : ($todayTotal - $yesterdayTotal / abs($yesterdayTotal));
 
         $orderCount = Order::whereBetween('created_at', [
             Carbon::today(),
