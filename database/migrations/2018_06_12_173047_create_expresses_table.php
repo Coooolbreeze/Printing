@@ -16,6 +16,7 @@ class CreateExpressesTable extends Migration
         Schema::create('expresses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
+            $table->string('code')->unique();
             $table->decimal('first_weight');
             $table->decimal('additional_weight');
             $table->decimal('capped');

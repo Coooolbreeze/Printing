@@ -54,6 +54,7 @@ class ExpressController extends ApiController
         \DB::transaction(function () use ($request) {
             $express = Express::create([
                 'name' => $request->name,
+                'code' => $request->code,
                 'first_weight' => $request->first_weight,
                 'additional_weight' => $request->additional_weight,
                 'capped' => $request->capped
@@ -73,7 +74,7 @@ class ExpressController extends ApiController
     public function update(Request $request, Express $express)
     {
         \DB::transaction(function () use ($request, $express) {
-            Express::updateField($request, $express, ['name', 'first_weight', 'additional_weight', 'capped']);
+            Express::updateField($request, $express, ['name', 'code', 'first_weight', 'additional_weight', 'capped']);
             if (isset($request->regions)) {
                 $express->regions()->delete();
                 $regions = $this->mergeRegions($request->regions, $express->id);
