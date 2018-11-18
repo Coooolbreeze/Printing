@@ -28,7 +28,7 @@ class OrderEventSubscriber
 {
     private static function addSales($order)
     {
-        $content = json_decode($order->span_content, true);
+        $content = json_decode($order->snap_content, true);
         foreach ($content as $v) {
             Entity::where('id', $v['id'])
                 ->increment('sales', self::getCount($v['count']));
