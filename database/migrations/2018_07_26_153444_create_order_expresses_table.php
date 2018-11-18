@@ -17,6 +17,7 @@ class CreateOrderExpressesTable extends Migration
             $table->increments('id');
             $table->integer('order_id');
             $table->string('company');
+            $table->string('code');
             $table->string('tracking_no');
             $table->timestamps();
         });

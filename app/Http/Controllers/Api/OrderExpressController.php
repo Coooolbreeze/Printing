@@ -39,6 +39,7 @@ class OrderExpressController extends ApiController
             OrderExpress::create([
                 'order_id' => $request->order_id,
                 'company' => $request->company,
+                'code' => $request->code,
                 'tracking_no' => $request->tracking_no
             ]);
 
