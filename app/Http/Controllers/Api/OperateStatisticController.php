@@ -128,7 +128,7 @@ class OperateStatisticController extends ApiController
             }
         }
 
-        return $stats;
+        return $this->success($stats);
     }
 
     public static function getMonthSalesVolume($request)
