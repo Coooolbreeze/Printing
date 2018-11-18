@@ -15,6 +15,7 @@ use App\Jobs\SendOrderPaidEmail;
 use App\Jobs\SendOrderStatusSMS;
 use App\Mail\OrderPaid;
 use App\Models\AccumulatePointsRecord;
+use App\Models\Entity;
 use App\Models\FinanceStatistic;
 use App\Models\Message;
 use App\Models\OrderLog;
@@ -25,6 +26,24 @@ use Carbon\Carbon;
 
 class OrderEventSubscriber
 {
+    private static function addSales($order)
+    {
+        $content = json_decode($order->span_content, true);
+        foreach ($content as $v) {
+            Entity::where('id', $v['id'])
+                ->increment('sales', self::getCount($v['count']));
+        }
+    }
+
+    private static function getCount($count)
+    {
+        if (!is_numeric($count)) {
+            preg_match_all('/\d+/', $count, $arr);
+            $count = $arr[0][0];
+        }
+        return $count;
+    }
+
     /**
      * 订单支付
      *
@@ -38,6 +57,8 @@ class OrderEventSubscriber
         $order->update(['paid_at' => Carbon::now()]);
 
         Message::orderPaid($order->user_id);
+
+        self::addSales($order);
 
         $points = floor($order->total_price / config('setting.accumulate_points_money'));
         AccumulatePointsRecord::income($points, '购买商品', $order->user);
