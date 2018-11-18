@@ -27,7 +27,7 @@ class OrderResource extends Resource
     {
         return $this->filterFields([
             'id' => $this->id,
-            'express' => (new ExpressResource($this->express))->show(['id', 'name']),
+            'express' => (new ExpressResource($this->express))->show(['id', 'name', 'code']),
             'receipt' => $this->when($this->receipt_id, new ReceiptResource($this->receipt)),
             'order_no' => $this->order_no,
             'trade_no' => $this->when($this->trade_no, $this->trade_no),
