@@ -18,6 +18,7 @@ class OrderExpressResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'company' => $this->company,
+            'code' => $this->code,
             'tracking_no' => $this->tracking_no,
             'logistics' => $this->queryLogistics()
         ]);
