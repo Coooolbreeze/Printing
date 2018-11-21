@@ -24,7 +24,11 @@ class CouponController extends ApiController
 {
     public function index()
     {
-        return $this->success(new CouponCollection(Coupon::pagination()));
+        return $this->success(new CouponCollection(
+            Coupon::when(!TokenFactory::isAdmin(), function ($query) {
+                $query->where('is_disabled', 0);
+            })->paginate(Coupon::getLimit())
+        ));
     }
 
     public function show(Coupon $coupon)
