@@ -88,12 +88,12 @@ class EntityResource extends Resource
 
         $price = $combination->price;
 
-        $customSpecs = CustomAttributeResource::collection($this->customAttributes);
-        foreach (json_decode($customSpecs, true) as $spec) {
-            foreach ($spec['values'] as $value) {
-                $price *= $value['min'];
-            }
-        }
+//        $customSpecs = CustomAttributeResource::collection($this->customAttributes);
+//        foreach (json_decode($customSpecs, true) as $spec) {
+//            foreach ($spec['values'] as $value) {
+//                $price *= $value['min'];
+//            }
+//        }
 
         if ($this->custom_number > 0) {
             return $price . '/' . $this->unit . '起';
