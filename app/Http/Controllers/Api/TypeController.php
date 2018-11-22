@@ -26,7 +26,7 @@ class TypeController extends ApiController
         if(TokenFactory::isAdmin()) {
             $types = new TypeCollection(Type::paginate());
         } else {
-            $types = TypeResource::collection(Type::paginate())->show(['id', 'name']);
+            $types = TypeResource::collection(Type::all())->show(['id', 'name']);
         }
 
         return $this->success($types);
