@@ -27,6 +27,7 @@ class CategoryResource extends Resource
         return $this->filterFields([
             'id' => $this->id,
             'name' => $this->name,
+            'large_category' => $this->largeCategory->name,
             'url' => $this->when($this->url, $this->url),
             'items' => CategoryItemResource::collection($items)
         ]);
