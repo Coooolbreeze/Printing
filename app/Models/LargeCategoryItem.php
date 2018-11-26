@@ -43,4 +43,9 @@ class LargeCategoryItem extends Model
     {
         return $this->hasOne('App\Models\Entity', 'id', 'item_id');
     }
+
+    public function largeCategory()
+    {
+        return $this->belongsTo('App\Models\LargeCategory');
+    }
 }

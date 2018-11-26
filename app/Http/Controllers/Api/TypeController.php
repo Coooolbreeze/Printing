@@ -13,6 +13,7 @@ use App\Exceptions\BaseException;
 use App\Http\Resources\TypeCollection;
 use App\Http\Resources\TypeResource;
 use App\Models\CategoryItem;
+use App\Models\LargeCategory;
 use App\Models\LargeCategoryItem;
 use App\Models\SecondaryType;
 use App\Models\Type;
@@ -23,7 +24,7 @@ class TypeController extends ApiController
 {
     public function index()
     {
-        if(TokenFactory::isAdmin()) {
+        if (TokenFactory::isAdmin()) {
             $types = new TypeCollection(Type::paginate());
         } else {
             $types = TypeResource::collection(Type::all())->show(['id', 'name']);
@@ -105,9 +106,15 @@ class TypeController extends ApiController
                     ->whereIn('item_id', $type->entities()->pluck('id')->toArray())
                     ->delete();
 
-                LargeCategoryItem::where('item_type', 1)
+                $largeItem = LargeCategoryItem::where('item_type', 1)
                     ->where('item_id', $type->id)
-                    ->delete();
+                    ->first();
+
+                if ($largeItem) {
+                    if (!in_array($request->category_id, $largeItem->largeCategory->categories()->pluck('id')->toArray())) {
+                        $largeItem->delete();
+                    }
+                }
             } else {
                 $categoryItem = CategoryItem::where('item_type', 1)
                     ->where('item_id', $type->id)
