@@ -104,6 +104,10 @@ class TypeController extends ApiController
                 LargeCategoryItem::where('item_type', 2)
                     ->whereIn('item_id', $type->entities()->pluck('id')->toArray())
                     ->delete();
+
+                LargeCategoryItem::where('item_type', 1)
+                    ->where('item_id', $type->id)
+                    ->delete();
             } else {
                 $categoryItem = CategoryItem::where('item_type', 1)
                     ->where('item_id', $type->id)
