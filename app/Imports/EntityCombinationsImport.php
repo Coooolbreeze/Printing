@@ -14,8 +14,11 @@ class EntityCombinationsImport implements ToArray
      */
     public function array(array $rows)
     {
+        $a = 0;
         $combinations = [];
         foreach ($rows as $row) {
+            $a++;
+            if ($a = 1) continue;
             if ($row[count($row) - 2] && !$row[count($row) - 1]) {
                 throw new BaseException('价格与重量必须同时填写');
             }
