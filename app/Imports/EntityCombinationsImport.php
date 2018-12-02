@@ -28,7 +28,7 @@ class EntityCombinationsImport implements ToArray
 //                ]);
 
             array_push($combinations, [
-                'id' => $row[0],
+                'id' => (int)str_replace('/t', '', $row[0]),
                 'price' => $row[count($row) - 2],
                 'weight' => $row[count($row) - 1]
             ]);
