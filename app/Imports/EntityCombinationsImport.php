@@ -33,7 +33,6 @@ class EntityCombinationsImport implements ToArray
                 'weight' => $row[count($row) - 1]
             ]);
         }
-        throw new BaseException(json_encode($combinations));
         Combination::updateBatch($combinations);
     }
 }
