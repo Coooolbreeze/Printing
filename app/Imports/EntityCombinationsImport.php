@@ -5,9 +5,8 @@ namespace App\Imports;
 use App\Exceptions\BaseException;
 use App\Models\Combination;
 use Maatwebsite\Excel\Concerns\ToArray;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class EntityCombinationsImport implements ToArray, WithHeadingRow
+class EntityCombinationsImport implements ToArray
 {
     /**
      * @param array $rows
@@ -17,13 +16,13 @@ class EntityCombinationsImport implements ToArray, WithHeadingRow
     {
         $combinations = [];
         foreach ($rows as $row) {
-            if ($row['价格(元)'] && !$row['重量(g)']) {
+            if ($row[count($row) - 2] && !$row[count($row) - 1]) {
                 throw new BaseException('价格与重量必须同时填写');
             }
             array_push($combinations, [
-                'id' => $row['ID'],
-                'price' => $row['价格(元)'],
-                'weight' => $row['重量(g)']
+                'id' => $row[0],
+                'price' => $row[count($row) - 2],
+                'weight' => $row[count($row) - 1]
             ]);
         }
         Combination::updateBatch($combinations);
