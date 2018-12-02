@@ -21,18 +21,19 @@ class EntityCombinationsImport implements ToArray
                 throw new BaseException('价格与重量必须同时填写');
             }
 
-            Combination::where('id', $row[0])
-                ->update([
-                    'price' => (float)$row[count($row) - 2],
-                    'weight' => (float)$row[count($row) - 1]
-                ]);
+//            Combination::where('id', $row[0])
+//                ->update([
+//                    'price' => (float)$row[count($row) - 2],
+//                    'weight' => (float)$row[count($row) - 1]
+//                ]);
 
-//            array_push($combinations, [
-//                'id' => $row[0],
-//                'price' => $row[count($row) - 2],
-//                'weight' => $row[count($row) - 1]
-//            ]);
+            array_push($combinations, [
+                'id' => $row[0],
+                'price' => $row[count($row) - 2],
+                'weight' => $row[count($row) - 1]
+            ]);
         }
-//        Combination::updateBatch($combinations);
+        throw new BaseException(json_encode($combinations));
+        Combination::updateBatch($combinations);
     }
 }
