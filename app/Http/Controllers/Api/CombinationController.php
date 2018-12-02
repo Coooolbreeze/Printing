@@ -13,6 +13,7 @@ use App\Exceptions\BaseException;
 use App\Exports\EntityCombinationsExport;
 use App\Http\Resources\CombinationCollection;
 use App\Http\Resources\CombinationResource;
+use App\Imports\EntityCombinationsImport;
 use App\Models\Combination;
 use App\Models\Entity;
 use Illuminate\Http\Request;
@@ -49,26 +50,28 @@ class CombinationController extends ApiController
      */
     public function import(Request $request)
     {
-        $spreadsheet = (new Xlsx())->load($request->file('file'))->getActiveSheet();
+//        $spreadsheet = (new Xlsx())->load($request->file('file'))->getActiveSheet();
+//
+//        $data = $spreadsheet->rangeToArray('A2:' . $spreadsheet->getHighestColumn() . $spreadsheet->getHighestRow());
+//
+//        $combinations = [];
+//        foreach ($data as $entity) {
+//            $price = $entity[count($entity) - 2];
+//            $weight = $entity[count($entity) - 1];
+//
+//            if ($price && !$weight) {
+//                throw new BaseException('价格与重量必须同时填写');
+//            }
+//
+//            array_push($combinations, [
+//                'id' => $entity[0],
+//                'price' => $price,
+//                'weight' => $weight
+//            ]);
+//        }
+//        Combination::updateBatch($combinations);
 
-        $data = $spreadsheet->rangeToArray('A2:' . $spreadsheet->getHighestColumn() . $spreadsheet->getHighestRow());
-
-        $combinations = [];
-        foreach ($data as $entity) {
-            $price = $entity[count($entity) - 2];
-            $weight = $entity[count($entity) - 1];
-
-            if ($price && !$weight) {
-                throw new BaseException('价格与重量必须同时填写');
-            }
-
-            array_push($combinations, [
-                'id' => $entity[0],
-                'price' => $price,
-                'weight' => $weight
-            ]);
-        }
-        Combination::updateBatch($combinations);
+        Excel::import(new EntityCombinationsImport, \request()->file('file'));
 
         return $this->message('更新成功');
     }
