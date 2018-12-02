@@ -23,8 +23,8 @@ class EntityCombinationsImport implements ToArray
 
             Combination::where('id', $row[0])
                 ->update([
-                    'price' => $row[count($row) - 2],
-                    'weight' => $row[count($row) - 1]
+                    'price' => (float)$row[count($row) - 2],
+                    'weight' => (float)$row[count($row) - 1]
                 ]);
 
 //            array_push($combinations, [
