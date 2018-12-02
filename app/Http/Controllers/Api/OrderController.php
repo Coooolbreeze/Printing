@@ -13,6 +13,7 @@ use App\Enum\OrderPayTypeEnum;
 use App\Enum\OrderStatusEnum;
 use App\Events\OrderAudited;
 use App\Events\OrderDelivered;
+use App\Events\OrderExpire;
 use App\Events\OrderFailed;
 use App\Events\OrderPaid;
 use App\Events\OrderReceived;
@@ -216,7 +217,9 @@ class OrderController extends ApiController
             }
 
             // 分发事件
-            if ($status == OrderStatusEnum::UNDELIVERED) {
+            if ($status == OrderStatusEnum::EXPIRE) {
+                event(new OrderExpire($order));
+            } elseif ($status == OrderStatusEnum::UNDELIVERED) {
                 event(new OrderAudited($order));
             } elseif ($status == OrderStatusEnum::DELIVERED) {
                 event(new OrderDelivered($order));

@@ -26,7 +26,8 @@ class CouponController extends ApiController
     {
         return $this->success(new CouponCollection(
             Coupon::when(!TokenFactory::isAdmin(), function ($query) {
-                $query->where('is_disabled', 0);
+                $query->where('is_disabled', 0)
+                    ->where('finished_at', '>', Carbon::now());
             })->paginate(Coupon::getLimit())
         ));
     }

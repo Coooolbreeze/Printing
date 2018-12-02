@@ -45,6 +45,19 @@ class OrderEventSubscriber
     }
 
     /**
+     * 订单失效
+     *
+     * @param $event
+     */
+    public function onOrderExpire($event)
+    {
+        $order = $event->order;
+
+        $order->user->coupons()->where('coupon_no', $order->coupon_no)
+            ->update(['is_used' => 0]);
+    }
+
+    /**
      * 订单支付
      *
      * @param $event
@@ -176,6 +189,11 @@ class OrderEventSubscriber
      */
     public function subscribe($events)
     {
+        $events->listen(
+            'App\Events\OrderExpire',
+            'App\Listeners\OrderEventSubscriber@onOrderExpire'
+        );
+
         $events->listen(
             'App\Events\OrderPaid',
             'App\Listeners\OrderEventSubscriber@onOrderPaid'
