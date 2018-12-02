@@ -20,13 +20,6 @@ class EntityCombinationsImport implements ToArray
             if ($row[count($row) - 2] && !$row[count($row) - 1]) {
                 throw new BaseException('价格与重量必须同时填写');
             }
-
-//            Combination::where('id', $row[0])
-//                ->update([
-//                    'price' => (float)$row[count($row) - 2],
-//                    'weight' => (float)$row[count($row) - 1]
-//                ]);
-
             array_push($combinations, [
                 'id' => (int)str_replace('/t', '', $row[0]),
                 'price' => $row[count($row) - 2],
