@@ -9,6 +9,7 @@
 namespace App\Models;
 
 use App\Exceptions\BaseException;
+use App\Services\Tokens\TokenFactory;
 use Carbon\Carbon;
 
 
@@ -62,7 +63,10 @@ class UserCoupon extends Model
      */
     public static function use($couponNo, $price)
     {
-        $coupon = self::where('coupon_no', $couponNo)->lockForUpdate()->firstOrFail();
+        $coupon = self::where('coupon_no', $couponNo)
+            ->where('user_id', TokenFactory::getCurrentUID())
+            ->lockForUpdate()
+            ->firstOrFail();
 
         if ($coupon->is_used == 1) throw new BaseException('该优惠券已被使用');
         if ($coupon->finished_at < Carbon::now()) throw new BaseException('该优惠券已过期');
