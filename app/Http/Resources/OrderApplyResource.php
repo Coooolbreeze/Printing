@@ -18,6 +18,7 @@ class OrderApplyResource extends Resource
             'user' => (new UserResource($this->user))->show(['id', 'nickname']),
             'order_no' => $this->order_no,
             'price' => $this->price,
+            'channel' => $this->channel,
             'type' => $this->convertType($this->type),
             'status' => $this->convertStatus($this->status),
             'created_at' => (string)$this->created_at

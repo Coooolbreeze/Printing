@@ -92,6 +92,7 @@ class OrderApplyController extends ApiController
             'user_id' => TokenFactory::getCurrentUID(),
             'order_no' => $request->order_no,
             'price' => $order->total_price,
+            'channel' => $request->channel,
             'type' => $request->type
         ]);
 
