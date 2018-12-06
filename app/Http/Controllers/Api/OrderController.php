@@ -80,7 +80,7 @@ class OrderController extends ApiController
         return $this->success(new OrderCollection($orders));
     }
 
-    private function unicodeEncode($str, $encoding = 'UTF-8', $prefix = '\u', $postfix = ''){
+    private function unicodeEncode($str, $encoding = 'GBK', $prefix = '\u', $postfix = ''){
         $str = iconv($encoding, 'UCS-2', $str);
         $arrstr = str_split($str, 2);
         $unistr = '';
