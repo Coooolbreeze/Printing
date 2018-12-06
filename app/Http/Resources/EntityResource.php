@@ -108,7 +108,7 @@ class EntityResource extends Resource
             preg_match_all('/\d+/', end($next), $num1);
             if ($num > $num1) {
                 preg_match_all('/\D+/', end($number), $str);
-                return (number_format(ceil($price / $num[0][0] * 100) / 100, 2)) . '/' . end($str[0]) . '起';
+                return (number_format(ceil($combination['price'] / $num[0][0] * 100) / 100, 2)) . '/' . end($str[0]) . '起';
             }
         }
     }
