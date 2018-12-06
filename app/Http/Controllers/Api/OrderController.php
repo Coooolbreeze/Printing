@@ -80,15 +80,15 @@ class OrderController extends ApiController
         return $this->success(new OrderCollection($orders));
     }
 
-    private function unicodeEncode($str){
-        preg_match_all('/./u',$str,$matches);
-
-        $unicodeStr = "";
-        foreach($matches[0] as $m){
-            //拼接
-            $unicodeStr .= "\u".base_convert(bin2hex(iconv('UTF-8',"UCS-4",$m)),16,10);
+    private function unicodeEncode($str, $encoding = 'UTF-8', $prefix = '\u', $postfix = ';'){
+        $str = iconv($encoding, 'UCS-2', $str);
+        $arrstr = str_split($str, 2);
+        $unistr = '';
+        for($i = 0, $len = count($arrstr); $i < $len; $i++) {
+            $dec = hexdec(bin2hex($arrstr[$i]));
+            $unistr .= $prefix . $dec . $postfix;
         }
-        return $unicodeStr;
+        return $unistr;
     }
 
 
