@@ -62,6 +62,17 @@ class OrderController extends ApiController
                     Carbon::parse(date('Y-m-d H:i:s', $request->end_time))
                 ]);
             })
+            ->when($request->order_no, function ($query) use ($request) {
+                $query->where('order_no', $request->order_no);
+            })
+            ->when($request->person, function ($query) use ($request) {
+                $query->where('snap_address', 'like', '{"name":"' . $request->personal . '",%');
+            })
+            ->when($request->member, function ($query) use ($request) {
+                $query->whereHas('users', function ($query) use ($request) {
+                    $query->where('nickname', $request->member);
+                });
+            })
             ->latest()
             ->paginate(Order::getLimit());
 
@@ -117,6 +128,12 @@ class OrderController extends ApiController
         if (TokenFactory::isValidOperate($order->user_id) || TokenFactory::can('用户管理')) {
             return $this->success(new OrderResource($order));
         }
+    }
+
+    public function destroy(Order $order)
+    {
+        $order->delete();
+        return $this->message('删除成功');
     }
 
     /**
@@ -374,7 +391,7 @@ class OrderController extends ApiController
         $str = '';
         foreach ($specs as $key => $spec) {
             $str .= $key . '：';
-            foreach ($spec as $k => $v) $str .= $k . $v . '*';
+            foreach ($spec as $k => $v) $str .= $k . $v . 'CM*';
             $str = rtrim($str, '*') . '；';
         }
         return $str;

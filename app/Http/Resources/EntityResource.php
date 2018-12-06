@@ -99,10 +99,18 @@ class EntityResource extends Resource
             return $price . '/' . $this->unit . '起';
         }
 
-        $number = explode('|', $combination->combination);
-        preg_match_all('/\d+/', end($number), $num);
-        preg_match_all('/\D+/', end($number), $str);
-        return (number_format(ceil($price / $num[0][0] * 100) / 100, 2)) . '/' . end($str[0]) . '起';
+        $combinations  =  $this->combinations()->active()->orderBy('id', 'desc')->get()->toArray();
+
+        foreach ($combinations as $key => $combination) {
+            $number = explode('|', $combination['combination']);
+            preg_match_all('/\d+/', end($number), $num);
+            $next = explode('|', $combinations[$key+1]['combination']);
+            preg_match_all('/\d+/', end($next), $num1);
+            if ($num > $num1) {
+                preg_match_all('/\D+/', end($number), $str);
+                return (number_format(ceil($price / $num[0][0] * 100) / 100, 2)) . '/' . end($str[0]) . '起';
+            }
+        }
     }
 
     public function isFollow()

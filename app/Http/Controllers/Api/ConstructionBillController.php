@@ -24,7 +24,7 @@ class ConstructionBillController extends ApiController
         foreach ($content as $good) {
             array_push($goods, [
                 'image' => $good['image']['src'],
-                'describe' => $good['name'] . ',' . implode(',', explode('|', $good['combination']['name'])),
+                'describe' => $good['name'] . ',' . implode(',', explode('|', $good['combination']['name'])) . ',' . self::joinSpecs($good['custom_specs']),
                 'type' => $good['type'],
                 'count' => $good['count']
             ]);
@@ -37,5 +37,16 @@ class ConstructionBillController extends ApiController
             'bill_remark' => $order->bill_remark,
             'clerk' => TokenFactory::getCurrentUser()->nickname
         ]);
+    }
+
+    private static function joinSpecs($specs)
+    {
+        $str = '';
+        foreach ($specs as $key => $spec) {
+            $str .= $key . '：';
+            foreach ($spec as $k => $v) $str .= $k . $v . 'CM*';
+            $str = rtrim($str, '*') . ';';
+        }
+        return $str;
     }
 }

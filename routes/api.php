@@ -372,7 +372,7 @@ Route::namespace('Api')->group(function () {
         Route::put('/back_pay', 'OrderController@backPay');
 
         Route::apiResource('orders', 'OrderController')
-            ->only(['index']);
+            ->only(['index', 'destroy']);
 
         Route::get('/export/orders', 'OrderController@export');
 
