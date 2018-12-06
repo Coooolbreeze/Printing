@@ -80,16 +80,24 @@ class OrderController extends ApiController
         return $this->success(new OrderCollection($orders));
     }
 
-    private function unicodeEncode($str){
-        //split word
-        preg_match_all('/./u',$str,$matches);
-
-        $unicodeStr = "";
-        foreach($matches[0] as $m){
-            //拼接
-            $unicodeStr .= "&#".base_convert(bin2hex(iconv('UTF-8',"UCS-4",$m)),16,10);
+    private function unicodeEncode($name){
+        $name = iconv('UTF-8', 'UCS-2', $name);
+        $len = strlen($name);
+        $str = '';
+        for ($i = 0; $i < $len - 1; $i = $i + 2)
+        {
+            $c = $name[$i];
+            $c2 = $name[$i + 1];
+            if (ord($c) > 0)
+            {  // 两个字节的文字
+                $str .= '\u'.base_convert(ord($c), 10, 16).base_convert(ord($c2), 10, 16);
+            }
+            else
+            {
+                $str .= $c2;
+            }
         }
-        return $unicodeStr;
+        return $str;
     }
 
 
