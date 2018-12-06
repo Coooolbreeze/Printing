@@ -66,6 +66,7 @@ class OrderController extends ApiController
                 $query->where('order_no', $request->order_no);
             })
             ->when($request->person, function ($query) use ($request) {
+                throw new BaseException('{"name":"' . $this->unicodeEncode($request->person) . '",%');
                 $query->where('snap_address', 'like', '{"name":"' . $this->unicodeEncode($request->person) . '",%');
             })
             ->when($request->member, function ($query) use ($request) {
@@ -79,24 +80,15 @@ class OrderController extends ApiController
         return $this->success(new OrderCollection($orders));
     }
 
-    private function unicodeEncode($name){
-        $name = iconv('UTF-8', 'UCS-2', $name);
-        $len = strlen($name);
-        $str = '';
-        for ($i = 0; $i < $len - 1; $i = $i + 2)
-        {
-            $c = $name[$i];
-            $c2 = $name[$i + 1];
-            if (ord($c) > 0)
-            {  // 两个字节的文字
-                $str .= '\u'.base_convert(ord($c), 10, 16).base_convert(ord($c2), 10, 16);
-            }
-            else
-            {
-                $str .= $c2;
-            }
+    private function unicodeEncode($str){
+        preg_match_all('/./u',$str,$matches);
+
+        $unicodeStr = "";
+        foreach($matches[0] as $m){
+            //拼接
+            $unicodeStr .= "\u".base_convert(bin2hex(iconv('UTF-8',"UCS-4",$m)),16,10);
         }
-        return $str;
+        return $unicodeStr;
     }
 
 
