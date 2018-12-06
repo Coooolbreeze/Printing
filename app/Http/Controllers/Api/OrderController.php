@@ -66,6 +66,7 @@ class OrderController extends ApiController
                 $query->where('order_no', $request->order_no);
             })
             ->when($request->person, function ($query) use ($request) {
+                throw new BaseException('{"name":"' . $this->unicodeEncode($request->person) . '",%');
                 $query->where('snap_address', 'like', '{"name":"' . $this->unicodeEncode($request->person) . '",%');
             })
             ->when($request->member, function ($query) use ($request) {
