@@ -66,7 +66,7 @@ class OrderController extends ApiController
                 $query->where('order_no', $request->order_no);
             })
             ->when($request->person, function ($query) use ($request) {
-                $query->where('snap_address', 'like', '{"name":"' . $request->personal . '",%');
+                $query->where('snap_address', 'like', '{"name":"' . $request->person . '",%');
             })
             ->when($request->member, function ($query) use ($request) {
                 $query->whereHas('users', function ($query) use ($request) {
