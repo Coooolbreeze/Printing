@@ -39,7 +39,6 @@ class FileController extends ApiController
     public function show(File $file)
     {
         $path = public_path('storage/' . $file->src);
-        return $path;
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header("Content-type:text/html;charset=utf-8");
