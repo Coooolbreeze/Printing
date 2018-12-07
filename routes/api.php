@@ -394,6 +394,9 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('bill/construction', 'ConstructionBillController')
             ->only(['index']);
+
+        Route::apiResource('download', 'DownloadController')
+            ->only(['show']);
     });
 
     Route::middleware('permission:积分管理')->group(function () {
