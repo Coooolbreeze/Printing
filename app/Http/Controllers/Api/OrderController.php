@@ -66,7 +66,7 @@ class OrderController extends ApiController
                 $query->where('order_no', $request->order_no);
             })
             ->when($request->person, function ($query) use ($request) {
-                $query->where('snap_address', 'like', '{"name":"' . $this->unicodeEncode($request->person) . '",%');
+                $query->where('snap_address', 'like', '{"name":"' . $request->person . '",%');
             })
             ->when($request->member, function ($query) use ($request) {
                 $query->whereHas('users', function ($query) use ($request) {
@@ -78,18 +78,6 @@ class OrderController extends ApiController
 
         return $this->success(new OrderCollection($orders));
     }
-
-    private function unicodeEncode($str, $encoding = 'UTF-8', $prefix = '\u', $postfix = ''){
-        $str = iconv($encoding, 'UCS-2', $str);
-        $arrstr = str_split($str, 2);
-        $unistr = '';
-        for($i = 0, $len = count($arrstr); $i < $len; $i++) {
-            $dec = hexdec(bin2hex($arrstr[$i]));
-            $unistr .= $prefix . $dec . $postfix;
-        }
-        return $unistr;
-    }
-
 
     public function newOrder()
     {
