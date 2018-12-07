@@ -35,4 +35,20 @@ class FileController extends ApiController
             )
         );
     }
+
+    public function show(File $file)
+    {
+        $path = public_path('storage/' . $file->src);
+        return $path;
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header("Content-type:text/html;charset=utf-8");
+        header('Content-Disposition: attachment; filename=' . $file->name);
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        readfile($path);
+    }
+
 }

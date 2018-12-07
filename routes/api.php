@@ -37,9 +37,7 @@ Route::namespace('Api')->group(function () {
         ->only(['store']);
     // 文件上传
     Route::apiResource('files', 'FileController')
-        ->only(['store']);
-    Route::apiResource('download', 'DownloadController')
-        ->only(['show']);
+        ->only(['store', 'show']);
 
     Route::post('/alipay/notify', 'AliPayController@notify');
     Route::post('/wxpay/notify', 'WxPayController@notify');
