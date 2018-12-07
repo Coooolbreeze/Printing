@@ -38,6 +38,8 @@ Route::namespace('Api')->group(function () {
     // 文件上传
     Route::apiResource('files', 'FileController')
         ->only(['store']);
+    Route::apiResource('download', 'DownloadController')
+        ->only(['show']);
 
     Route::post('/alipay/notify', 'AliPayController@notify');
     Route::post('/wxpay/notify', 'WxPayController@notify');
@@ -394,9 +396,6 @@ Route::namespace('Api')->group(function () {
 
         Route::apiResource('bill/construction', 'ConstructionBillController')
             ->only(['index']);
-
-        Route::apiResource('download', 'DownloadController')
-            ->only(['show']);
     });
 
     Route::middleware('permission:积分管理')->group(function () {
