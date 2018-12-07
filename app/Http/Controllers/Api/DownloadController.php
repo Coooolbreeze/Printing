@@ -15,8 +15,8 @@ class DownloadController extends ApiController
 {
     public function show(File $file)
     {
-        return 111;
         $path = public_path('store/' . $file->src);
+        return $path;
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header("Content-type:text/html;charset=utf-8");
