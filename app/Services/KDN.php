@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Models\Order;
+use App\Models\OrderExpress;
 
 class KDN
 {
@@ -28,6 +29,24 @@ class KDN
         $this->appKey = config('kdn.app_key');
         $this->reqUrl = config('kdn.req_url');
         $this->orderId = $orderId;
+    }
+
+    public function Logistics(OrderExpress $orderExpress)
+    {
+        $requestData = "{'OrderCode':" . $orderExpress->order->order_no . ",'ShipperCode':" . $orderExpress->code . ",'LogisticCode':" . $orderExpress->tracking_no . "}";
+
+        $datas = array(
+            'EBusinessID' => $this->businessID,
+            'RequestType' => '1002',
+            'RequestData' => urlencode($requestData),
+            'DataType' => '2',
+        );
+        $datas['DataSign'] = encrypt($requestData, $this->appKey);
+        $result = $this->sendPost($this->reqUrl, $datas);
+
+        //根据公司业务处理返回的信息......
+
+        return $result;
     }
 
     public function generate()
