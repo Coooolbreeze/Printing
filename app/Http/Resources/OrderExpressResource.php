@@ -32,24 +32,24 @@ class OrderExpressResource extends Resource
      */
     public function queryLogistics()
     {
-        $info = (new KDN($this->order->id))->Logistics($this);
-
-        if (!$info['Success']) {
+//        $info = (new KDN($this->order->id))->Logistics($this);
+//
+//        if (!$info['Success']) {
             return [
                 [
                     'time' => (string)Carbon::now(),
                     'message' => '暂无物流信息'
                 ]
             ];
-        }
-
-        $arr = [];
-        foreach ($info['Traces'] as $value) {
-            array_push($arr, [
-                'time' => $value['AcceptTime'],
-                'message' => $value['AcceptStation']
-            ]);
-        }
-        return $arr;
+//        }
+//
+//        $arr = [];
+//        foreach ($info['Traces'] as $value) {
+//            array_push($arr, [
+//                'time' => $value['AcceptTime'],
+//                'message' => $value['AcceptStation']
+//            ]);
+//        }
+//        return $arr;
     }
 }
