@@ -9,6 +9,7 @@
 namespace App\Http\Resources;
 
 
+use App\Services\KDN;
 use Carbon\Carbon;
 
 class OrderExpressResource extends Resource
@@ -31,13 +32,24 @@ class OrderExpressResource extends Resource
      */
     public function queryLogistics()
     {
-        $trackingNo = $this->tracking_no;
+        $info = (new KDN($this->order->id))->Logistics($this);
 
-        return [
-            [
-                'time' => (string)Carbon::now(),
-                'message' => '暂无物流信息'
-            ]
-        ];
+        if (!$info['Success']) {
+            return [
+                [
+                    'time' => (string)Carbon::now(),
+                    'message' => '暂无物流信息'
+                ]
+            ];
+        }
+
+        $arr = [];
+        foreach ($info['Traces'] as $value) {
+            array_push($arr, [
+                'time' => $value['AcceptTime'],
+                'message' => $value['AcceptStation']
+            ]);
+        }
+        return $arr;
     }
 }

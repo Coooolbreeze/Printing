@@ -33,7 +33,7 @@ class KDN
 
     public function Logistics(OrderExpress $orderExpress)
     {
-        $requestData = "{'OrderCode':" . $orderExpress->order->order_no . ",'ShipperCode':" . $orderExpress->code . ",'LogisticCode':" . $orderExpress->tracking_no . "}";
+        $requestData = "{'OrderCode':'" . $orderExpress->order->order_no . "','ShipperCode':'" . $orderExpress->code . "','LogisticCode':'" . $orderExpress->tracking_no . "'}";
 
         $datas = array(
             'EBusinessID' => $this->businessID,
@@ -41,8 +41,8 @@ class KDN
             'RequestData' => urlencode($requestData),
             'DataType' => '2',
         );
-        $datas['DataSign'] = encrypt($requestData, $this->appKey);
-        $result = $this->sendPost($this->reqUrl, $datas);
+        $datas['DataSign'] = $this->encrypt($requestData, $this->appKey);
+        $result = json_decode($this->sendPost('http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx', $datas), true);
 
         //根据公司业务处理返回的信息......
 
