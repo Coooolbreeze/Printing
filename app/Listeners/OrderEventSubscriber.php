@@ -179,7 +179,7 @@ class OrderEventSubscriber
 
         OrderLog::write($order->id, '退款');
 
-        FinanceStatistic::write($order - order_no, $order->total_price, 2);
+        FinanceStatistic::write($order->order_no, $order->total_price, 2);
 
         Message::orderRefunded($order->user_id);
     }
