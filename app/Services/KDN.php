@@ -31,7 +31,7 @@ class KDN
         $this->orderId = $orderId;
     }
 
-    public function Logistics(OrderExpress $orderExpress)
+    public function Logistics($orderExpress)
     {
         $requestData = "{'OrderCode':'" . $orderExpress->order->order_no . "','ShipperCode':'" . $orderExpress->code . "','LogisticCode':'" . $orderExpress->tracking_no . "'}";
 
