@@ -106,6 +106,10 @@ class KDN
         );
         $datas['DataSign'] = $this->encrypt($requestData, $this->appKey);
         $result = json_decode($this->sendPost($this->reqUrl, $datas), true);
+        
+        if($result['Success'] == 'false') {
+            throw new \Exception($result['Reason']);
+        }
 
         //根据公司业务处理返回的信息......
         Order::where('id', $this->orderId)->update([
